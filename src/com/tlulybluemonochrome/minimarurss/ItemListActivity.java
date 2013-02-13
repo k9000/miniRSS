@@ -2,6 +2,7 @@ package com.tlulybluemonochrome.minimarurss;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 /**
@@ -69,9 +70,14 @@ public class ItemListActivity extends Activity implements
 		} else {
 			// In single-pane mode, simply start the detail activity
 			// for the selected item ID.
+			/*
 			Intent detailIntent = new Intent(this, ItemDetailActivity.class);
 			detailIntent.putExtra(ItemDetailFragment.ARG_ITEM_ID, id);
 			startActivity(detailIntent);
+			*/
+			
+			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(id));
+			startActivity(intent);
 		}
 	}
 }

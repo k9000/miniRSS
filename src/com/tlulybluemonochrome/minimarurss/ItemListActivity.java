@@ -55,7 +55,7 @@ public class ItemListActivity extends Activity implements
 	 * the item with the given ID was selected.
 	 */
 	@Override
-	public void onItemSelected(String id) {
+	public void onItemSelected(String id, String url) {
 		if (mTwoPane) {
 			// In two-pane mode, show the detail view in this activity by
 			// adding or replacing the detail fragment using a
@@ -71,12 +71,12 @@ public class ItemListActivity extends Activity implements
 			// In single-pane mode, simply start the detail activity
 			// for the selected item ID.
 			/*
-			Intent detailIntent = new Intent(this, ItemDetailActivity.class);
-			detailIntent.putExtra(ItemDetailFragment.ARG_ITEM_ID, id);
-			startActivity(detailIntent);
-			*/
-			
-			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(id));
+			 * Intent detailIntent = new Intent(this, ItemDetailActivity.class);
+			 * detailIntent.putExtra(ItemDetailFragment.ARG_ITEM_ID, id);
+			 * startActivity(detailIntent);
+			 */
+
+			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 			startActivity(intent);
 		}
 	}

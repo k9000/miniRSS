@@ -25,9 +25,11 @@ public class DummyContent {
 
 	static {
 		// Add 3 sample items.
-		addItem(new DummyItem("http://news.google.com/", "google"));
-		addItem(new DummyItem("http://www.yahoo.co.jp/", "yahoo"));
-		addItem(new DummyItem("http://www.android.com/", "android"));
+		addItem(new DummyItem("1", "Item 1", "google",
+				"http://news.google.com/"));
+		addItem(new DummyItem("2", "Item 2", "yahoo", "http://www.yahoo.co.jp/"));
+		addItem(new DummyItem("3", "Item 3", "android",
+				"http://www.android.com/"));
 	}
 
 	private static void addItem(DummyItem item) {
@@ -41,10 +43,14 @@ public class DummyContent {
 	public static class DummyItem {
 		public String id;
 		public String content;
+		public String title;
+		public String url;
 
-		public DummyItem(String id, String content) {
+		public DummyItem(String id, String content, String title, String url) {
 			this.id = id;
 			this.content = content;
+			this.title = title;
+			this.url = url;
 		}
 
 		@Override

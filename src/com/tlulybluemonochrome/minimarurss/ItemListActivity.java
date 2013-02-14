@@ -56,6 +56,9 @@ public class ItemListActivity extends Activity implements
 	 */
 	@Override
 	public void onItemSelected(String id, String url) {
+		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+			startActivity(intent);
+		
 		if (mTwoPane) {
 			// In two-pane mode, show the detail view in this activity by
 			// adding or replacing the detail fragment using a
@@ -76,8 +79,7 @@ public class ItemListActivity extends Activity implements
 			 * startActivity(detailIntent);
 			 */
 
-			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-			startActivity(intent);
+			
 		}
 	}
 }

@@ -2,13 +2,15 @@ package com.tlulybluemonochrome.minimarurss;
 
 import android.app.Activity;
 import android.app.ListFragment;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.app.ProgressDialog;
+import android.content.Loader;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-
 import com.tlulybluemonochrome.minimarurss.dummy.DummyContent;
+import com.tlulybluemonochrome.minimarurss.dummy.DummyContent.DummyItem;
 
 /**
  * A list fragment representing a list of Items. This fragment also supports
@@ -19,7 +21,10 @@ import com.tlulybluemonochrome.minimarurss.dummy.DummyContent;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class ItemListFragment extends ListFragment {
+public class ItemListFragment extends ListFragment implements
+		LoaderCallbacks<ArrayAdapter<DummyContent.DummyItem>> {
+
+	ProgressDialog progressDialog;
 
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
@@ -75,6 +80,7 @@ public class ItemListFragment extends ListFragment {
 		setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
 				android.R.layout.simple_list_item_activated_1,
 				android.R.id.text1, DummyContent.ITEMS));
+
 	}
 
 	@Override
@@ -86,7 +92,16 @@ public class ItemListFragment extends ListFragment {
 				&& savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
 			setActivatedPosition(savedInstanceState
 					.getInt(STATE_ACTIVATED_POSITION));
+
 		}
+
+		progressDialog = new ProgressDialog(getActivity());
+		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		progressDialog.setMessage("読込中");
+		progressDialog.setCancelable(true);
+		progressDialog.show();
+
+		getLoaderManager().initLoader(0, null, this);
 	}
 
 	@Override
@@ -150,5 +165,33 @@ public class ItemListFragment extends ListFragment {
 		}
 
 		mActivatedPosition = position;
+	}
+
+	@Override
+	public Loader<ArrayAdapter<DummyItem>> onCreateLoader(int id, Bundle args) {
+		// TODO 自動生成されたメソッド・スタブ
+		RssParserTaskLoader appLoader = new RssParserTaskLoader(getActivity(),
+				new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
+						android.R.layout.simple_list_item_activated_1,
+						android.R.id.text1, DummyContent.ITEMS));
+
+		// loaderの開始
+		appLoader.forceLoad();
+		return appLoader;
+	}
+
+	@Override
+	public void onLoadFinished(Loader<ArrayAdapter<DummyItem>> arg0,
+			ArrayAdapter<DummyItem> arg1) {
+		// TODO 自動生成されたメソッド・スタブ
+		setListAdapter(arg1);
+		progressDialog.dismiss();
+
+	}
+
+	@Override
+	public void onLoaderReset(Loader<ArrayAdapter<DummyItem>> arg0) {
+		// TODO 自動生成されたメソッド・スタブ
+
 	}
 }

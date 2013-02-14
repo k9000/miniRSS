@@ -23,15 +23,6 @@ public class DummyContent {
 	 */
 	public static Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
 
-	static {
-		// Add 3 sample items.
-		addItem(new DummyItem("1", "Item 1", "google",
-				"http://news.google.com/"));
-		addItem(new DummyItem("2", "Item 2", "yahoo", "http://www.yahoo.co.jp/"));
-		addItem(new DummyItem("3", "Item 3", "android",
-				"http://www.android.com/"));
-	}
-
 	private static void addItem(DummyItem item) {
 		ITEMS.add(item);
 		ITEM_MAP.put(item.id, item);
@@ -45,6 +36,7 @@ public class DummyContent {
 		public String content;
 		public String title;
 		public String url;
+		int i = 4;
 
 		public DummyItem(String id, String content, String title, String url) {
 			this.id = id;
@@ -53,9 +45,30 @@ public class DummyContent {
 			this.url = url;
 		}
 
+		public DummyItem() {
+			// TODO 自動生成されたコンストラクター・スタブ
+			this.id = String.valueOf(i);
+			i++;
+
+		}
+
 		@Override
 		public String toString() {
 			return content;
 		}
+
+		public void setTitle(String title) {
+			// TODO 自動生成されたメソッド・スタブ
+			this.title = title;
+			this.content = title;
+
+		}
+
+		public void setLink(String link) {
+			// TODO 自動生成されたメソッド・スタブ
+			this.url = link;
+
+		}
+
 	}
 }

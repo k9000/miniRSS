@@ -24,6 +24,8 @@ import com.tlulybluemonochrome.minimarurss.dummy.DummyContent.DummyItem;
 public class ItemListFragment extends ListFragment implements
 		LoaderCallbacks<ArrayAdapter<DummyContent.DummyItem>> {
 
+	DummyContent dummycontent;
+
 	ProgressDialog progressDialog;
 
 	/**
@@ -76,10 +78,45 @@ public class ItemListFragment extends ListFragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		dummycontent = new DummyContent();
+
 		// TODO: replace with a real list adapter.
-		setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-				android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, DummyContent.ITEMS));
+		if (getActivity().getIntent().getStringExtra(
+				ItemDetailFragment.ARG_ITEM_ID) == null) {
+			ArrayAdapter<DummyContent.DummyItem> arrayadapter = new ArrayAdapter<DummyContent.DummyItem>(
+					getActivity(),
+					android.R.layout.simple_list_item_activated_1,
+					android.R.id.text1, dummycontent.ITEMS);
+			arrayadapter
+					.add(new DummyItem(
+							"1",
+							"„Éî„ÉÉ„ÇØ„Ç¢„ÉÉ„Éó",
+							"",
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=ir"));
+			arrayadapter
+					.add(new DummyItem("2", "Á§æ‰ºö", "",
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=y"));
+			arrayadapter
+					.add(new DummyItem("3", "ÂõΩÈöõ", "",
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=w"));
+			arrayadapter
+					.add(new DummyItem("4", "„Éì„Ç∏„Éç„Çπ", "",
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=b"));
+			arrayadapter
+					.add(new DummyItem("5", "ÊîøÊ≤ª", "",
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=p"));
+			arrayadapter
+					.add(new DummyItem("6", "„Ç®„É≥„Çø„É°", "",
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=e"));
+			arrayadapter
+					.add(new DummyItem("7", "„Çπ„Éù„Éº„ÉÑ", "",
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=s"));
+			arrayadapter
+					.add(new DummyItem("8", "„ÉÜ„ÇØ„Éé„É≠„Ç∏„Éº", "",
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=t"));
+
+			setListAdapter(arrayadapter);
+		}
 
 	}
 
@@ -97,11 +134,16 @@ public class ItemListFragment extends ListFragment implements
 
 		progressDialog = new ProgressDialog(getActivity());
 		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		progressDialog.setMessage("ì«çûíÜ");
+		progressDialog.setMessage("ÂèñÂæó‰∏≠");
 		progressDialog.setCancelable(true);
 		progressDialog.show();
 
-		getLoaderManager().initLoader(0, null, this);
+		if (getActivity().getIntent().getStringExtra(
+				ItemDetailFragment.ARG_ITEM_ID) != null)
+			getLoaderManager().initLoader(0,
+					getActivity().getIntent().getExtras(), this);
+		else
+			progressDialog.dismiss();
 	}
 
 	@Override
@@ -132,8 +174,8 @@ public class ItemListFragment extends ListFragment implements
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id,
-				DummyContent.ITEMS.get(position).url);
+		mCallbacks.onItemSelected(dummycontent.ITEMS.get(position).id,
+				dummycontent.ITEMS.get(position).url);
 	}
 
 	@Override
@@ -169,13 +211,12 @@ public class ItemListFragment extends ListFragment implements
 
 	@Override
 	public Loader<ArrayAdapter<DummyItem>> onCreateLoader(int id, Bundle args) {
-		// TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩÉÅÉ\ÉbÉhÅEÉXÉ^Éu
+		String url = args.getString(ItemDetailFragment.ARG_ITEM_ID);
 		RssParserTaskLoader appLoader = new RssParserTaskLoader(getActivity(),
 				new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
 						android.R.layout.simple_list_item_activated_1,
-						android.R.id.text1, DummyContent.ITEMS));
+						android.R.id.text1, dummycontent.ITEMS), url);
 
-		// loaderÇÃäJén
 		appLoader.forceLoad();
 		return appLoader;
 	}
@@ -183,7 +224,6 @@ public class ItemListFragment extends ListFragment implements
 	@Override
 	public void onLoadFinished(Loader<ArrayAdapter<DummyItem>> arg0,
 			ArrayAdapter<DummyItem> arg1) {
-		// TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩÉÅÉ\ÉbÉhÅEÉXÉ^Éu
 		setListAdapter(arg1);
 		progressDialog.dismiss();
 
@@ -191,7 +231,6 @@ public class ItemListFragment extends ListFragment implements
 
 	@Override
 	public void onLoaderReset(Loader<ArrayAdapter<DummyItem>> arg0) {
-		// TODO é©ìÆê∂ê¨Ç≥ÇÍÇΩÉÅÉ\ÉbÉhÅEÉXÉ^Éu
 
 	}
 }

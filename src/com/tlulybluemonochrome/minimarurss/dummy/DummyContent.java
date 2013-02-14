@@ -16,17 +16,14 @@ public class DummyContent {
 	/**
 	 * An array of sample (dummy) items.
 	 */
-	public static List<DummyItem> ITEMS = new ArrayList<DummyItem>();
+	public List<DummyItem> ITEMS = new ArrayList<DummyItem>();
+	public static List<DummyItem> RSSITEMS = new ArrayList<DummyItem>();
 
 	/**
 	 * A map of sample (dummy) items, by ID.
 	 */
 	public static Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
 
-	private static void addItem(DummyItem item) {
-		ITEMS.add(item);
-		ITEM_MAP.put(item.id, item);
-	}
 
 	/**
 	 * A dummy item representing a piece of content.
@@ -36,7 +33,7 @@ public class DummyContent {
 		public String content;
 		public String title;
 		public String url;
-		int i = 4;
+		int i = 1;
 
 		public DummyItem(String id, String content, String title, String url) {
 			this.id = id;
@@ -46,7 +43,6 @@ public class DummyContent {
 		}
 
 		public DummyItem() {
-			// TODO 自動生成されたコンストラクター・スタブ
 			this.id = String.valueOf(i);
 			i++;
 
@@ -58,14 +54,12 @@ public class DummyContent {
 		}
 
 		public void setTitle(String title) {
-			// TODO 自動生成されたメソッド・スタブ
 			this.title = title;
 			this.content = title;
 
 		}
 
 		public void setLink(String link) {
-			// TODO 自動生成されたメソッド・スタブ
 			this.url = link;
 
 		}

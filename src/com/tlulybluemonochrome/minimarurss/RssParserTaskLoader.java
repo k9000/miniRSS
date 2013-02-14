@@ -16,12 +16,19 @@ public class RssParserTaskLoader extends
 		AsyncTaskLoader<ArrayAdapter<DummyContent.DummyItem>> {
 
 	private ArrayAdapter<DummyContent.DummyItem> mAdapter;
+	private URL url;
 
 	public RssParserTaskLoader(Context context,
-			ArrayAdapter<DummyContent.DummyItem> adapter) {
+			ArrayAdapter<DummyContent.DummyItem> adapter,String url) {
 		super(context);
 
 		mAdapter = adapter;
+		
+		try{
+			  this.url = new URL(url);
+			}catch(Exception e){
+			  e.printStackTrace();
+			}
 	}
 
 	@Override
@@ -30,19 +37,17 @@ public class RssParserTaskLoader extends
 		ArrayAdapter<DummyContent.DummyItem> result = null;
 
 		try {
-			// HTTP経由でアクセスし、InputStreamを取得する
-			URL url = new URL(
-					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss");
+			//URL url = new URL("http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss");
 			InputStream is = url.openConnection().getInputStream();
 			result = parseXml(is);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		// ここで返した値は、onPostExecuteメソッドの引数として渡される
 		return result;
 	}
 
-	// XMLをパースする
+
+	// XML繧偵ヱ繝ｼ繧ｹ縺吶ｋ
 	public ArrayAdapter<DummyContent.DummyItem> parseXml(InputStream is)
 			throws IOException, XmlPullParserException {
 		XmlPullParser parser = Xml.newPullParser();

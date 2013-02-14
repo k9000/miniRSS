@@ -2,6 +2,7 @@ package com.tlulybluemonochrome.minimarurss;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
@@ -14,12 +15,13 @@ import android.view.MenuItem;
  * This activity is mostly just a 'shell' activity containing nothing more than
  * a {@link ItemDetailFragment}.
  */
-public class ItemDetailActivity extends Activity {
+public class ItemDetailActivity extends Activity implements
+ItemListFragment.Callbacks{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_item_detail);
+		setContentView(R.layout.activity_item_list);
 
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -33,6 +35,7 @@ public class ItemDetailActivity extends Activity {
 		//
 		// http://developer.android.com/guide/components/fragments.html
 		//
+		/*
 		if (savedInstanceState == null) {
 			// Create the detail fragment and add it to the activity
 			// using a fragment transaction.
@@ -43,7 +46,8 @@ public class ItemDetailActivity extends Activity {
 			fragment.setArguments(arguments);
 			getFragmentManager().beginTransaction()
 					.add(R.id.item_detail_container, fragment).commit();
-		}
+					
+		}*/
 	}
 
 	@Override
@@ -62,5 +66,13 @@ public class ItemDetailActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onItemSelected(String id, String url) {
+		// TODO 自動生成されたメソッド・スタブ
+		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+		startActivity(intent);
+		
 	}
 }

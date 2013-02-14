@@ -2,7 +2,6 @@ package com.tlulybluemonochrome.minimarurss;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 /**
@@ -56,9 +55,7 @@ public class ItemListActivity extends Activity implements
 	 */
 	@Override
 	public void onItemSelected(String id, String url) {
-		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-			startActivity(intent);
-		
+
 		if (mTwoPane) {
 			// In two-pane mode, show the detail view in this activity by
 			// adding or replacing the detail fragment using a
@@ -73,13 +70,10 @@ public class ItemListActivity extends Activity implements
 		} else {
 			// In single-pane mode, simply start the detail activity
 			// for the selected item ID.
-			/*
-			 * Intent detailIntent = new Intent(this, ItemDetailActivity.class);
-			 * detailIntent.putExtra(ItemDetailFragment.ARG_ITEM_ID, id);
-			 * startActivity(detailIntent);
-			 */
+			Intent detailIntent = new Intent(this, ItemDetailActivity.class);
+			detailIntent.putExtra(ItemDetailFragment.ARG_ITEM_ID, url);
+			startActivity(detailIntent);
 
-			
 		}
 	}
 }

@@ -54,7 +54,7 @@ public class ItemListFragment extends ListFragment implements
 		/**
 		 * Callback for when an item has been selected.
 		 */
-		public void onItemSelected(String id, String url);
+		public void onItemSelected(String tag, String url);
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class ItemListFragment extends ListFragment implements
 	 */
 	private static Callbacks sDummyCallbacks = new Callbacks() {
 		@Override
-		public void onItemSelected(String id, String url) {
+		public void onItemSelected(String tag, String url) {
 		}
 	};
 
@@ -82,7 +82,8 @@ public class ItemListFragment extends ListFragment implements
 
 		// TODO: replace with a real list adapter.
 		if (getActivity().getIntent().getStringExtra(
-				ItemDetailFragment.ARG_ITEM_ID) == null) {
+				ItemDetailFragment.ARG_ITEM_ID) == null
+				&& getArguments() == null) {
 			ArrayAdapter<DummyContent.DummyItem> arrayadapter = new ArrayAdapter<DummyContent.DummyItem>(
 					getActivity(),
 					android.R.layout.simple_list_item_activated_1,
@@ -91,28 +92,28 @@ public class ItemListFragment extends ListFragment implements
 					.add(new DummyItem(
 							"1",
 							"ピックアップ",
-							"",
+							"RSS",
 							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=ir"));
 			arrayadapter
-					.add(new DummyItem("2", "社会", "",
+					.add(new DummyItem("2", "社会", "RSS",
 							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=y"));
 			arrayadapter
-					.add(new DummyItem("3", "国際", "",
+					.add(new DummyItem("3", "国際", "RSS",
 							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=w"));
 			arrayadapter
-					.add(new DummyItem("4", "ビジネス", "",
+					.add(new DummyItem("4", "ビジネス", "RSS",
 							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=b"));
 			arrayadapter
-					.add(new DummyItem("5", "政治", "",
+					.add(new DummyItem("5", "政治", "RSS",
 							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=p"));
 			arrayadapter
-					.add(new DummyItem("6", "エンタメ", "",
+					.add(new DummyItem("6", "エンタメ", "RSS",
 							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=e"));
 			arrayadapter
-					.add(new DummyItem("7", "スポーツ", "",
+					.add(new DummyItem("7", "スポーツ", "RSS",
 							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=s"));
 			arrayadapter
-					.add(new DummyItem("8", "テクノロジー", "",
+					.add(new DummyItem("8", "テクノロジー", "RSS",
 							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=t"));
 
 			setListAdapter(arrayadapter);
@@ -142,6 +143,8 @@ public class ItemListFragment extends ListFragment implements
 				ItemDetailFragment.ARG_ITEM_ID) != null)
 			getLoaderManager().initLoader(0,
 					getActivity().getIntent().getExtras(), this);
+		else if (getArguments() != null)
+			getLoaderManager().initLoader(0, getArguments(), this);
 		else
 			progressDialog.dismiss();
 	}
@@ -174,7 +177,7 @@ public class ItemListFragment extends ListFragment implements
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(dummycontent.ITEMS.get(position).id,
+		mCallbacks.onItemSelected(dummycontent.ITEMS.get(position).tag,
 				dummycontent.ITEMS.get(position).url);
 	}
 

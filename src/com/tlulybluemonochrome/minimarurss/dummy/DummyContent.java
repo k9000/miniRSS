@@ -24,21 +24,20 @@ public class DummyContent {
 	 */
 	public static Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
 
-
 	/**
 	 * A dummy item representing a piece of content.
 	 */
 	public static class DummyItem {
 		public String id;
-		public String content;
 		public String title;
+		public String tag;
 		public String url;
 		int i = 1;
 
-		public DummyItem(String id, String content, String title, String url) {
+		public DummyItem(String id, String title, String tag, String url) {
 			this.id = id;
-			this.content = content;
 			this.title = title;
+			this.tag = tag;
 			this.url = url;
 		}
 
@@ -50,12 +49,16 @@ public class DummyContent {
 
 		@Override
 		public String toString() {
-			return content;
+			return title;
 		}
 
 		public void setTitle(String title) {
 			this.title = title;
-			this.content = title;
+
+		}
+
+		public void setTag(String tag) {
+			this.tag = tag;
 
 		}
 

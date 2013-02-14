@@ -19,16 +19,16 @@ public class RssParserTaskLoader extends
 	private URL url;
 
 	public RssParserTaskLoader(Context context,
-			ArrayAdapter<DummyContent.DummyItem> adapter,String url) {
+			ArrayAdapter<DummyContent.DummyItem> adapter, String url) {
 		super(context);
 
 		mAdapter = adapter;
-		
-		try{
-			  this.url = new URL(url);
-			}catch(Exception e){
-			  e.printStackTrace();
-			}
+
+		try {
+			this.url = new URL(url);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -37,7 +37,8 @@ public class RssParserTaskLoader extends
 		ArrayAdapter<DummyContent.DummyItem> result = null;
 
 		try {
-			//URL url = new URL("http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss");
+			// URL url = new
+			// URL("http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss");
 			InputStream is = url.openConnection().getInputStream();
 			result = parseXml(is);
 		} catch (Exception e) {
@@ -45,7 +46,6 @@ public class RssParserTaskLoader extends
 		}
 		return result;
 	}
-
 
 	// XMLをパースする
 	public ArrayAdapter<DummyContent.DummyItem> parseXml(InputStream is)
@@ -62,6 +62,7 @@ public class RssParserTaskLoader extends
 					tag = parser.getName();
 					if (tag.equals("item")) {
 						currentItem = new DummyContent.DummyItem();
+						currentItem.setTag("URL");
 					} else if (currentItem != null) {
 						if (tag.equals("title")) {
 							currentItem.setTitle(parser.nextText());

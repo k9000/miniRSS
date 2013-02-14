@@ -2,6 +2,7 @@ package com.tlulybluemonochrome.minimarurss;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 /**
@@ -54,18 +55,23 @@ public class ItemListActivity extends Activity implements
 	 * the item with the given ID was selected.
 	 */
 	@Override
-	public void onItemSelected(String id, String url) {
+	public void onItemSelected(String tag, String url) {
 
 		if (mTwoPane) {
-			// In two-pane mode, show the detail view in this activity by
-			// adding or replacing the detail fragment using a
-			// fragment transaction.
-			Bundle arguments = new Bundle();
-			arguments.putString(ItemDetailFragment.ARG_ITEM_ID, id);
-			ItemDetailFragment fragment = new ItemDetailFragment();
-			fragment.setArguments(arguments);
-			getFragmentManager().beginTransaction()
-					.replace(R.id.item_detail_container, fragment).commit();
+			if (tag == "RSS") {
+				// In two-pane mode, show the detail view in this activity by
+				// adding or replacing the detail fragment using a
+				// fragment transaction.
+				Bundle arguments = new Bundle();
+				arguments.putString(ItemDetailFragment.ARG_ITEM_ID, url);
+				ItemListFragment fragment = new ItemListFragment();
+				fragment.setArguments(arguments);
+				getFragmentManager().beginTransaction()
+						.replace(R.id.item_detail_container, fragment).commit();
+			} else if (tag == "URL") {
+				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+				startActivity(intent);
+			}
 
 		} else {
 			// In single-pane mode, simply start the detail activity

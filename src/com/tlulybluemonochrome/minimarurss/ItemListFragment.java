@@ -81,43 +81,39 @@ public class ItemListFragment extends ListFragment implements
 		dummycontent = new DummyContent();
 
 		// TODO: replace with a real list adapter.
-		if (getActivity().getIntent().getStringExtra(
-				ItemDetailFragment.ARG_ITEM_ID) == null
-				&& getArguments() == null) {
-			ArrayAdapter<DummyContent.DummyItem> arrayadapter = new ArrayAdapter<DummyContent.DummyItem>(
-					getActivity(),
-					android.R.layout.simple_list_item_activated_1,
-					android.R.id.text1, dummycontent.ITEMS);
-			arrayadapter
-					.add(new DummyItem(
-							"1",
-							"ピックアップ",
-							"RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=ir"));
-			arrayadapter
-					.add(new DummyItem("2", "社会", "RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=y"));
-			arrayadapter
-					.add(new DummyItem("3", "国際", "RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=w"));
-			arrayadapter
-					.add(new DummyItem("4", "ビジネス", "RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=b"));
-			arrayadapter
-					.add(new DummyItem("5", "政治", "RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=p"));
-			arrayadapter
-					.add(new DummyItem("6", "エンタメ", "RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=e"));
-			arrayadapter
-					.add(new DummyItem("7", "スポーツ", "RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=s"));
-			arrayadapter
-					.add(new DummyItem("8", "テクノロジー", "RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=t"));
 
-			setListAdapter(arrayadapter);
-		}
+		ArrayAdapter<DummyContent.DummyItem> arrayadapter = new ArrayAdapter<DummyContent.DummyItem>(
+				getActivity(), android.R.layout.simple_list_item_activated_1,
+				android.R.id.text1, dummycontent.ITEMS);
+		arrayadapter
+				.add(new DummyItem(
+						"1",
+						"ピックアップ",
+						"RSS",
+						"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=ir"));
+		arrayadapter
+				.add(new DummyItem("2", "社会", "RSS",
+						"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=y"));
+		arrayadapter
+				.add(new DummyItem("3", "国際", "RSS",
+						"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=w"));
+		arrayadapter
+				.add(new DummyItem("4", "ビジネス", "RSS",
+						"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=b"));
+		arrayadapter
+				.add(new DummyItem("5", "政治", "RSS",
+						"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=p"));
+		arrayadapter
+				.add(new DummyItem("6", "エンタメ", "RSS",
+						"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=e"));
+		arrayadapter
+				.add(new DummyItem("7", "スポーツ", "RSS",
+						"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=s"));
+		arrayadapter
+				.add(new DummyItem("8", "テクノロジー", "RSS",
+						"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=t"));
+
+		setListAdapter(arrayadapter);
 
 	}
 
@@ -133,20 +129,6 @@ public class ItemListFragment extends ListFragment implements
 
 		}
 
-		progressDialog = new ProgressDialog(getActivity());
-		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		progressDialog.setMessage("取得中");
-		progressDialog.setCancelable(true);
-		progressDialog.show();
-
-		if (getActivity().getIntent().getStringExtra(
-				ItemDetailFragment.ARG_ITEM_ID) != null)
-			getLoaderManager().initLoader(0,
-					getActivity().getIntent().getExtras(), this);
-		else if (getArguments() != null)
-			getLoaderManager().initLoader(0, getArguments(), this);
-		else
-			progressDialog.dismiss();
 	}
 
 	@Override

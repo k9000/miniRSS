@@ -21,7 +21,7 @@ import android.os.Bundle;
  * interface to listen for item selections.
  */
 public class ItemListActivity extends Activity implements
-		ItemListFragment.Callbacks {
+		ItemListFragment.Callbacks,ItemDetailListFragment.Callbacks {
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -64,7 +64,7 @@ public class ItemListActivity extends Activity implements
 				// fragment transaction.
 				Bundle arguments = new Bundle();
 				arguments.putString(ItemDetailFragment.ARG_ITEM_ID, url);
-				ItemListFragment fragment = new ItemListFragment();
+				ItemDetailListFragment fragment = new ItemDetailListFragment();
 				fragment.setArguments(arguments);
 				getFragmentManager().beginTransaction()
 						.replace(R.id.item_detail_container, fragment).commit();

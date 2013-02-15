@@ -64,7 +64,7 @@ public class ItemListActivity extends Activity implements
 				// fragment transaction.
 				Bundle arguments = new Bundle();
 				arguments.putString(ItemDetailFragment.ARG_ITEM_ID, url);
-				ItemDetailListFragment fragment = new ItemDetailListFragment();
+				ItemDetailFragment fragment = new ItemDetailFragment();
 				fragment.setArguments(arguments);
 				getFragmentManager().beginTransaction()
 						.replace(R.id.item_detail_container, fragment).commit();

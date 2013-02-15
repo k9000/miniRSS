@@ -28,6 +28,8 @@ public class ItemListFragment extends ListFragment implements
 
 	ProgressDialog progressDialog;
 
+	private RefreshableListView mListView;
+
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
 	 * activated item position. Only used on tablets.
@@ -78,6 +80,20 @@ public class ItemListFragment extends ListFragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+	}
+
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+
+		// Restore the previously serialized activated item position.
+		if (savedInstanceState != null
+				&& savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
+			setActivatedPosition(savedInstanceState
+					.getInt(STATE_ACTIVATED_POSITION));
+
+		}
+
 		dummycontent = new DummyContent();
 
 		// TODO: replace with a real list adapter.
@@ -115,19 +131,17 @@ public class ItemListFragment extends ListFragment implements
 
 		setListAdapter(arrayadapter);
 
-	}
+		// mListView = (RefreshableListView)
+		// getActivity().findViewById(R.id.listview);
+		// mListView.setAdapter(arrayadapter);
 
-	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-
-		// Restore the previously serialized activated item position.
-		if (savedInstanceState != null
-				&& savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
-			setActivatedPosition(savedInstanceState
-					.getInt(STATE_ACTIVATED_POSITION));
-
-		}
+		/*
+		 * // Callback to refresh the list mListView.setOnRefreshListener(new
+		 * OnRefreshListener() {
+		 * 
+		 * @Override public void onRefresh() { new NewDataTask().execute(); }
+		 * });
+		 */
 
 	}
 
@@ -195,12 +209,12 @@ public class ItemListFragment extends ListFragment implements
 	}
 
 	@Override
-	public Loader<ArrayAdapter<DummyItem>> onCreateLoader(int id, Bundle args) {
+	public Loader<ArrayAdapter<DummyItem>> onCreateLoader(int wait, Bundle args) {
 		String url = args.getString(ItemDetailFragment.ARG_ITEM_ID);
 		RssParserTaskLoader appLoader = new RssParserTaskLoader(getActivity(),
 				new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
 						android.R.layout.simple_list_item_activated_1,
-						android.R.id.text1, dummycontent.ITEMS), url);
+						android.R.id.text1, dummycontent.ITEMS), url, wait);
 
 		appLoader.forceLoad();
 		return appLoader;

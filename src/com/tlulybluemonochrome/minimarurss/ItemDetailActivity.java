@@ -15,13 +15,12 @@ import android.view.MenuItem;
  * This activity is mostly just a 'shell' activity containing nothing more than
  * a {@link ItemDetailFragment}.
  */
-public class ItemDetailActivity extends Activity implements
-ItemDetailListFragment.Callbacks {
+public class ItemDetailActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_item_detaillist);
+		setContentView(R.layout.activity_item_detail);
 
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -35,19 +34,20 @@ ItemDetailListFragment.Callbacks {
 		//
 		// http://developer.android.com/guide/components/fragments.html
 		//
-		/*
-		 if (savedInstanceState == null) { 
-			 // Create the detail fragment and add it to the activity
-			 // using a fragment transaction. 
-			 Bundle arguments = new Bundle();
-		 arguments.putString(ItemDetailFragment.ARG_ITEM_ID, getIntent()
-		 .getStringExtra(ItemDetailFragment.ARG_ITEM_ID));
-		 ItemDetailListFragment fragment = new ItemDetailListFragment();
-		 fragment.setArguments(arguments);
-		 getFragmentManager().beginTransaction()
-		 .add(R.id.item_detail_container, fragment).commit();
-		  }*/
-		 
+
+		if (savedInstanceState == null) {
+			// Create the detail fragment and add it to the activity
+			// using a fragment transaction.
+			Bundle arguments = new Bundle();
+			arguments.putString(ItemDetailFragment.ARG_ITEM_ID, getIntent()
+					.getStringExtra(ItemDetailFragment.ARG_ITEM_ID));
+			ItemDetailFragment fragment = new ItemDetailFragment();
+			fragment.setArguments(arguments);
+			getFragmentManager().beginTransaction()
+					.add(R.id.item_detail_container, fragment).commit();
+
+		}
+
 	}
 
 	@Override
@@ -68,10 +68,4 @@ ItemDetailListFragment.Callbacks {
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	public void onItemSelected(String tag, String url) {
-		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-		startActivity(intent);
-
-	}
 }

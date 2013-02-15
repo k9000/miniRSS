@@ -21,7 +21,7 @@ import android.os.Bundle;
  * interface to listen for item selections.
  */
 public class ItemListActivity extends Activity implements
-		ItemListFragment.Callbacks,ItemDetailListFragment.Callbacks {
+		ItemListFragment.Callbacks, ItemDetailListFragment.Callbacks {
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet

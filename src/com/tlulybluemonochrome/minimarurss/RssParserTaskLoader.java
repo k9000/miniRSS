@@ -17,12 +17,14 @@ public class RssParserTaskLoader extends
 
 	private ArrayAdapter<DummyContent.DummyItem> mAdapter;
 	private URL url;
+	private int wait;
 
 	public RssParserTaskLoader(Context context,
-			ArrayAdapter<DummyContent.DummyItem> adapter, String url) {
+			ArrayAdapter<DummyContent.DummyItem> adapter, String url, int wait) {
 		super(context);
 
 		mAdapter = adapter;
+		this.wait = wait;
 
 		try {
 			this.url = new URL(url);
@@ -43,6 +45,10 @@ public class RssParserTaskLoader extends
 			result = parseXml(is);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		try {
+			Thread.sleep(wait);
+		} catch (InterruptedException e) {
 		}
 		return result;
 	}

@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
+
 
 import com.tlulybluemonochrome.minimarurss.dummy.DummyContent;
 import com.tlulybluemonochrome.minimarurss.dummy.DummyContent.DummyItem;
@@ -56,7 +56,7 @@ public class ItemDetailFragment extends Fragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		dummycontent = new DummyContent();
+		//dummycontent = new DummyContent();
 
 	}
 
@@ -80,9 +80,9 @@ public class ItemDetailFragment extends Fragment implements
 			@Override
 			public void onRefresh(RefreshableListView listView) {
 				// TODO 自動生成されたメソッド・スタブ
-				getLoaderManager().initLoader(500, getArguments(),
-						ItemDetailFragment.this);
 				mFlag = true;
+				getLoaderManager().restartLoader(500, ItemDetailFragment.this.getArguments(),
+						ItemDetailFragment.this);
 			}
 		});
 
@@ -101,6 +101,7 @@ public class ItemDetailFragment extends Fragment implements
 
 	@Override
 	public Loader<ArrayAdapter<DummyItem>> onCreateLoader(int wait, Bundle args) {
+		dummycontent = new DummyContent();
 		String url = args.getString(ItemDetailFragment.ARG_ITEM_ID);
 		RssParserTaskLoader appLoader = new RssParserTaskLoader(getActivity(),
 				new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
@@ -120,6 +121,7 @@ public class ItemDetailFragment extends Fragment implements
 			mFlag = false;
 		} else
 			progressDialog.dismiss();
+
 
 	}
 

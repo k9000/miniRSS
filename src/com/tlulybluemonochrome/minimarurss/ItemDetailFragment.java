@@ -1,5 +1,7 @@
 package com.tlulybluemonochrome.minimarurss;
 
+import java.util.ArrayList;
+
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -7,12 +9,14 @@ import android.content.Intent;
 import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import com.tlulybluemonochrome.minimarurss.dummy.DummyContent;
 import com.tlulybluemonochrome.minimarurss.dummy.DummyContent.DummyItem;
@@ -56,7 +60,7 @@ public class ItemDetailFragment extends Fragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		//dummycontent = new DummyContent();
+		// dummycontent = new DummyContent();
 
 	}
 
@@ -67,21 +71,29 @@ public class ItemDetailFragment extends Fragment implements
 
 		mListView = (RefreshableListView) rootView.findViewById(R.id.listview);
 
-		progressDialog = new ProgressDialog(getActivity());
-		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		progressDialog.setMessage("取得中");
-		progressDialog.setCancelable(true);
-		progressDialog.show();
+		// Restore the previously serialized activated item position.
+		if (savedInstanceState != null
+				&& savedInstanceState.containsKey("RSS_LIST")) {
+			mListView.setAdapter((ListAdapter) savedInstanceState
+					.getParcelable("RSS_LIST"));
+		} else {
 
-		getLoaderManager().initLoader(0, getArguments(), this);
+			progressDialog = new ProgressDialog(getActivity());
+			progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			progressDialog.setMessage("取得中");
+			progressDialog.setCancelable(true);
+			progressDialog.show();
+
+			getLoaderManager().initLoader(0, getArguments(), this);
+		}
 
 		mListView.setOnRefreshListener(new OnRefreshListener() {
-
 			@Override
 			public void onRefresh(RefreshableListView listView) {
 				// TODO 自動生成されたメソッド・スタブ
 				mFlag = true;
-				getLoaderManager().restartLoader(500, ItemDetailFragment.this.getArguments(),
+				getLoaderManager().restartLoader(500,
+						ItemDetailFragment.this.getArguments(),
 						ItemDetailFragment.this);
 			}
 		});
@@ -97,6 +109,15 @@ public class ItemDetailFragment extends Fragment implements
 		});
 
 		return rootView;
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+
+		outState.putParcelableArrayList("RSS_LISTDATA",
+				(ArrayList<? extends Parcelable>) dummycontent.ITEMS);
+
 	}
 
 	@Override
@@ -121,7 +142,6 @@ public class ItemDetailFragment extends Fragment implements
 			mFlag = false;
 		} else
 			progressDialog.dismiss();
-
 
 	}
 

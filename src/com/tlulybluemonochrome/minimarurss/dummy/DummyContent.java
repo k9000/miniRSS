@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Helper class for providing sample content for user interfaces created by
  * Android template wizards.
@@ -27,7 +30,7 @@ public class DummyContent {
 	/**
 	 * A dummy item representing a piece of content.
 	 */
-	public static class DummyItem {
+	public static class DummyItem implements Parcelable{
 		public String id;
 		public String title;
 		public String tag;
@@ -45,6 +48,14 @@ public class DummyContent {
 			this.id = String.valueOf(i);
 			i++;
 
+		}
+
+		public DummyItem(Parcel source) {
+			// TODO 自動生成されたコンストラクター・スタブ
+			id = source.readString(); 
+			title = source.readString(); 
+			tag = source.readString(); 
+			url = source.readString(); 
 		}
 
 		@Override
@@ -66,6 +77,40 @@ public class DummyContent {
 			this.url = link;
 
 		}
+
+		@Override
+		public int describeContents() {
+			// TODO 自動生成されたメソッド・スタブ
+			return 0;
+		}
+
+		@Override
+		public void writeToParcel(Parcel dest, int flags) {
+			// TODO 自動生成されたメソッド・スタブ
+			dest.writeString(id);
+			dest.writeString(title);
+			dest.writeString(tag);
+			dest.writeString(url);
+			
+			
+		}
+		
+		public static final Parcelable.Creator<DummyItem> CREATOR
+        = new Parcelable.Creator<DummyItem>() {
+
+			@Override
+			public DummyItem createFromParcel(Parcel source) {
+				// TODO 自動生成されたメソッド・スタブ
+				return new DummyItem(source);
+			}
+
+			@Override
+			public DummyItem[] newArray(int size) {
+				// TODO 自動生成されたメソッド・スタブ
+				return new DummyItem[size];
+			}
+			
+		};
 
 	}
 }

@@ -16,8 +16,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
-import android.widget.ListView;
-
 import com.tlulybluemonochrome.minimarurss.dummy.DummyContent;
 import com.tlulybluemonochrome.minimarurss.dummy.DummyContent.DummyItem;
 
@@ -53,8 +51,6 @@ public class ItemDetailFragment extends Fragment implements
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
 	 */
-	public ItemDetailFragment() {
-	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

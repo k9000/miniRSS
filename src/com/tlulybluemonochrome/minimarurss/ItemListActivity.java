@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 /**
  * An activity representing a list of Items. This activity has different
@@ -21,7 +22,7 @@ import android.os.Bundle;
  * interface to listen for item selections.
  */
 public class ItemListActivity extends Activity implements
-		ItemListFragment.Callbacks, ItemDetailListFragment.Callbacks {
+		ItemListFragment.Callbacks {
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -46,6 +47,7 @@ public class ItemListActivity extends Activity implements
 			((ItemListFragment) getFragmentManager().findFragmentById(
 					R.id.item_list)).setActivateOnItemClick(true);
 		}
+		Log.d("test", "test4");
 
 		// TODO: If exposing deep links into your app, handle intents here.
 	}
@@ -55,7 +57,7 @@ public class ItemListActivity extends Activity implements
 	 * the item with the given ID was selected.
 	 */
 	@Override
-	public void onItemSelected(String tag, String url) {
+	public void onItemSelected(String tag, String url, int position) {
 
 		if (mTwoPane) {
 			if (tag == "RSS") {
@@ -77,7 +79,7 @@ public class ItemListActivity extends Activity implements
 			// In single-pane mode, simply start the detail activity
 			// for the selected item ID.
 			Intent detailIntent = new Intent(this, ItemDetailActivity.class);
-			detailIntent.putExtra(ItemDetailFragment.ARG_ITEM_ID, url);
+			detailIntent.putExtra(ItemDetailFragment.ARG_ITEM_ID, position);
 			startActivity(detailIntent);
 
 		}

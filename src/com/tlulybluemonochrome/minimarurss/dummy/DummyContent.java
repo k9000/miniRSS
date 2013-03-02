@@ -14,7 +14,7 @@ import android.os.Parcelable;
  * <p>
  * TODO: Replace all uses of this class before publishing your app.
  */
-public class DummyContent {
+public class DummyContent{
 
 	/**
 	 * An array of sample (dummy) items.
@@ -31,6 +31,9 @@ public class DummyContent {
 	 * A dummy item representing a piece of content.
 	 */
 	public static class DummyItem implements Parcelable{
+		/**
+		 * 
+		 */
 		public String id;
 		public String title;
 		public String tag;
@@ -52,10 +55,10 @@ public class DummyContent {
 
 		public DummyItem(Parcel source) {
 			// TODO 自動生成されたコンストラクター・スタブ
-			id = source.readString(); 
-			title = source.readString(); 
-			tag = source.readString(); 
-			url = source.readString(); 
+			id = source.readString();
+			title = source.readString();
+			tag = source.readString();
+			url = source.readString();
 		}
 
 		@Override
@@ -77,6 +80,7 @@ public class DummyContent {
 			this.url = link;
 
 		}
+		
 
 		@Override
 		public int describeContents() {
@@ -91,13 +95,9 @@ public class DummyContent {
 			dest.writeString(title);
 			dest.writeString(tag);
 			dest.writeString(url);
-			
-			
 		}
-		
-		public static final Parcelable.Creator<DummyItem> CREATOR
-        = new Parcelable.Creator<DummyItem>() {
 
+		public static final Parcelable.Creator<DummyItem> CREATOR = new Parcelable.Creator<DummyItem>() {
 			@Override
 			public DummyItem createFromParcel(Parcel source) {
 				// TODO 自動生成されたメソッド・スタブ
@@ -109,8 +109,28 @@ public class DummyContent {
 				// TODO 自動生成されたメソッド・スタブ
 				return new DummyItem[size];
 			}
-			
 		};
+		
+		public String getId() {
+			// TODO 自動生成されたメソッド・スタブ
+			return id;
+		}
+
+		public String getTitle() {
+			// TODO 自動生成されたメソッド・スタブ
+			return title;
+		}
+		
+		public String getTag() {
+			// TODO 自動生成されたメソッド・スタブ
+			return tag;
+		}
+		
+		public String getUrl() {
+			// TODO 自動生成されたメソッド・スタブ
+			return url;
+		}
+		
 
 	}
 }

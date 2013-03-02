@@ -5,7 +5,10 @@ import android.app.ListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
 import android.content.Loader;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -55,8 +58,10 @@ public class ItemListFragment extends ListFragment implements
 	public interface Callbacks {
 		/**
 		 * Callback for when an item has been selected.
+		 * 
+		 * @param position
 		 */
-		public void onItemSelected(String tag, String url);
+		public void onItemSelected(String tag, String url, int position);
 	}
 
 	/**
@@ -65,7 +70,7 @@ public class ItemListFragment extends ListFragment implements
 	 */
 	private static Callbacks sDummyCallbacks = new Callbacks() {
 		@Override
-		public void onItemSelected(String tag, String url) {
+		public void onItemSelected(String tag, String url, int position) {
 		}
 	};
 
@@ -101,47 +106,60 @@ public class ItemListFragment extends ListFragment implements
 		ArrayAdapter<DummyContent.DummyItem> arrayadapter = new ArrayAdapter<DummyContent.DummyItem>(
 				getActivity(), android.R.layout.simple_list_item_activated_1,
 				android.R.id.text1, dummycontent.ITEMS);
-		arrayadapter
-				.add(new DummyItem(
-						"1",
-						"ピックアップ",
-						"RSS",
-						"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=ir"));
-		arrayadapter
-				.add(new DummyItem("2", "社会", "RSS",
-						"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=y"));
-		arrayadapter
-				.add(new DummyItem("3", "国際", "RSS",
-						"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=w"));
-		arrayadapter
-				.add(new DummyItem("4", "ビジネス", "RSS",
-						"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=b"));
-		arrayadapter
-				.add(new DummyItem("5", "政治", "RSS",
-						"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=p"));
-		arrayadapter
-				.add(new DummyItem("6", "エンタメ", "RSS",
-						"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=e"));
-		arrayadapter
-				.add(new DummyItem("7", "スポーツ", "RSS",
-						"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=s"));
-		arrayadapter
-				.add(new DummyItem("8", "テクノロジー", "RSS",
-						"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=t"));
+
+		SharedPreferences sharedPreferences = PreferenceManager
+				.getDefaultSharedPreferences(getActivity());
+		int count = (sharedPreferences.getInt("COUNT", 0));
+		for (int i = 0; i < count; i++) {
+			arrayadapter.add(new DummyItem(sharedPreferences.getString(
+					"ID" + i, ""),
+					sharedPreferences.getString("TITLE" + i, ""),
+					sharedPreferences.getString("TAG" + i, ""),
+					sharedPreferences.getString("URL" + i, "")));
+		}
+
+		if (count == 0) {
+			arrayadapter
+					.add(new DummyItem(
+							"1",
+							"ピックアップ",
+							"RSS",
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=ir"));
+			arrayadapter
+					.add(new DummyItem("2", "社会", "RSS",
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=y"));
+			arrayadapter
+					.add(new DummyItem("3", "国際", "RSS",
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=w"));
+			arrayadapter
+					.add(new DummyItem("4", "ビジネス", "RSS",
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=b"));
+			arrayadapter
+					.add(new DummyItem("5", "政治", "RSS",
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=p"));
+			arrayadapter
+					.add(new DummyItem("6", "エンタメ", "RSS",
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=e"));
+			arrayadapter
+					.add(new DummyItem("7", "スポーツ", "RSS",
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=s"));
+			arrayadapter
+					.add(new DummyItem("8", "テクノロジー", "RSS",
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=t"));
+		}
+
+		Editor editor = sharedPreferences.edit();
+		count = arrayadapter.getCount();
+		editor.putInt("COUNT", count);
+		for (int i = 0; i < count; i++) {
+			editor.putString("ID" + i, arrayadapter.getItem(i).getId());
+			editor.putString("TITLE" + i, arrayadapter.getItem(i).getTitle());
+			editor.putString("IAG" + i, arrayadapter.getItem(i).getTag());
+			editor.putString("URL" + i, arrayadapter.getItem(i).getUrl());
+		}
+		editor.commit();
 
 		setListAdapter(arrayadapter);
-
-		// mListView = (RefreshableListView)
-		// getActivity().findViewById(R.id.listview);
-		// mListView.setAdapter(arrayadapter);
-
-		/*
-		 * // Callback to refresh the list mListView.setOnRefreshListener(new
-		 * OnRefreshListener() {
-		 * 
-		 * @Override public void onRefresh() { new NewDataTask().execute(); }
-		 * });
-		 */
 
 	}
 
@@ -174,7 +192,7 @@ public class ItemListFragment extends ListFragment implements
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
 		mCallbacks.onItemSelected(dummycontent.ITEMS.get(position).tag,
-				dummycontent.ITEMS.get(position).url);
+				dummycontent.ITEMS.get(position).url, position);
 	}
 
 	@Override

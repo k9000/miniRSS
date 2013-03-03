@@ -2,9 +2,6 @@ package com.tlulybluemonochrome.minimarurss;
 
 import android.app.Activity;
 import android.app.ListFragment;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.app.ProgressDialog;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -24,12 +21,11 @@ import com.tlulybluemonochrome.minimarurss.dummy.DummyContent.DummyItem;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class ItemListFragment extends ListFragment implements
-		LoaderCallbacks<ArrayAdapter<DummyContent.DummyItem>> {
+public class ItemListFragment extends ListFragment {
 
 	DummyContent dummycontent;
 
-	ProgressDialog progressDialog;
+	// ProgressDialog progressDialog;
 
 	private RefreshableListView mListView;
 
@@ -216,7 +212,7 @@ public class ItemListFragment extends ListFragment implements
 						: ListView.CHOICE_MODE_NONE);
 	}
 
-	private void setActivatedPosition(int position) {
+	public void setActivatedPosition(int position) {
 		if (position == ListView.INVALID_POSITION) {
 			getListView().setItemChecked(mActivatedPosition, false);
 		} else {
@@ -226,28 +222,4 @@ public class ItemListFragment extends ListFragment implements
 		mActivatedPosition = position;
 	}
 
-	@Override
-	public Loader<ArrayAdapter<DummyItem>> onCreateLoader(int wait, Bundle args) {
-		String url = args.getString(ItemDetailFragment.ARG_ITEM_ID);
-		RssParserTaskLoader appLoader = new RssParserTaskLoader(getActivity(),
-				new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-						android.R.layout.simple_list_item_activated_1,
-						android.R.id.text1, dummycontent.ITEMS), url, wait);
-
-		appLoader.forceLoad();
-		return appLoader;
-	}
-
-	@Override
-	public void onLoadFinished(Loader<ArrayAdapter<DummyItem>> arg0,
-			ArrayAdapter<DummyItem> arg1) {
-		setListAdapter(arg1);
-		progressDialog.dismiss();
-
-	}
-
-	@Override
-	public void onLoaderReset(Loader<ArrayAdapter<DummyItem>> arg0) {
-
-	}
 }

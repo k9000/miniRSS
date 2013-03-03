@@ -1,21 +1,16 @@
 package com.tlulybluemonochrome.minimarurss;
 
-import java.util.ArrayList;
-
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
 import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import com.tlulybluemonochrome.minimarurss.dummy.DummyContent;
 import com.tlulybluemonochrome.minimarurss.dummy.DummyContent.DummyItem;
 
@@ -30,7 +25,7 @@ import com.tlulybluemonochrome.minimarurss.RefreshableListView;
 public class ItemDetailFragment extends Fragment implements
 		LoaderCallbacks<ArrayAdapter<DummyContent.DummyItem>> {
 
-	ProgressDialog progressDialog;
+	// ProgressDialog progressDialog;
 	DummyContent dummycontent;
 	boolean mFlag = false;
 
@@ -67,22 +62,11 @@ public class ItemDetailFragment extends Fragment implements
 
 		mListView = (RefreshableListView) rootView.findViewById(R.id.listview);
 
-		// Restore the previously serialized activated item position.
-		if (savedInstanceState != null
-				&& savedInstanceState.containsKey("RSS_LIST")) {
-			mListView.setAdapter((ListAdapter) savedInstanceState
-					.getParcelable("RSS_LIST"));
-		} else {
-
-			progressDialog = new ProgressDialog(getActivity());
-			progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			progressDialog.setMessage("取得中");
-			progressDialog.setCancelable(true);
-			progressDialog.show();
-
+		if (savedInstanceState == null) {
 			getLoaderManager().initLoader(0, getArguments(), this);
 		}
 
+		// 引っ張って更新
 		mListView.setOnRefreshListener(new OnRefreshListener() {
 			@Override
 			public void onRefresh(RefreshableListView listView) {
@@ -94,6 +78,7 @@ public class ItemDetailFragment extends Fragment implements
 			}
 		});
 
+		// クリックしてブラウザ起動
 		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -105,15 +90,6 @@ public class ItemDetailFragment extends Fragment implements
 		});
 
 		return rootView;
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-
-		outState.putParcelableArrayList("RSS_LISTDATA",
-				(ArrayList<? extends Parcelable>) dummycontent.ITEMS);
-
 	}
 
 	@Override
@@ -136,8 +112,7 @@ public class ItemDetailFragment extends Fragment implements
 		if (mFlag) {
 			mListView.completeRefreshing();
 			mFlag = false;
-		} else
-			progressDialog.dismiss();
+		}
 
 	}
 

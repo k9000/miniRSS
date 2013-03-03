@@ -7,8 +7,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
+import android.view.MenuItem;
 
 /**
  * An activity representing a single Item detail screen. This activity is only
@@ -18,7 +20,8 @@ import android.view.Menu;
  * This activity is mostly just a 'shell' activity containing nothing more than
  * a {@link ItemDetailFragment}.
  */
-public class ItemDetailActivity extends Activity {
+public class ItemDetailActivity extends Activity implements
+		ItemListFragment.Callbacks {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -64,6 +67,23 @@ public class ItemDetailActivity extends Activity {
 		return true;
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			// This ID represents the Home or Up button. In the case of this
+			// activity, the Up button is shown. Use NavUtils to allow users
+			// to navigate up one level in the application structure. For
+			// more details, see the Navigation pattern on Android Design:
+			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+			//
+			mViewPager.setCurrentItem(0);
+			return true;
+
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
@@ -82,9 +102,15 @@ public class ItemDetailActivity extends Activity {
 
 			Bundle arguments = new Bundle();
 			arguments.putString(ItemDetailFragment.ARG_ITEM_ID,
-					sharedPreferences.getString("URL" + position, ""));
+					sharedPreferences.getString("URL" + (position - 1), ""));
 			// getIntent().getStringExtra(ItemDetailFragment.ARG_ITEM_ID));
-			ItemDetailFragment fragment = new ItemDetailFragment();
+			Fragment fragment;
+
+			if (position == 0)
+				fragment = new ItemListFragment();
+			else
+				fragment = new ItemDetailFragment();
+
 			fragment.setArguments(arguments);
 
 			return fragment;
@@ -93,15 +119,26 @@ public class ItemDetailActivity extends Activity {
 		@Override
 		public int getCount() {
 			// Show 3 total pages.
-			int count = sharedPreferences.getInt("COUNT", 1);
+			int count = sharedPreferences.getInt("COUNT", 1) + 1;
 			return count;
 		}
 
 		@Override
 		public CharSequence getPageTitle(int position) {
-			return sharedPreferences.getString("TITLE" + position, "null");
+			if (position == 0)
+				return "ALL";
+			else
+				return sharedPreferences.getString("TITLE" + (position - 1),
+						"null");
 
 		}
+	}
+
+	@Override
+	public void onItemSelected(String tag, String url, int position) {
+		// TODO 自動生成されたメソッド・スタブ
+		mViewPager.setCurrentItem(position + 1);
+
 	}
 
 }

@@ -1,10 +1,14 @@
 package com.tlulybluemonochrome.minimarurss;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
+import android.preference.PreferenceManager;
+import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 
 /**
  * An activity representing a list of Items. This activity has different
@@ -30,6 +34,12 @@ public class ItemListActivity extends Activity implements
 	 */
 	private boolean mTwoPane;
 
+	SharedPreferences sharedPreferences;
+
+	SectionsPagerAdapter mSectionsPagerAdapter;
+
+	ViewPager mViewPager;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,7 +57,37 @@ public class ItemListActivity extends Activity implements
 			((ItemListFragment) getFragmentManager().findFragmentById(
 					R.id.item_list)).setActivateOnItemClick(true);
 		}
-		Log.d("test", "test4");
+
+		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+		// Create the adapter that will return a fragment for each of the three
+		// primary sections of the app.
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
+
+		// Set up the ViewPager with the sections adapter.
+		mViewPager = (ViewPager) findViewById(R.id.pager);
+		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+			@Override
+			public void onPageSelected(int position) {
+				// positionは、表示されているページインデックスです。
+				// ここにページ変更後の処理を書きます。
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+				if (mTwoPane)
+					((ItemListFragment) getFragmentManager().findFragmentById(
+							R.id.item_list)).setActivatedPosition(arg0 - 1);
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+
+			}
+		});
+		mViewPager.setAdapter(mSectionsPagerAdapter);
+		mViewPager.setCurrentItem(getIntent().getIntExtra(
+				ItemDetailFragment.ARG_ITEM_ID, 0));
 
 		// TODO: If exposing deep links into your app, handle intents here.
 	}
@@ -58,30 +98,60 @@ public class ItemListActivity extends Activity implements
 	 */
 	@Override
 	public void onItemSelected(String tag, String url, int position) {
+		mViewPager.setCurrentItem(position + 1);
 
-		if (mTwoPane) {
-			if (tag == "RSS") {
-				// In two-pane mode, show the detail view in this activity by
-				// adding or replacing the detail fragment using a
-				// fragment transaction.
-				Bundle arguments = new Bundle();
-				arguments.putString(ItemDetailFragment.ARG_ITEM_ID, url);
-				ItemDetailFragment fragment = new ItemDetailFragment();
-				fragment.setArguments(arguments);
-				getFragmentManager().beginTransaction()
-						.replace(R.id.item_detail_container, fragment).commit();
-			} else if (tag == "URL") {
-				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-				startActivity(intent);
-			}
+	}
 
-		} else {
-			// In single-pane mode, simply start the detail activity
-			// for the selected item ID.
-			Intent detailIntent = new Intent(this, ItemDetailActivity.class);
-			detailIntent.putExtra(ItemDetailFragment.ARG_ITEM_ID, position);
-			startActivity(detailIntent);
+	/**
+	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+	 * one of the sections/tabs/pages.
+	 */
+
+	public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+		public SectionsPagerAdapter(FragmentManager fm) {
+			super(fm);
 
 		}
+
+		@Override
+		public Fragment getItem(int position) {
+			// getItem is called to instantiate the fragment for the given page.
+			// Return a DummySectionFragment (defined as a static inner class
+			// below) with the page number as its lone argument.
+
+			Bundle arguments = new Bundle();
+			arguments.putString(ItemDetailFragment.ARG_ITEM_ID,
+					sharedPreferences.getString("URL" + (position - 1), ""));
+			// getIntent().getStringExtra(ItemDetailFragment.ARG_ITEM_ID));
+			Fragment fragment;
+
+			if (position == 0)
+				fragment = new ItemListFragment();
+			else
+				fragment = new ItemDetailFragment();
+
+			fragment.setArguments(arguments);
+
+			return fragment;
+		}
+
+		@Override
+		public int getCount() {
+			// Show 3 total pages.
+			int count = sharedPreferences.getInt("COUNT", 1) + 1;
+			return count;
+		}
+
+		@Override
+		public CharSequence getPageTitle(int position) {
+			if (position == 0)
+				return "LIST";
+			else
+				return sharedPreferences.getString("TITLE" + (position - 1),
+						"null");
+
+		}
+
 	}
 }

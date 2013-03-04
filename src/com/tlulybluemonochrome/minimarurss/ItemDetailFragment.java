@@ -38,11 +38,6 @@ public class ItemDetailFragment extends Fragment implements
 	public static final String ARG_ITEM_ID = "item_id";
 
 	/**
-	 * The dummy content this fragment is presenting.
-	 */
-	private DummyContent.DummyItem mItem;
-
-	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
 	 * fragment (e.g. upon screen orientation changes).
 	 */

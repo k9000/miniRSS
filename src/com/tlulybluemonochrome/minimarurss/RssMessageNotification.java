@@ -39,7 +39,7 @@ public class RssMessageNotification {
 	 * @see #cancel(Context)
 	 */
 	public static void notify(final Context context,
-			final String title, final String text, final String url, final int number) {
+			final String title, final String text, final String url, final int id) {
 		final Resources res = context.getResources();
 
 		// This image is used as the notification's large icon (thumbnail).
@@ -72,7 +72,7 @@ public class RssMessageNotification {
 
 				// Show a number. This is useful when stacking notifications of
 				// a single type.
-				.setNumber(number)
+				//.setNumber(number)
 
 				// If this notification relates to a past or upcoming event, you
 				// should set the relevant time information using the setWhen
@@ -157,6 +157,7 @@ public class RssMessageNotification {
 				// should ensure that the activity in this notification's
 				// content intent provides access to the same actions in
 				// another way.
+								/*
 				.addAction(R.drawable.ic_action_stat_reply,
 						res.getString(R.string.action_prev), null)
 				.addAction(
@@ -171,23 +172,24 @@ public class RssMessageNotification {
 										"Dummy title"),
 								PendingIntent.FLAG_UPDATE_CURRENT))
 				.addAction(R.drawable.ic_action_stat_reply,
-						res.getString(R.string.action_next), null)
+						res.getString(R.string.action_next), null);
+						*/
 
 				// Automatically dismiss the notification when it is touched.
 				.setAutoCancel(true);
 		}
 
-		notify(context, builder.build());
+		notify(context, builder.build(),id);
 	}
 
 	@TargetApi(Build.VERSION_CODES.ECLAIR)
 	private static void notify(final Context context,
-			final Notification notification) {
-		notification.flags = Notification.FLAG_NO_CLEAR;//常駐フラグ
+			final Notification notification,final int id) {
+		//notification.flags = Notification.FLAG_NO_CLEAR;//常駐フラグ
 		final NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
-			nm.notify(NOTIFICATION_TAG, 0, notification);
+			nm.notify(NOTIFICATION_TAG, id, notification);
 		} else {
 			nm.notify(NOTIFICATION_TAG.hashCode(), notification);
 		}

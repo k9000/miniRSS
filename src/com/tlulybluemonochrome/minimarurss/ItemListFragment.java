@@ -25,10 +25,6 @@ public class ItemListFragment extends ListFragment {
 
 	DummyContent dummycontent;
 
-	// ProgressDialog progressDialog;
-
-	private RefreshableListView mListView;
-
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
 	 * activated item position. Only used on tablets.

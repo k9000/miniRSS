@@ -5,7 +5,6 @@ import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -49,10 +48,9 @@ public class ItemListActivity extends Activity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		/* Preferencesからテーマ設定 */
-		sharedPreferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		String thme_preference = sharedPreferences.getString("theme_preference",
-				"Light");
+		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		String thme_preference = sharedPreferences.getString(
+				"theme_preference", "Light");
 		int theme = android.R.style.Theme_Holo_Light;
 		if (thme_preference.equals("Light"))
 			theme = android.R.style.Theme_Holo_Light;
@@ -61,7 +59,7 @@ public class ItemListActivity extends Activity implements
 		else if (thme_preference.equals("Transparent"))
 			theme = android.R.style.Theme_DeviceDefault_Wallpaper;
 		setTheme(theme);
-		
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_item_list);
 
@@ -78,7 +76,8 @@ public class ItemListActivity extends Activity implements
 					R.id.item_list)).setActivateOnItemClick(true);
 		}
 
-		//sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		// sharedPreferences =
+		// PreferenceManager.getDefaultSharedPreferences(this);
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
@@ -121,7 +120,7 @@ public class ItemListActivity extends Activity implements
 		mViewPager.setCurrentItem(position + 1);
 
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -142,29 +141,28 @@ public class ItemListActivity extends Activity implements
 			Intent intent = new Intent(this, (Class<?>) SettingActivity.class);
 			startActivity(intent);
 			break;
-			
+
 		case R.id.start:
 			ret = true;
-			//startService(new Intent(this,NotificationService.class));
-		    Intent intent1 = new Intent(this, NotificationService.class);
-		    PendingIntent pendingIntent 
-		      = PendingIntent.getService(this, -1, intent1,PendingIntent.FLAG_UPDATE_CURRENT);
-		    AlarmManager alarmManager = (AlarmManager)this.getSystemService(ALARM_SERVICE);
-		    alarmManager.setInexactRepeating(AlarmManager.RTC,System.currentTimeMillis(),600000, pendingIntent);
+			// startService(new Intent(this,NotificationService.class));
+			Intent intent1 = new Intent(this, NotificationService.class);
+			PendingIntent pendingIntent = PendingIntent.getService(this, -1,
+					intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+			AlarmManager alarmManager = (AlarmManager) this
+					.getSystemService(ALARM_SERVICE);
+			alarmManager.setInexactRepeating(AlarmManager.RTC,
+					System.currentTimeMillis(), 60000, pendingIntent);
 			break;
-			
+
 		case R.id.stop:
 			ret = true;
-			stopService(new Intent(this,NotificationService.class));
+			stopService(new Intent(this, NotificationService.class));
 			Intent intent11 = new Intent(this, NotificationService.class);
-		    PendingIntent pendingIntent1 
-		      = PendingIntent.getService(
-		        this, -1, intent11, 
-		        PendingIntent.FLAG_UPDATE_CURRENT);
-		    AlarmManager alarmManager1 
-		      = (AlarmManager)
-		      this.getSystemService(ALARM_SERVICE);
-		    alarmManager1.cancel(pendingIntent1);
+			PendingIntent pendingIntent1 = PendingIntent.getService(this, -1,
+					intent11, PendingIntent.FLAG_UPDATE_CURRENT);
+			AlarmManager alarmManager1 = (AlarmManager) this
+					.getSystemService(ALARM_SERVICE);
+			alarmManager1.cancel(pendingIntent1);
 			break;
 		}
 		return ret;

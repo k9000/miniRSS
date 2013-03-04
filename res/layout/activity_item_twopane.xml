@@ -15,7 +15,7 @@
     this two-pane version.
 
     For more on layout aliases, see:
-    http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
+    http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
     -->
 
     <fragment
@@ -41,7 +41,7 @@
 
             <!--
     This title strip will display the currently visible page title, as well as the page
-    titles for adjacent pages.
+    titles for adjacent pages.
             -->
 
             <android.support.v4.view.PagerTitleStrip

@@ -3,12 +3,15 @@ package com.tlulybluemonochrome.minimarurss;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.Menu;
+import android.view.MenuItem;
 
 /**
  * An activity representing a list of Items. This activity has different
@@ -42,6 +45,20 @@ public class ItemListActivity extends Activity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		/* Preferencesからテーマ設定 */
+		sharedPreferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		String thme_preference = sharedPreferences.getString("theme_preference",
+				"Light");
+		int theme = android.R.style.Theme_Holo_Light;
+		if (thme_preference.equals("Light"))
+			theme = android.R.style.Theme_Holo_Light;
+		else if (thme_preference.equals("Dark"))
+			theme = android.R.style.Theme_Holo;
+		else if (thme_preference.equals("Transparent"))
+			theme = android.R.style.Theme_DeviceDefault_Wallpaper;
+		setTheme(theme);
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_item_list);
 
@@ -58,7 +75,7 @@ public class ItemListActivity extends Activity implements
 					R.id.item_list)).setActivateOnItemClick(true);
 		}
 
-		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		//sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
@@ -101,6 +118,42 @@ public class ItemListActivity extends Activity implements
 		mViewPager.setCurrentItem(position + 1);
 
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.rss, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		boolean ret = true;
+		switch (item.getItemId()) {
+		default:
+			ret = super.onOptionsItemSelected(item);
+			break;
+		case R.id.action_settings:
+			/* 設定画面呼び出し */
+			ret = true;
+			Intent intent = new Intent(this, (Class<?>) SettingActivity.class);
+			startActivity(intent);
+			break;
+			
+		case R.id.start:
+			ret = true;
+			startService(new Intent(this,
+	                NotificationService.class));
+			break;
+			
+		case R.id.stop:
+			ret = true;
+			stopService(new Intent(this,
+	                NotificationService.class));
+			break;
+		}
+		return ret;
+	}
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -138,7 +191,6 @@ public class ItemListActivity extends Activity implements
 
 		@Override
 		public int getCount() {
-			// Show 3 total pages.
 			int count = sharedPreferences.getInt("COUNT", 1) + 1;
 			return count;
 		}

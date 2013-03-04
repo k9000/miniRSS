@@ -1,8 +1,11 @@
 package com.tlulybluemonochrome.minimarurss;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -142,14 +145,26 @@ public class ItemListActivity extends Activity implements
 			
 		case R.id.start:
 			ret = true;
-			startService(new Intent(this,
-	                NotificationService.class));
+			//startService(new Intent(this,NotificationService.class));
+		    Intent intent1 = new Intent(this, NotificationService.class);
+		    PendingIntent pendingIntent 
+		      = PendingIntent.getService(this, -1, intent1,PendingIntent.FLAG_UPDATE_CURRENT);
+		    AlarmManager alarmManager = (AlarmManager)this.getSystemService(ALARM_SERVICE);
+		    alarmManager.setInexactRepeating(AlarmManager.RTC,System.currentTimeMillis(),600000, pendingIntent);
 			break;
 			
 		case R.id.stop:
 			ret = true;
-			stopService(new Intent(this,
-	                NotificationService.class));
+			stopService(new Intent(this,NotificationService.class));
+			Intent intent11 = new Intent(this, NotificationService.class);
+		    PendingIntent pendingIntent1 
+		      = PendingIntent.getService(
+		        this, -1, intent11, 
+		        PendingIntent.FLAG_UPDATE_CURRENT);
+		    AlarmManager alarmManager1 
+		      = (AlarmManager)
+		      this.getSystemService(ALARM_SERVICE);
+		    alarmManager1.cancel(pendingIntent1);
 			break;
 		}
 		return ret;

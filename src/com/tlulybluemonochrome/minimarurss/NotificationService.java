@@ -21,8 +21,8 @@ import android.util.Xml;
 
 public class NotificationService extends Service {
 
-	final static String TAG = "MyService";
-	final int INTERVAL_PERIOD = 5000;
+	final static String TAG = "test";
+	final int INTERVAL_PERIOD = 10000;
 	Timer timer = new Timer();
 	ConditionVariable mCondition;
 	
@@ -37,16 +37,7 @@ public class NotificationService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		Log.d(TAG, "onCreate");
-	}
-
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.d(TAG, "onStartCommand");
 		
-		Thread thread = new Thread(null, mTask, "NotifyingService");
-	    mCondition = new ConditionVariable(false);
-	    thread.start();
-
 		timer.scheduleAtFixedRate(new TimerTask() {
 			int i = 0;
 			@Override
@@ -58,6 +49,17 @@ public class NotificationService extends Service {
 				i++;
 				}			}
 		}, 0, INTERVAL_PERIOD);
+	}
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		Log.d(TAG, "onStartCommand");
+		
+		Thread thread = new Thread(null, mTask, "NotifyingService");
+	    mCondition = new ConditionVariable(false);
+	    thread.start();
+
+		
 
 		return START_STICKY;
 	}

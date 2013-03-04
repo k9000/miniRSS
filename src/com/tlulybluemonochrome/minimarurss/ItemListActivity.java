@@ -106,7 +106,7 @@ public class ItemListActivity extends Activity implements
 		});
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		mViewPager.setCurrentItem(getIntent().getIntExtra(
-				ItemDetailFragment.ARG_ITEM_ID, 0));
+				ItemDetailFragment.ARG_ITEM_ID, 1));
 
 		// TODO: If exposing deep links into your app, handle intents here.
 	}
@@ -117,55 +117,8 @@ public class ItemListActivity extends Activity implements
 	 */
 	@Override
 	public void onItemSelected(String tag, String url, int position) {
-		mViewPager.setCurrentItem(position + 1);
+		mViewPager.setCurrentItem(position + 2);
 
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.rss, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		boolean ret = true;
-		switch (item.getItemId()) {
-		default:
-			ret = super.onOptionsItemSelected(item);
-			break;
-		case R.id.action_settings:
-			/* 設定画面呼び出し */
-			ret = true;
-			Intent intent = new Intent(this, (Class<?>) SettingActivity.class);
-			startActivity(intent);
-			break;
-
-		case R.id.start:
-			ret = true;
-			// startService(new Intent(this,NotificationService.class));
-			Intent intent1 = new Intent(this, NotificationService.class);
-			PendingIntent pendingIntent = PendingIntent.getService(this, -1,
-					intent1, PendingIntent.FLAG_UPDATE_CURRENT);
-			AlarmManager alarmManager = (AlarmManager) this
-					.getSystemService(ALARM_SERVICE);
-			alarmManager.setInexactRepeating(AlarmManager.RTC,
-					System.currentTimeMillis(), 60000, pendingIntent);
-			break;
-
-		case R.id.stop:
-			ret = true;
-			stopService(new Intent(this, NotificationService.class));
-			Intent intent11 = new Intent(this, NotificationService.class);
-			PendingIntent pendingIntent1 = PendingIntent.getService(this, -1,
-					intent11, PendingIntent.FLAG_UPDATE_CURRENT);
-			AlarmManager alarmManager1 = (AlarmManager) this
-					.getSystemService(ALARM_SERVICE);
-			alarmManager1.cancel(pendingIntent1);
-			break;
-		}
-		return ret;
 	}
 
 	/**
@@ -188,11 +141,13 @@ public class ItemListActivity extends Activity implements
 
 			Bundle arguments = new Bundle();
 			arguments.putString(ItemDetailFragment.ARG_ITEM_ID,
-					sharedPreferences.getString("URL" + (position - 1), ""));
+					sharedPreferences.getString("URL" + (position - 2), ""));
 			// getIntent().getStringExtra(ItemDetailFragment.ARG_ITEM_ID));
 			Fragment fragment;
 
 			if (position == 0)
+				fragment = new SettingsFragment();
+			else if (position == 1)
 				fragment = new ItemListFragment();
 			else
 				fragment = new ItemDetailFragment();
@@ -204,16 +159,18 @@ public class ItemListActivity extends Activity implements
 
 		@Override
 		public int getCount() {
-			int count = sharedPreferences.getInt("COUNT", 1) + 1;
+			int count = sharedPreferences.getInt("COUNT", 1) + 2;
 			return count;
 		}
 
 		@Override
 		public CharSequence getPageTitle(int position) {
 			if (position == 0)
+				return "Setting";
+			else if (position == 1)
 				return "LIST";
 			else
-				return sharedPreferences.getString("TITLE" + (position - 1),
+				return sharedPreferences.getString("TITLE" + (position - 2),
 						"null");
 
 		}

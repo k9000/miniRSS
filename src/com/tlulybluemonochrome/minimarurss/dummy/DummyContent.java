@@ -47,13 +47,15 @@ public class DummyContent implements Serializable{
 		public String title;
 		public String tag;
 		public String url;
+		public String text;
 		int i = 1;
 
-		public DummyItem(String id, String title, String tag, String url) {
+		public DummyItem(String id, String title, String tag, String url,String text) {
 			this.id = id;
 			this.title = title;
 			this.tag = tag;
 			this.url = url;
+			this.text = text;
 		}
 
 		public DummyItem() {
@@ -68,6 +70,7 @@ public class DummyContent implements Serializable{
 			title = source.readString();
 			tag = source.readString();
 			url = source.readString();
+			text = source.readString();
 		}
 
 		@Override
@@ -90,6 +93,10 @@ public class DummyContent implements Serializable{
 
 		}
 		
+		public void setText(String text) {
+			this.text = text;
+
+		}
 
 		@Override
 		public int describeContents() {
@@ -104,6 +111,7 @@ public class DummyContent implements Serializable{
 			dest.writeString(title);
 			dest.writeString(tag);
 			dest.writeString(url);
+			dest.writeString(text);
 		}
 
 		public static final Parcelable.Creator<DummyItem> CREATOR = new Parcelable.Creator<DummyItem>() {
@@ -140,6 +148,10 @@ public class DummyContent implements Serializable{
 			return url;
 		}
 		
+		public String getText() {
+			// TODO 自動生成されたメソッド・スタブ
+			return text;
+		}
 
 	}
 }

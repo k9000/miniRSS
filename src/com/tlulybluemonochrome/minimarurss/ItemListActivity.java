@@ -85,7 +85,7 @@ public class ItemListActivity extends Activity implements
 			public void onPageSelected(int position) {
 			}
 
-			//スクロール時
+			// スクロール時
 			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2) {
 				if (mTwoPane)
@@ -127,7 +127,7 @@ public class ItemListActivity extends Activity implements
 
 		}
 
-		//ページ生成
+		// ページ生成
 		@Override
 		public Fragment getItem(int position) {
 			// getItem is called to instantiate the fragment for the given page.
@@ -154,14 +154,14 @@ public class ItemListActivity extends Activity implements
 			return fragment;
 		}
 
-		//全ページ数
+		// 全ページ数
 		@Override
 		public int getCount() {
 			int count = sharedPreferences.getInt("COUNT", 1) + 2;
 			return count;
 		}
 
-		//ページタイトル
+		// ページタイトル
 		@Override
 		public CharSequence getPageTitle(int position) {
 			if (position == 0)

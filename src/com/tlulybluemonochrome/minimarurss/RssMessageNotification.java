@@ -45,11 +45,13 @@ public class RssMessageNotification {
 		// This image is used as the notification's large icon (thumbnail).
 		// TODO: Remove this if your notification has no relevant thumbnail.
 		final Bitmap picture = BitmapFactory.decodeResource(res,
-				R.drawable.example_picture);
+				R.drawable.ic_launcher);
 
 		final String ticker = title;
 
 		final Notification.Builder builder;
+
+		Notification notification;
 
 		builder = new Notification.Builder(context)
 
@@ -100,17 +102,95 @@ public class RssMessageNotification {
 							.setBigContentTitle(title)
 							.setSummaryText("minimaruRSS"));
 
-			notify(context, builder.build(), id);
+			notification = builder.build();
+
 		} else {
-			notify(context, builder.getNotification(), id);
+
+			notification = builder.getNotification();
 		}
 
+		notify(context, notification, id);
+	}
+	
+	public static void titlenotify(final Context context, final String title,
+			final String text, final String url, final int id) {
+		final Resources res = context.getResources();
+
+		// This image is used as the notification's large icon (thumbnail).
+		// TODO: Remove this if your notification has no relevant thumbnail.
+		final Bitmap picture = BitmapFactory.decodeResource(res,
+				R.drawable.ic_launcher);
+
+		final String ticker = title;
+
+		final Notification.Builder builder;
+
+		Notification notification;
+
+		builder = new Notification.Builder(context)
+
+				// Set appropriate defaults for the notification light, sound,
+				// and vibration.
+				// .setDefaults(Notification.DEFAULT_ALL)
+
+				// Set required fields, including the small icon, the
+				// notification title, and text.
+				.setSmallIcon(R.drawable.ic_stat_rss_message)
+				.setContentTitle(title).setContentText(text)
+
+				// All fields below this line are optional.
+
+				// Provide a large icon, shown with the notification in the
+				// notification drawer on devices running Android 3.0 or later.
+				.setLargeIcon(picture)
+
+				// Set ticker text (preview) information for this notification.
+				.setTicker(ticker)
+
+				// Show a number. This is useful when stacking notifications of
+				// a single type.
+				// .setNumber(number)
+
+				// If this notification relates to a past or upcoming event, you
+				// should set the relevant time information using the setWhen
+				// method below. If this call is omitted, the notification's
+				// timestamp will by set to the time at which it was shown.
+				// TODO: Call setWhen if this notification relates to a past or
+				// upcoming event. The sole argument to this method should be
+				// the notification timestamp in milliseconds.
+				// .setWhen(...)
+
+				// Set the pending intent to be initiated when the user touches
+				// the notification.
+				.setContentIntent(
+						PendingIntent.getService(context, 0, new Intent(
+								context, NotificationService.class),
+								0));
+
+				// Automatically dismiss the notification when it is touched.
+				//.setAutoCancel(true);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			builder.setPriority(Notification.PRIORITY_MIN).setStyle(
+					new Notification.BigTextStyle().bigText(text)
+							.setBigContentTitle(title)
+							.setSummaryText("minimaruRSS"));
+
+			notification = builder.build();
+
+		} else {
+
+			notification = builder.getNotification();
+		}
+		
+		notification.flags = Notification.FLAG_NO_CLEAR;//常駐フラグ
+
+		notify(context, notification, id);
 	}
 
 	@TargetApi(Build.VERSION_CODES.ECLAIR)
 	private static void notify(final Context context,
 			final Notification notification, final int id) {
-		// notification.flags = Notification.FLAG_NO_CLEAR;//常駐フラグ
 		final NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {

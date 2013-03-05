@@ -38,8 +38,8 @@ public class RssMessageNotification {
 	 * 
 	 * @see #cancel(Context)
 	 */
-	public static void notify(final Context context,
-			final String title, final String text, final String url, final int id) {
+	public static void notify(final Context context, final String title,
+			final String text, final String url, final int id) {
 		final Resources res = context.getResources();
 
 		// This image is used as the notification's large icon (thumbnail).
@@ -50,70 +50,19 @@ public class RssMessageNotification {
 		final String ticker = title;
 
 		final Notification.Builder builder;
-		if(Build.VERSION.SDK_INT == Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-			builder = new Notification.Builder(context)
-			
-			// Set appropriate defaults for the notification light, sound,
-			// and vibration.
-			.setDefaults(Notification.DEFAULT_ALL)
 
-			// Set required fields, including the small icon, the
-			// notification title, and text.
-			.setSmallIcon(R.drawable.ic_stat_rss_message)
-			.setContentTitle(title)
-			.setContentText(text)
-			
-				// Provide a large icon, shown with the notification in the
-				// notification drawer on devices running Android 3.0 or later.
-				.setLargeIcon(picture)
-
-				// Set ticker text (preview) information for this notification.
-				.setTicker(ticker)
-
-				// Show a number. This is useful when stacking notifications of
-				// a single type.
-				//.setNumber(number)
-
-				// If this notification relates to a past or upcoming event, you
-				// should set the relevant time information using the setWhen
-				// method below. If this call is omitted, the notification's
-				// timestamp will by set to the time at which it was shown.
-				// TODO: Call setWhen if this notification relates to a past or
-				// upcoming event. The sole argument to this method should be
-				// the notification timestamp in milliseconds.
-				// .setWhen(...)
-
-				// Set the pending intent to be initiated when the user touches
-				// the notification.
-				.setContentIntent(
-						PendingIntent.getActivity(
-								context,
-								0,
-								new Intent(Intent.ACTION_VIEW, Uri
-										.parse(url)),
-								PendingIntent.FLAG_UPDATE_CURRENT))
-			
-			// Automatically dismiss the notification when it is touched.
-			.setAutoCancel(true);
-			
-		}else{ 
-			builder = new Notification.Builder(context)
+		builder = new Notification.Builder(context)
 
 				// Set appropriate defaults for the notification light, sound,
 				// and vibration.
-				//.setDefaults(Notification.DEFAULT_ALL)
+				// .setDefaults(Notification.DEFAULT_ALL)
 
 				// Set required fields, including the small icon, the
 				// notification title, and text.
 				.setSmallIcon(R.drawable.ic_stat_rss_message)
-				.setContentTitle(title)
-				.setContentText(text)
+				.setContentTitle(title).setContentText(text)
 
 				// All fields below this line are optional.
-
-				// Use a default priority (recognized on devices running Android
-				// 4.1 or later)
-				.setPriority(Notification.PRIORITY_DEFAULT)
 
 				// Provide a large icon, shown with the notification in the
 				// notification drawer on devices running Android 3.0 or later.
@@ -124,7 +73,7 @@ public class RssMessageNotification {
 
 				// Show a number. This is useful when stacking notifications of
 				// a single type.
-				//.setNumber(number)
+				// .setNumber(number)
 
 				// If this notification relates to a past or upcoming event, you
 				// should set the relevant time information using the setWhen
@@ -138,54 +87,30 @@ public class RssMessageNotification {
 				// Set the pending intent to be initiated when the user touches
 				// the notification.
 				.setContentIntent(
-						PendingIntent.getActivity(
-								context,
-								0,
-								new Intent(Intent.ACTION_VIEW, Uri
-										.parse(url)),
+						PendingIntent.getActivity(context, 0, new Intent(
+								Intent.ACTION_VIEW, Uri.parse(url)),
 								PendingIntent.FLAG_UPDATE_CURRENT))
-
-				// Show expanded text content on devices running Android 4.1 or
-				// later.
-				.setStyle(
-						new Notification.BigTextStyle().bigText(text)
-								.setBigContentTitle(title)
-								.setSummaryText("minimaruRSS"))
-
-				// Example additional actions for this notification. These will
-				// only show on devices running Android 4.1 or later, so you
-				// should ensure that the activity in this notification's
-				// content intent provides access to the same actions in
-				// another way.
-								/*
-				.addAction(R.drawable.ic_action_stat_reply,
-						res.getString(R.string.action_prev), null)
-				.addAction(
-						R.drawable.ic_action_stat_share,
-						res.getString(R.string.action_share),
-						PendingIntent.getActivity(context, 0, Intent
-								.createChooser(
-										new Intent(Intent.ACTION_SEND).setType(
-												"text/plain")
-												.putExtra(Intent.EXTRA_TEXT,
-														"Dummy text"),
-										"Dummy title"),
-								PendingIntent.FLAG_UPDATE_CURRENT))
-				.addAction(R.drawable.ic_action_stat_reply,
-						res.getString(R.string.action_next), null);
-						*/
 
 				// Automatically dismiss the notification when it is touched.
 				.setAutoCancel(true);
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			builder.setPriority(Notification.PRIORITY_HIGH).setStyle(
+					new Notification.BigTextStyle().bigText(text)
+							.setBigContentTitle(title)
+							.setSummaryText("minimaruRSS"));
+
+			notify(context, builder.build(), id);
+		} else {
+			notify(context, builder.getNotification(), id);
 		}
 
-		notify(context, builder.build(),id);
 	}
 
 	@TargetApi(Build.VERSION_CODES.ECLAIR)
 	private static void notify(final Context context,
-			final Notification notification,final int id) {
-		//notification.flags = Notification.FLAG_NO_CLEAR;//常駐フラグ
+			final Notification notification, final int id) {
+		// notification.flags = Notification.FLAG_NO_CLEAR;//常駐フラグ
 		final NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {

@@ -37,7 +37,7 @@ public class NotificationService extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 		// TODO 自動生成されたメソッド・スタブ
 		
-		RssMessageNotification.notify(getApplicationContext(), "更新中","更新中","", 0);
+		RssMessageNotification.notify(getApplicationContext(), "更新中","更新中","", 100);
 		
 		ArrayList<DummyContent.DummyItem> arraylist = new ArrayList<DummyContent.DummyItem>();
 		
@@ -64,7 +64,7 @@ public class NotificationService extends IntentService {
 					.get(i).getTitle(), arraylist.get(i).getTag(), arraylist
 					.get(i).getUrl(), i);
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 			}
 		}

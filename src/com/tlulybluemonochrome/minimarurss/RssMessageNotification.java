@@ -205,11 +205,11 @@ public class RssMessageNotification {
 	 * {@link #notify(Context, String, int)}.
 	 */
 	@TargetApi(Build.VERSION_CODES.ECLAIR)
-	public static void cancel(final Context context) {
+	public static void cancel(final Context context,int id) {
 		final NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
-			nm.cancel(NOTIFICATION_TAG, 0);
+			nm.cancel(NOTIFICATION_TAG, id);
 		} else {
 			nm.cancel(NOTIFICATION_TAG.hashCode());
 		}

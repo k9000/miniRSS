@@ -165,6 +165,8 @@ public class SettingsFragment extends Fragment implements
 		AlarmManager alarmManager = (AlarmManager) getActivity()
 				.getSystemService(Context.ALARM_SERVICE);
 		alarmManager.cancel(pendingIntent);
+		
+		RssMessageNotification.cancel(getActivity(), 100);
 	}
 
 }

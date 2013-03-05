@@ -83,15 +83,14 @@ public class ItemListActivity extends Activity implements
 		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
 			public void onPageSelected(int position) {
-				// positionは、表示されているページインデックスです。
-				// ここにページ変更後の処理を書きます。
 			}
 
+			//スクロール時
 			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2) {
 				if (mTwoPane)
 					((ItemListFragment) getFragmentManager().findFragmentById(
-							R.id.item_list)).setActivatedPosition(arg0 - 1);
+							R.id.item_list)).setActivatedPosition(arg0 - 2);
 			}
 
 			@Override
@@ -128,6 +127,7 @@ public class ItemListActivity extends Activity implements
 
 		}
 
+		//ページ生成
 		@Override
 		public Fragment getItem(int position) {
 			// getItem is called to instantiate the fragment for the given page.
@@ -142,6 +142,8 @@ public class ItemListActivity extends Activity implements
 
 			if (position == 0)
 				fragment = new SettingsFragment();
+			else if (position == 1 && mTwoPane)
+				fragment = new TopPageFragment();
 			else if (position == 1)
 				fragment = new ItemListFragment();
 			else
@@ -152,16 +154,20 @@ public class ItemListActivity extends Activity implements
 			return fragment;
 		}
 
+		//全ページ数
 		@Override
 		public int getCount() {
 			int count = sharedPreferences.getInt("COUNT", 1) + 2;
 			return count;
 		}
 
+		//ページタイトル
 		@Override
 		public CharSequence getPageTitle(int position) {
 			if (position == 0)
 				return "Setting";
+			else if (position == 1 && mTwoPane)
+				return "TopPage";
 			else if (position == 1)
 				return "LIST";
 			else

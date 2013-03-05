@@ -107,7 +107,7 @@ public class ItemListFragment extends ListFragment {
 					"ID" + i, ""),
 					sharedPreferences.getString("TITLE" + i, ""),
 					sharedPreferences.getString("TAG" + i, ""),
-					sharedPreferences.getString("URL" + i, "")));
+					sharedPreferences.getString("URL" + i, ""),""));
 		}
 
 		if (count == 0) {
@@ -116,28 +116,28 @@ public class ItemListFragment extends ListFragment {
 							"1",
 							"ピックアップ",
 							"RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=ir"));
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=ir",""));
 			arrayadapter
 					.add(new DummyItem("2", "社会", "RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=y"));
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=y",""));
 			arrayadapter
 					.add(new DummyItem("3", "国際", "RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=w"));
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=w",""));
 			arrayadapter
 					.add(new DummyItem("4", "ビジネス", "RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=b"));
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=b",""));
 			arrayadapter
 					.add(new DummyItem("5", "政治", "RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=p"));
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=p",""));
 			arrayadapter
 					.add(new DummyItem("6", "エンタメ", "RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=e"));
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=e",""));
 			arrayadapter
 					.add(new DummyItem("7", "スポーツ", "RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=s"));
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=s",""));
 			arrayadapter
 					.add(new DummyItem("8", "テクノロジー", "RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=t"));
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=t",""));
 		}
 
 		Editor editor = sharedPreferences.edit();

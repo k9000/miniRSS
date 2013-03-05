@@ -85,8 +85,8 @@ public class SettingsFragment extends Fragment implements
 
 				if (mChecked) {
 					mMinute = (seekBar.getProgress() + 1) * 60000;
-					//NotificationServiceStop();
-					NotificationServiceStart();
+					// NotificationServiceStop();
+					// NotificationServiceStart();
 				}
 
 				SharedPreferences sharedPreferences = PreferenceManager
@@ -132,7 +132,7 @@ public class SettingsFragment extends Fragment implements
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		mChecked = isChecked;
 		if (isChecked) {
-			//NotificationServiceStop();
+			// NotificationServiceStop();
 			NotificationServiceStart();
 		} else {
 			NotificationServiceStop();
@@ -153,7 +153,7 @@ public class SettingsFragment extends Fragment implements
 		AlarmManager alarmManager = (AlarmManager) getActivity()
 				.getSystemService(Context.ALARM_SERVICE);
 		alarmManager.setInexactRepeating(AlarmManager.RTC,
-				System.currentTimeMillis() + 1000, mMinute, pendingIntent);
+				System.currentTimeMillis(), mMinute, pendingIntent);
 	}
 
 	protected void NotificationServiceStop() {
@@ -165,7 +165,7 @@ public class SettingsFragment extends Fragment implements
 		AlarmManager alarmManager = (AlarmManager) getActivity()
 				.getSystemService(Context.ALARM_SERVICE);
 		alarmManager.cancel(pendingIntent);
-		
+
 		RssMessageNotification.cancel(getActivity(), 100);
 	}
 

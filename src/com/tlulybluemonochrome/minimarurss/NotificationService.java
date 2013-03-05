@@ -15,7 +15,6 @@ import com.tlulybluemonochrome.minimarurss.dummy.DummyContent;
 import com.tlulybluemonochrome.minimarurss.dummy.DummyContent.DummyItem;
 
 import android.app.IntentService;
-import android.app.Notification;
 import android.content.Intent;
 import android.util.Log;
 import android.util.Xml;
@@ -37,8 +36,8 @@ public class NotificationService extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 		// TODO 自動生成されたメソッド・スタブ
 
-		RssMessageNotification.titlenotify(getApplicationContext(), "更新中", "更新中",
-				"", 100);
+		RssMessageNotification.titlenotify(getApplicationContext(), "更新中",
+				"更新中", "", 100);
 
 		ArrayList<DummyContent.DummyItem> arraylist = new ArrayList<DummyContent.DummyItem>();
 
@@ -147,8 +146,8 @@ public class NotificationService extends IntentService {
 	public void onDestroy() {
 		super.onDestroy();
 		Log.d(TAG, "onDestroy");
-		RssMessageNotification.titlenotify(getApplicationContext(), "minimaruRSS", "タップして更新",
-				"", 100);
+		RssMessageNotification.titlenotify(getApplicationContext(),
+				"minimaruRSS", "タップして更新", "", 100);
 	}
 
 }

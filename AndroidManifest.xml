@@ -43,6 +43,25 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name="com.tlulybluemonochrome.minimarurss.EntryActivity"
+            android:label="@string/title_activity_entry"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
+            <!--  
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:host="*" />
+                <data android:pathPattern=".*\\.xml" />
+                <data android:pathPattern=".*\\.rss" />
+            </intent-filter>
+            -->
+        </activity>
     </application>
 
 </manifest>

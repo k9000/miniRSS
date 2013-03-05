@@ -1,14 +1,11 @@
 package com.tlulybluemonochrome.minimarurss;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.ListFragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;

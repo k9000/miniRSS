@@ -1,8 +1,15 @@
 package com.tlulybluemonochrome.minimarurss;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -36,12 +43,15 @@ public class ItemListActivity extends Activity implements
 
 	SharedPreferences sharedPreferences;
 
+	ArrayList<RssFeed> items;
+
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
 	ViewPager mViewPager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
 		/* Preferencesからテーマ設定 */
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		String thme_preference = sharedPreferences.getString(
@@ -54,6 +64,58 @@ public class ItemListActivity extends Activity implements
 		else if (thme_preference.equals("Transparent"))
 			theme = android.R.style.Theme_DeviceDefault_Wallpaper;
 		setTheme(theme);
+
+		try {
+			FileInputStream fis = openFileInput("SaveData.txt");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			items = (ArrayList<RssFeed>) ois.readObject();
+			ois.close();
+		} catch (Exception e) {
+			items = new ArrayList<RssFeed>();
+
+			items.add(new RssFeed(
+					"ピックアップ",
+					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=ir",
+					1));
+			items.add(new RssFeed(
+					"社会",
+					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=y",
+					1));
+			items.add(new RssFeed(
+					"国際",
+					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=w",
+					1));
+			items.add(new RssFeed(
+					"ビジネス",
+					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=b",
+					1));
+			items.add(new RssFeed(
+					"政治",
+					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=p",
+					1));
+			items.add(new RssFeed(
+					"エンタメ",
+					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=e",
+					1));
+			items.add(new RssFeed(
+					"スポーツ",
+					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=s",
+					1));
+			items.add(new RssFeed(
+					"テクノロジー",
+					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=t",
+					1));
+
+			try {
+				FileOutputStream fos = this.openFileOutput("SaveData.txt",
+						Context.MODE_PRIVATE);
+				ObjectOutputStream oos = new ObjectOutputStream(fos);
+				oos.writeObject(items);
+				oos.close();
+			} catch (Exception e1) {
+			}
+
+		}
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_item_list);
@@ -110,7 +172,7 @@ public class ItemListActivity extends Activity implements
 	 * the item with the given ID was selected.
 	 */
 	@Override
-	public void onItemSelected(String tag, String url, int position) {
+	public void onItemSelected(int tag, String url, int position) {
 		mViewPager.setCurrentItem(position + 2);
 
 	}
@@ -134,9 +196,6 @@ public class ItemListActivity extends Activity implements
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
 
-			Bundle arguments = new Bundle();
-			arguments.putString(ItemDetailFragment.ARG_ITEM_ID,
-					sharedPreferences.getString("URL" + (position - 2), ""));
 			// getIntent().getStringExtra(ItemDetailFragment.ARG_ITEM_ID));
 			Fragment fragment;
 
@@ -146,10 +205,13 @@ public class ItemListActivity extends Activity implements
 				fragment = new TopPageFragment();
 			else if (position == 1)
 				fragment = new ItemListFragment();
-			else
+			else {
+				Bundle arguments = new Bundle();
+				arguments.putString(ItemDetailFragment.ARG_ITEM_ID,
+						items.get(position - 2).getUrl());
 				fragment = new ItemDetailFragment();
-
-			fragment.setArguments(arguments);
+				fragment.setArguments(arguments);
+			}
 
 			return fragment;
 		}
@@ -157,7 +219,7 @@ public class ItemListActivity extends Activity implements
 		// 全ページ数
 		@Override
 		public int getCount() {
-			int count = sharedPreferences.getInt("COUNT", 1) + 2;
+			int count = items.size() + 2;
 			return count;
 		}
 
@@ -171,8 +233,7 @@ public class ItemListActivity extends Activity implements
 			else if (position == 1)
 				return "LIST";
 			else
-				return sharedPreferences.getString("TITLE" + (position - 2),
-						"null");
+				return items.get(position - 2).getTitle();
 
 		}
 

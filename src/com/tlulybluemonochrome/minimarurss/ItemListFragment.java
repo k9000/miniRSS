@@ -1,16 +1,18 @@
 package com.tlulybluemonochrome.minimarurss;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.ListFragment;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+import android.content.Context;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import com.tlulybluemonochrome.minimarurss.dummy.DummyContent;
-import com.tlulybluemonochrome.minimarurss.dummy.DummyContent.DummyItem;
 
 /**
  * A list fragment representing a list of Items. This fragment also supports
@@ -23,7 +25,7 @@ import com.tlulybluemonochrome.minimarurss.dummy.DummyContent.DummyItem;
  */
 public class ItemListFragment extends ListFragment {
 
-	DummyContent dummycontent;
+	ArrayList<RssFeed> items;
 
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
@@ -53,7 +55,7 @@ public class ItemListFragment extends ListFragment {
 		 * 
 		 * @param position
 		 */
-		public void onItemSelected(String tag, String url, int position);
+		public void onItemSelected(int tag, String url, int position);
 	}
 
 	/**
@@ -62,7 +64,7 @@ public class ItemListFragment extends ListFragment {
 	 */
 	private static Callbacks sDummyCallbacks = new Callbacks() {
 		@Override
-		public void onItemSelected(String tag, String url, int position) {
+		public void onItemSelected(int tag, String url, int position) {
 		}
 	};
 
@@ -91,96 +93,19 @@ public class ItemListFragment extends ListFragment {
 
 		}
 
-		dummycontent = new DummyContent();
+		try {
+			FileInputStream fis = getActivity().openFileInput("SaveData.txt");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			items = (ArrayList<RssFeed>) ois.readObject();
+			ois.close();
+		} catch (Exception e) {
+		}
 
-		// TODO: replace with a real list adapter.
-
-		ArrayAdapter<DummyContent.DummyItem> arrayadapter = new ArrayAdapter<DummyContent.DummyItem>(
+		ArrayAdapter<RssFeed> adapter = new ArrayAdapter<RssFeed>(
 				getActivity(), android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, dummycontent.ITEMS);
+				android.R.id.text1, items);
 
-		SharedPreferences sharedPreferences = PreferenceManager
-				.getDefaultSharedPreferences(getActivity());
-		int count = (sharedPreferences.getInt("COUNT", 0));
-		for (int i = 0; i < count; i++) {
-			arrayadapter.add(new DummyItem(sharedPreferences.getString(
-					"ID" + i, ""),
-					sharedPreferences.getString("TITLE" + i, ""),
-					sharedPreferences.getString("TAG" + i, ""),
-					sharedPreferences.getString("URL" + i, ""), ""));
-		}
-
-		if (count == 0) {
-			arrayadapter
-					.add(new DummyItem(
-							"1",
-							"ピックアップ",
-							"RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=ir",
-							""));
-			arrayadapter
-					.add(new DummyItem(
-							"2",
-							"社会",
-							"RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=y",
-							""));
-			arrayadapter
-					.add(new DummyItem(
-							"3",
-							"国際",
-							"RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=w",
-							""));
-			arrayadapter
-					.add(new DummyItem(
-							"4",
-							"ビジネス",
-							"RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=b",
-							""));
-			arrayadapter
-					.add(new DummyItem(
-							"5",
-							"政治",
-							"RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=p",
-							""));
-			arrayadapter
-					.add(new DummyItem(
-							"6",
-							"エンタメ",
-							"RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=e",
-							""));
-			arrayadapter
-					.add(new DummyItem(
-							"7",
-							"スポーツ",
-							"RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=s",
-							""));
-			arrayadapter
-					.add(new DummyItem(
-							"8",
-							"テクノロジー",
-							"RSS",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=t",
-							""));
-		}
-
-		Editor editor = sharedPreferences.edit();
-		count = arrayadapter.getCount();
-		editor.putInt("COUNT", count);
-		for (int i = 0; i < count; i++) {
-			editor.putString("ID" + i, arrayadapter.getItem(i).getId());
-			editor.putString("TITLE" + i, arrayadapter.getItem(i).getTitle());
-			editor.putString("IAG" + i, arrayadapter.getItem(i).getTag());
-			editor.putString("URL" + i, arrayadapter.getItem(i).getUrl());
-		}
-		editor.commit();
-
-		setListAdapter(arrayadapter);
+		setListAdapter(adapter);
 
 	}
 
@@ -212,8 +137,8 @@ public class ItemListFragment extends ListFragment {
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(dummycontent.ITEMS.get(position).tag,
-				dummycontent.ITEMS.get(position).url, position);
+		mCallbacks.onItemSelected(items.get(position).getTag(),
+				items.get(position).getUrl(), position);
 	}
 
 	@Override

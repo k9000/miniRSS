@@ -1,13 +1,18 @@
 package com.tlulybluemonochrome.minimarurss;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import com.tlulybluemonochrome.minimarurss.dummy.DummyContent;
+import com.tlulybluemonochrome.minimarurss.dummy.DummyContent.DummyItem;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -26,41 +31,59 @@ public class NotificationService extends IntentService {
 	}
 
 	final static String TAG = "test";
-	ArrayList<DummyContent.DummyItem> arraylist;
+	
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		// TODO 自動生成されたメソッド・スタブ
-		arraylist = null;
 		
 		RssMessageNotification.notify(getApplicationContext(), "更新中","更新中","", 0);
+		
+		ArrayList<DummyContent.DummyItem> arraylist = new ArrayList<DummyContent.DummyItem>();
+		
+		try {
+		    FileInputStream fis = openFileInput("SaveData.dat");
+		    ObjectInputStream ois = new ObjectInputStream(fis);
+		    arraylist = (ArrayList<DummyContent.DummyItem>) ois.readObject();
+		    ois.close();
+		} catch (Exception e) {
+		    Log.d(TAG, "Error");
+		}
 
 		try {
 			URL url = new URL(
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss");
 			InputStream is = url.openConnection().getInputStream();
-			arraylist = parseXml(is);
+			arraylist = parseXml(is,arraylist);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		for (int i = 0; i < arraylist.size(); i++) {
-
 			RssMessageNotification.notify(getApplicationContext(), arraylist
 					.get(i).getTitle(), arraylist.get(i).getTag(), arraylist
 					.get(i).getUrl(), i);
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 			}
+		}
+		
+		try {
+		    FileOutputStream fos = openFileOutput("SaveData.dat", MODE_PRIVATE);
+		    ObjectOutputStream oos = new ObjectOutputStream(fos);
+		    oos.writeObject(arraylist);
+		    oos.close();
+		} catch (Exception e) {
+		    Log.d(TAG, "Error");
 		}
 	}
 
 	// XMLをパースする
-	public ArrayList<DummyContent.DummyItem> parseXml(InputStream is)
+	public ArrayList<DummyContent.DummyItem> parseXml(InputStream is, ArrayList<DummyItem> oldlist)
 			throws IOException, XmlPullParserException {
 		XmlPullParser parser = Xml.newPullParser();
-		ArrayList<DummyContent.DummyItem> mAdapter = new ArrayList<DummyContent.DummyItem>();
+		ArrayList<DummyContent.DummyItem> list = new ArrayList<DummyContent.DummyItem>();
 		try {
 			parser.setInput(is, null);
 			int eventType = parser.getEventType();
@@ -87,7 +110,8 @@ public class NotificationService extends IntentService {
 				case XmlPullParser.END_TAG:
 					tag = parser.getName();
 					if (tag.equals("item")) {
-						mAdapter.add(currentItem);
+						if(Serch(currentItem,oldlist))
+							list.add(currentItem);
 					}
 					break;
 				}
@@ -96,8 +120,18 @@ public class NotificationService extends IntentService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return mAdapter;
+		return list;
 
+	}
+	
+	public boolean Serch(DummyContent.DummyItem item, ArrayList<DummyContent.DummyItem> oldlist){
+		
+		for (int i = 0; i < oldlist.size(); i++) {
+		if(item.getUrl().equals(oldlist.get(i).getUrl()))
+				return false;
+		}
+		
+		return true;
 	}
 
 	@Override

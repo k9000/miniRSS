@@ -1,5 +1,6 @@
 package com.tlulybluemonochrome.minimarurss.dummy;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +15,12 @@ import android.os.Parcelable;
  * <p>
  * TODO: Replace all uses of this class before publishing your app.
  */
-public class DummyContent{
+public class DummyContent implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8400256620609053101L;
 	/**
 	 * An array of sample (dummy) items.
 	 */
@@ -30,7 +35,11 @@ public class DummyContent{
 	/**
 	 * A dummy item representing a piece of content.
 	 */
-	public static class DummyItem implements Parcelable{
+	public static class DummyItem implements Parcelable,Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1867589696255792892L;
 		/**
 		 * 
 		 */

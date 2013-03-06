@@ -3,27 +3,23 @@ package com.tlulybluemonochrome.minimarurss;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.tlulybluemonochrome.minimarurss.dummy.DummyContent;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.util.Xml;
-import android.widget.ArrayAdapter;
 
-public class RssParserTaskLoader extends
-		AsyncTaskLoader<ArrayAdapter<DummyContent.DummyItem>> {
+public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 
-	private ArrayAdapter<DummyContent.DummyItem> mAdapter;
 	private URL url;
 	private int wait;
 
-	public RssParserTaskLoader(Context context,
-			ArrayAdapter<DummyContent.DummyItem> adapter, String url, int wait) {
+	public RssParserTaskLoader(Context context, String url, int wait) {
 		super(context);
 
-		mAdapter = adapter;
 		this.wait = wait;
 
 		try {
@@ -34,9 +30,9 @@ public class RssParserTaskLoader extends
 	}
 
 	@Override
-	public ArrayAdapter<DummyContent.DummyItem> loadInBackground() {
+	public ArrayList<RssItem> loadInBackground() {
 
-		ArrayAdapter<DummyContent.DummyItem> result = null;
+		ArrayList<RssItem> result = new ArrayList<RssItem>();
 
 		try {
 			// URL url = new
@@ -54,33 +50,35 @@ public class RssParserTaskLoader extends
 	}
 
 	// XMLをパースする
-	public ArrayAdapter<DummyContent.DummyItem> parseXml(InputStream is)
-			throws IOException, XmlPullParserException {
+	public ArrayList<RssItem> parseXml(InputStream is) throws IOException,
+			XmlPullParserException {
+		ArrayList<RssItem> list = new ArrayList<RssItem>();
 		XmlPullParser parser = Xml.newPullParser();
 		try {
 			parser.setInput(is, null);
 			int eventType = parser.getEventType();
-			DummyContent.DummyItem currentItem = null;
+			RssItem currentItem = null;
 			while (eventType != XmlPullParser.END_DOCUMENT) {
 				String tag = null;
 				switch (eventType) {
 				case XmlPullParser.START_TAG:
 					tag = parser.getName();
 					if (tag.equals("item")) {
-						currentItem = new DummyContent.DummyItem();
-						currentItem.setTag("URL");
+						currentItem = new RssItem();
+						currentItem.setTag(0);
+						currentItem.setText("");
 					} else if (currentItem != null) {
 						if (tag.equals("title")) {
 							currentItem.setTitle(parser.nextText());
 						} else if (tag.equals("link")) {
-							currentItem.setLink(parser.nextText());
+							currentItem.setUrl(parser.nextText());
 						}
 					}
 					break;
 				case XmlPullParser.END_TAG:
 					tag = parser.getName();
 					if (tag.equals("item")) {
-						mAdapter.add(currentItem);
+						list.add(currentItem);
 					}
 					break;
 				}
@@ -89,7 +87,7 @@ public class RssParserTaskLoader extends
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return mAdapter;
+		return list;
 
 	}
 

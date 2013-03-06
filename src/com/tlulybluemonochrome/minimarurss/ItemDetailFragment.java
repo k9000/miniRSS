@@ -1,5 +1,7 @@
 package com.tlulybluemonochrome.minimarurss;
 
+import java.util.ArrayList;
+
 import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
@@ -11,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import com.tlulybluemonochrome.minimarurss.dummy.DummyContent;
-import com.tlulybluemonochrome.minimarurss.dummy.DummyContent.DummyItem;
 
 import com.tlulybluemonochrome.minimarurss.RefreshableListView.OnRefreshListener;
 import com.tlulybluemonochrome.minimarurss.RefreshableListView;
@@ -23,10 +23,10 @@ import com.tlulybluemonochrome.minimarurss.RefreshableListView;
  * {@link ItemDetailActivity} on handsets.
  */
 public class ItemDetailFragment extends Fragment implements
-		LoaderCallbacks<ArrayAdapter<DummyContent.DummyItem>> {
+		LoaderCallbacks<ArrayList<RssItem>> {
 
-	// ProgressDialog progressDialog;
-	DummyContent dummycontent;
+	ArrayList<RssItem> item;
+
 	boolean mFlag = false;
 
 	private RefreshableListView mListView;
@@ -45,9 +45,6 @@ public class ItemDetailFragment extends Fragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		// dummycontent = new DummyContent();
-
 	}
 
 	@Override
@@ -78,8 +75,8 @@ public class ItemDetailFragment extends Fragment implements
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Intent intent = new Intent(Intent.ACTION_VIEW, Uri
-						.parse(dummycontent.ITEMS.get(position).url));
+				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item
+						.get(position).getUrl()));
 				startActivity(intent);
 			}
 		});
@@ -88,22 +85,23 @@ public class ItemDetailFragment extends Fragment implements
 	}
 
 	@Override
-	public Loader<ArrayAdapter<DummyItem>> onCreateLoader(int wait, Bundle args) {
-		dummycontent = new DummyContent();
+	public Loader<ArrayList<RssItem>> onCreateLoader(int wait, Bundle args) {
+		item = new ArrayList<RssItem>();
 		String url = args.getString(ItemDetailFragment.ARG_ITEM_ID);
 		RssParserTaskLoader appLoader = new RssParserTaskLoader(getActivity(),
-				new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-						android.R.layout.simple_list_item_activated_1,
-						android.R.id.text1, dummycontent.ITEMS), url, wait);
+				url, wait);
 
 		appLoader.forceLoad();
 		return appLoader;
 	}
 
 	@Override
-	public void onLoadFinished(Loader<ArrayAdapter<DummyItem>> arg0,
-			ArrayAdapter<DummyItem> arg1) {
-		mListView.setAdapter(arg1);
+	public void onLoadFinished(Loader<ArrayList<RssItem>> arg0,
+			ArrayList<RssItem> arg1) {
+		ArrayAdapter<RssItem> adapter = new ArrayAdapter<RssItem>(
+				getActivity(), android.R.layout.simple_list_item_activated_1,
+				android.R.id.text1, arg1);
+		mListView.setAdapter(adapter);
 		if (mFlag) {
 			mListView.completeRefreshing();
 			mFlag = false;
@@ -112,7 +110,7 @@ public class ItemDetailFragment extends Fragment implements
 	}
 
 	@Override
-	public void onLoaderReset(Loader<ArrayAdapter<DummyItem>> arg0) {
+	public void onLoaderReset(Loader<ArrayList<RssItem>> arg0) {
 
 	}
 

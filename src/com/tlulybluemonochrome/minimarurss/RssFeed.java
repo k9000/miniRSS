@@ -10,13 +10,13 @@ public class RssFeed implements Serializable {
 	private String title;
 	private String url;
 	private int tag;
-	
-	public RssFeed(String title,String url,int tag){
+
+	public RssFeed(String title, String url, int tag) {
 		this.title = title;
 		this.url = url;
 		this.tag = tag;
 	}
-	
+
 	@Override
 	public String toString() {
 		return title;

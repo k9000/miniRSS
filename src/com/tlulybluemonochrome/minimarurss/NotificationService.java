@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.tlulybluemonochrome.minimarurss.dummy.DummyContent;
-import com.tlulybluemonochrome.minimarurss.dummy.DummyContent.DummyItem;
-
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
@@ -39,12 +36,12 @@ public class NotificationService extends IntentService {
 		RssMessageNotification.titlenotify(getApplicationContext(), "更新中",
 				"更新中", "", 100);
 
-		ArrayList<DummyContent.DummyItem> arraylist = new ArrayList<DummyContent.DummyItem>();
+		ArrayList<RssItem> arraylist = new ArrayList<RssItem>();
 
 		try {
 			FileInputStream fis = openFileInput("SaveData.dat");
 			ObjectInputStream ois = new ObjectInputStream(fis);
-			arraylist = (ArrayList<DummyContent.DummyItem>) ois.readObject();
+			arraylist = (ArrayList<RssItem>) ois.readObject();
 			ois.close();
 		} catch (Exception e) {
 			Log.d(TAG, "Error");
@@ -60,7 +57,7 @@ public class NotificationService extends IntentService {
 		}
 
 		for (int i = 0; i < arraylist.size(); i++) {
-			if (arraylist.get(i).getTag().equals("unread")) {
+			if (arraylist.get(i).getTag() == 0) {
 				RssMessageNotification.notify(getApplicationContext(),
 						arraylist.get(i).getTitle(),
 						arraylist.get(i).getText(), arraylist.get(i).getUrl(),
@@ -83,28 +80,28 @@ public class NotificationService extends IntentService {
 	}
 
 	// XMLをパースする
-	public ArrayList<DummyContent.DummyItem> parseXml(InputStream is,
-			ArrayList<DummyItem> oldlist) throws IOException,
+	public ArrayList<RssItem> parseXml(InputStream is,
+			ArrayList<RssItem> oldlist) throws IOException,
 			XmlPullParserException {
 		XmlPullParser parser = Xml.newPullParser();
-		ArrayList<DummyContent.DummyItem> list = new ArrayList<DummyContent.DummyItem>();
+		ArrayList<RssItem> list = new ArrayList<RssItem>();
 		try {
 			parser.setInput(is, null);
 			int eventType = parser.getEventType();
-			DummyContent.DummyItem currentItem = null;
+			RssItem currentItem = null;
 			while (eventType != XmlPullParser.END_DOCUMENT) {
 				String tag = null;
 				switch (eventType) {
 				case XmlPullParser.START_TAG:
 					tag = parser.getName();
 					if (tag.equals("item")) {
-						currentItem = new DummyContent.DummyItem();
+						currentItem = new RssItem();
 						// currentItem.setTag("URL");
 					} else if (currentItem != null) {
 						if (tag.equals("title")) {
 							currentItem.setTitle(parser.nextText());
 						} else if (tag.equals("link")) {
-							currentItem.setLink(parser.nextText());
+							currentItem.setUrl(parser.nextText());
 						} else if (tag.equals("description")) {
 							currentItem.setText(parser.nextText().replaceAll(
 									"<.+?>", ""));
@@ -115,9 +112,9 @@ public class NotificationService extends IntentService {
 					tag = parser.getName();
 					if (tag.equals("item")) {
 						if (Serch(currentItem, oldlist))
-							currentItem.setTag("unread");
+							currentItem.setTag(0);
 						else
-							currentItem.setTag("readed");
+							currentItem.setTag(1);
 						list.add(currentItem);
 					}
 					break;
@@ -131,8 +128,7 @@ public class NotificationService extends IntentService {
 
 	}
 
-	public boolean Serch(DummyContent.DummyItem item,
-			ArrayList<DummyContent.DummyItem> oldlist) {
+	public boolean Serch(RssItem item, ArrayList<RssItem> oldlist) {
 
 		for (int i = 0; i < oldlist.size(); i++) {
 			if (item.getUrl().equals(oldlist.get(i).getUrl()))
@@ -145,7 +141,6 @@ public class NotificationService extends IntentService {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		Log.d(TAG, "onDestroy");
 		RssMessageNotification.titlenotify(getApplicationContext(),
 				"minimaruRSS", "タップして更新", "", 100);
 	}

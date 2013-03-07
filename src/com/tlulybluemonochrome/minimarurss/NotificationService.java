@@ -142,7 +142,7 @@ public class NotificationService extends IntentService {
 	public void onDestroy() {
 		super.onDestroy();
 		RssMessageNotification.titlenotify(getApplicationContext(),
-				"minimaruRSS", "タップして更新", "", 100);
+				"minimaruRSS", "タップして更新", "更新完了", 100);
 	}
 
 }

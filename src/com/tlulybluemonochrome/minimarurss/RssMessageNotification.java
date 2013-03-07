@@ -38,6 +38,7 @@ public class RssMessageNotification {
 	 * 
 	 * @see #cancel(Context)
 	 */
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public static void notify(final Context context, final String title,
 			final String text, final String url, final int id) {
 		final Resources res = context.getResources();
@@ -111,17 +112,16 @@ public class RssMessageNotification {
 
 		notify(context, notification, id);
 	}
-	
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public static void titlenotify(final Context context, final String title,
-			final String text, final String url, final int id) {
+			final String text, final String ticker, final int id) {
 		final Resources res = context.getResources();
 
 		// This image is used as the notification's large icon (thumbnail).
 		// TODO: Remove this if your notification has no relevant thumbnail.
 		final Bitmap picture = BitmapFactory.decodeResource(res,
 				R.drawable.ic_launcher);
-
-		final String ticker = title;
 
 		final Notification.Builder builder;
 
@@ -164,11 +164,10 @@ public class RssMessageNotification {
 				// the notification.
 				.setContentIntent(
 						PendingIntent.getService(context, 0, new Intent(
-								context, NotificationService.class),
-								0));
+								context, NotificationService.class), 0));
 
-				// Automatically dismiss the notification when it is touched.
-				//.setAutoCancel(true);
+		// Automatically dismiss the notification when it is touched.
+		// .setAutoCancel(true);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			builder.setPriority(Notification.PRIORITY_MIN).setStyle(
@@ -182,36 +181,29 @@ public class RssMessageNotification {
 
 			notification = builder.getNotification();
 		}
-		
-		notification.flags = Notification.FLAG_NO_CLEAR;//常駐フラグ
+
+		notification.flags = Notification.FLAG_NO_CLEAR;// 常駐フラグ
 
 		notify(context, notification, id);
 	}
 
-	@TargetApi(Build.VERSION_CODES.ECLAIR)
 	private static void notify(final Context context,
 			final Notification notification, final int id) {
 		final NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
-			nm.notify(NOTIFICATION_TAG, id, notification);
-		} else {
-			nm.notify(NOTIFICATION_TAG.hashCode(), notification);
-		}
+		nm.notify(NOTIFICATION_TAG, id, notification);
+
 	}
 
 	/**
 	 * Cancels any notifications of this type previously shown using
 	 * {@link #notify(Context, String, int)}.
 	 */
-	@TargetApi(Build.VERSION_CODES.ECLAIR)
-	public static void cancel(final Context context,int id) {
+	public static void cancel(final Context context, int id) {
 		final NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
-			nm.cancel(NOTIFICATION_TAG, id);
-		} else {
-			nm.cancel(NOTIFICATION_TAG.hashCode());
-		}
+		nm.cancel(NOTIFICATION_TAG, id);
+
 	}
+
 }

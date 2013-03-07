@@ -6,6 +6,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import com.tlulybluemonochrome.minimarurss.MainActivity2.DummySectionFragment;
+
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -16,6 +19,10 @@ import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 
 /**
  * An activity representing a list of Items. This activity has different
@@ -175,6 +182,32 @@ public class ItemListActivity extends Activity implements
 	public void onItemSelected(int tag, String url, int position) {
 		mViewPager.setCurrentItem(position + 2);
 
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.my_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		boolean ret = true;
+		switch (item.getItemId()) {
+		case R.id.item_setting:
+			mViewPager.setCurrentItem(0);
+			break;
+		case R.id.item_list:
+			mViewPager.setCurrentItem(1);
+			break;
+		default:
+			ret = super.onOptionsItemSelected(item);
+		}
+
+		return ret;
 	}
 
 	/**

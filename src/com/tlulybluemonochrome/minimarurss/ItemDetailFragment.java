@@ -27,8 +27,6 @@ public class ItemDetailFragment extends Fragment implements
 
 	ArrayList<RssItem> item;
 
-	ArrayAdapter<RssItem> adapter;
-
 	boolean mFlag = false;
 
 	private RefreshableListView mListView;
@@ -47,7 +45,6 @@ public class ItemDetailFragment extends Fragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setRetainInstance(true);
 	}
 
 	@Override
@@ -99,8 +96,8 @@ public class ItemDetailFragment extends Fragment implements
 	@Override
 	public void onLoadFinished(Loader<ArrayList<RssItem>> arg0,
 			ArrayList<RssItem> arg1) {
-		adapter = new ArrayAdapter<RssItem>(getActivity(),
-				android.R.layout.simple_list_item_activated_1,
+		ArrayAdapter<RssItem> adapter = new ArrayAdapter<RssItem>(
+				getActivity(), android.R.layout.simple_list_item_activated_1,
 				android.R.id.text1, arg1);
 		mListView.setAdapter(adapter);
 		if (mFlag) {

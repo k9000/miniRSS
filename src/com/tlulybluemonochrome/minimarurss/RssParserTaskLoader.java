@@ -42,6 +42,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		try {
 			Thread.sleep(wait);
 		} catch (InterruptedException e) {

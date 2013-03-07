@@ -7,17 +7,6 @@
     android:showDividers="middle"
     tools:context=".ItemListActivity" >
 
-    <!--
-    This layout is a two-pane layout for the Items
-    master/detail flow. See res/values-large/refs.xml and
-    res/values-sw600dp/refs.xml for an example of layout aliases
-    that replace the single-pane version of the layout with
-    this two-pane version.
-
-    For more on layout aliases, see:
-    http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
-    -->
-
     <fragment
         android:id="@+id/item_list"
         android:name="com.tlulybluemonochrome.minimarurss.ItemListFragment"
@@ -38,11 +27,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".ItemListActivity" >
-
-            <!--
-    This title strip will display the currently visible page title, as well as the page
-    titles for adjacent pages.
-            -->
 
             <android.support.v4.view.PagerTitleStrip
                 android:id="@+id/pager_title_strip"

@@ -48,7 +48,7 @@
             android:label="@string/title_activity_entry"
             android:windowSoftInputMode="adjustResize|stateVisible" >
 
-            <!--
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -59,8 +59,7 @@
                 <data android:host="*" />
                 <data android:pathPattern=".*\\.xml" />
                 <data android:pathPattern=".*\\.rss" />
-            </intent-filter>
-            -->
+            </intent-filter>
         </activity>
     </application>
 

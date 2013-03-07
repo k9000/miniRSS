@@ -16,11 +16,28 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 
 	private URL url;
 	private int wait;
+	private boolean html = false;
 
 	public RssParserTaskLoader(Context context, String url, int wait) {
 		super(context);
 
 		this.wait = wait;
+
+		html = false;
+
+		try {
+			this.url = new URL(url);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public RssParserTaskLoader(EntryActivity context, String url) {
+		super(context);
+
+		wait = 1000;
+
+		html = true;
 
 		try {
 			this.url = new URL(url);
@@ -34,15 +51,23 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 
 		ArrayList<RssItem> result = new ArrayList<RssItem>();
 
-		try {
-			// URL url = new
-			// URL("http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss");
-			InputStream is = url.openConnection().getInputStream();
-			result = parseXml(is);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (html) {
+			try {
+				InputStream is = url.openConnection().getInputStream();
+				result = parseRSS(is);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		} else {
+			try {
+				InputStream is = url.openConnection().getInputStream();
+				result = parseXml(is);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-		
+
 		try {
 			Thread.sleep(wait);
 		} catch (InterruptedException e) {
@@ -89,6 +114,97 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 			e.printStackTrace();
 		}
 		return list;
+
+	}
+
+	// HTMLをパースする
+	public ArrayList<RssItem> parseHtml(InputStream is) throws IOException,
+			XmlPullParserException {
+		ArrayList<RssItem> list = new ArrayList<RssItem>();
+		XmlPullParser parser = Xml.newPullParser();
+		try {
+			parser.setInput(is, null);
+			int eventType = parser.getEventType();
+			RssItem currentItem = null;
+			while (eventType != XmlPullParser.END_DOCUMENT) {
+				String tag = null;
+				switch (eventType) {
+				case XmlPullParser.START_TAG:
+					tag = parser.getName();
+					if (tag.equals("head")) {
+						currentItem = new RssItem();
+					} else if (currentItem != null) {
+						if (tag.equals("link")) {
+							String rel = parser.getAttributeValue(null, "rel");
+							String type = parser
+									.getAttributeValue(null, "type");
+							String title = parser.getAttributeValue(null,
+									"title");
+							String herf = parser
+									.getAttributeValue(null, "href");
+							if (rel.equals("alternate")
+									&& type.equals("application/rss+xml")) {
+								currentItem.setTitle(title);
+								currentItem.setUrl(herf);
+								list.add(currentItem);
+								return list;
+							}
+						}
+					}
+					break;
+				case XmlPullParser.END_TAG:
+					tag = parser.getName();
+					if (tag.equals("head")) {
+						return null;
+					}
+					break;
+				}
+				eventType = parser.next();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
+	// RSSをパースする
+	public ArrayList<RssItem> parseRSS(InputStream is) throws IOException,
+			XmlPullParserException {
+		ArrayList<RssItem> list = new ArrayList<RssItem>();
+		XmlPullParser parser = Xml.newPullParser();
+		try {
+			parser.setInput(is, null);
+			int eventType = parser.getEventType();
+			RssItem currentItem = null;
+			while (eventType != XmlPullParser.END_DOCUMENT) {
+				String tag = null;
+				switch (eventType) {
+				case XmlPullParser.START_TAG:
+					tag = parser.getName();
+					if (tag.equals("channel")) {
+						currentItem = new RssItem();
+					} else if (currentItem != null) {
+						if (tag.equals("title")) {
+							currentItem.setTitle(parser.nextText());
+							list.add(currentItem);
+							return list;
+						}
+					}
+					break;
+				case XmlPullParser.END_TAG:
+					tag = parser.getName();
+					if (tag.equals("head")) {
+						return null;
+					}
+					break;
+				}
+				eventType = parser.next();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 
 	}
 

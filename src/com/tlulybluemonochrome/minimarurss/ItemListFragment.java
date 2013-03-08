@@ -6,15 +6,17 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.ListFragment;
+import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Vibrator;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 /**
@@ -33,6 +35,8 @@ public class ItemListFragment extends ListFragment {
 	SortableListView mListView;
 
 	int mDraggingPosition = -1;
+
+	PopupMenu popup;
 
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
@@ -79,7 +83,7 @@ public class ItemListFragment extends ListFragment {
 		@Override
 		public void onSetItems(ArrayList<RssFeed> items) {
 			// TODO 自動生成されたメソッド・スタブ
-			
+
 		}
 	};
 
@@ -99,9 +103,17 @@ public class ItemListFragment extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+
+		// Restore the previously serialized activated item position.
+		if (savedInstanceState != null
+				&& savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
+			setActivatedPosition(savedInstanceState
+					.getInt(STATE_ACTIVATED_POSITION));
+		}
+		
 		View rootView = inflater.inflate(R.layout.fragment_item_list,
 				container, false);
-
+		
 		mListView = (SortableListView) rootView.findViewById(R.id.list);
 		mListView.setDragListener(new DragListener());
 		mListView.setSortable(true);
@@ -123,31 +135,7 @@ public class ItemListFragment extends ListFragment {
 		return rootView;
 	}
 
-	/*
-	 * @Override public void onViewCreated(View view, Bundle savedInstanceState)
-	 * { super.onViewCreated(view, savedInstanceState);
-	 * 
-	 * // Restore the previously serialized activated item position. if
-	 * (savedInstanceState != null &&
-	 * savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
-	 * setActivatedPosition(savedInstanceState
-	 * .getInt(STATE_ACTIVATED_POSITION));
-	 * 
-	 * }
-	 * 
-	 * try { FileInputStream fis = getActivity().openFileInput("SaveData.txt");
-	 * ObjectInputStream ois = new ObjectInputStream(fis); items =
-	 * (ArrayList<RssFeed>) ois.readObject(); ois.close(); } catch (Exception e)
-	 * { }
-	 * 
-	 * ArrayAdapter<RssFeed> adapter = new ArrayAdapter<RssFeed>( getActivity(),
-	 * android.R.layout.simple_list_item_activated_1, android.R.id.text1,
-	 * items);
-	 * 
-	 * mListView.setListAdapter(adapter);
-	 * 
-	 * }
-	 */
+
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -214,10 +202,38 @@ public class ItemListFragment extends ListFragment {
 
 	class DragListener extends SortableListView.SimpleDragListener {
 		@Override
+		public void onItemLongClick(AdapterView<?> parent, View view,
+				int position, long id) {
+
+			// PopupMenuのインスタンスを作成
+			popup = new PopupMenu(getActivity(), view);
+
+			// popup.xmlで設定したメニュー項目をポップアップメニューに割り当てる
+			popup.getMenuInflater().inflate(R.menu.popup, popup.getMenu());
+
+			// ポップアップメニューを表示
+			popup.show();
+
+			// ポップアップメニューのメニュー項目のクリック処理
+			popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+				public boolean onMenuItemClick(MenuItem item) {
+					// 押されたメニュー項目名をToastで表示
+					Toast.makeText(getActivity(),
+							"Clicked : " + item.getTitle(), Toast.LENGTH_SHORT)
+							.show();
+					return true;
+				}
+			});
+
+		}
+
+		@Override
 		public int onStartDrag(int position) {
+			Vibrator vibrator = (Vibrator) getActivity().getSystemService(
+					Context.VIBRATOR_SERVICE);
+			vibrator.vibrate(10);
 			mDraggingPosition = position;
 			mListView.invalidateViews();
-			Log.d("test", String.valueOf(position));
 			return position;
 		}
 
@@ -227,6 +243,7 @@ public class ItemListFragment extends ListFragment {
 					|| positionFrom == positionTo) {
 				return positionFrom;
 			}
+			popup.dismiss();
 			int i;
 			if (positionFrom < positionTo) {
 				final int min = positionFrom;

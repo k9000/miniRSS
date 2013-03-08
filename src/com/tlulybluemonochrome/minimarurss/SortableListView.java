@@ -114,6 +114,7 @@ public class SortableListView extends ListView implements
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View view,
 			int position, long id) {
+		mDragListener.onItemLongClick(parent, view, position, id);
 		return startDrag();
 	}
 
@@ -282,13 +283,16 @@ public class SortableListView extends ListView implements
 
 	/** ImageView 用 LayoutParams の座標情報を更新 */
 	protected void updateLayoutParams(int x, int y) {
-		mLayoutParams.y = getTop() + y - 32;
+		mLayoutParams.y = getTop() + y;
 	}
 
 	/** ドラッグイベントリスナーインターフェース */
 	public interface DragListener {
 		/** ドラッグ開始時の処理 */
 		public int onStartDrag(int position);
+
+		public void onItemLongClick(AdapterView<?> parent, View view,
+				int position, long id);
 
 		/** ドラッグ中の処理 */
 		public int onDuringDrag(int positionFrom, int positionTo);
@@ -316,6 +320,13 @@ public class SortableListView extends ListView implements
 		public boolean onStopDrag(int positionFrom, int positionTo) {
 			return positionFrom != positionTo && positionFrom >= 0
 					|| positionTo >= 0;
+		}
+
+		@Override
+		public void onItemLongClick(AdapterView<?> parent, View view,
+				int position, long id) {
+			// TODO 自動生成されたメソッド・スタブ
+
 		}
 	}
 

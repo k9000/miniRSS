@@ -58,6 +58,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 				result = parseHtml(is);
 			} catch (Exception e) {
 				e.printStackTrace();
+				return null;
 			}
 			break;
 
@@ -67,6 +68,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 				result = parseRSS(is);
 			} catch (Exception e) {
 				e.printStackTrace();
+				return null;
 			}
 			break;
 
@@ -76,8 +78,11 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 				result = parseXml(is);
 			} catch (Exception e) {
 				e.printStackTrace();
+				return null;
 			}
 			break;
+		default:
+			return null;
 		}
 
 		try {

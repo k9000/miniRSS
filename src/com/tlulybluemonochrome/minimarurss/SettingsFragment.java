@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -30,7 +32,7 @@ import android.widget.Switch;
  * 
  */
 public class SettingsFragment extends Fragment implements
-		CompoundButton.OnCheckedChangeListener {
+		CompoundButton.OnCheckedChangeListener,OnClickListener {
 
 	Switch s;
 	SeekBar seekBar;
@@ -38,6 +40,7 @@ public class SettingsFragment extends Fragment implements
 	RadioGroup mRadioGroupOs;
 	boolean mChecked;
 	long mMinute = 600000;
+	Button button;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -123,6 +126,9 @@ public class SettingsFragment extends Fragment implements
 			}
 
 		});
+		
+		button = (Button)rootView.findViewById(R.id.button1);
+		button.setOnClickListener(this);
 
 		// Inflate the layout for this fragment
 		return rootView;
@@ -145,11 +151,17 @@ public class SettingsFragment extends Fragment implements
 		editor.commit();
 	}
 	
-	public void clickButton_Add(View v) {
-		Intent intent = new Intent(getActivity(), (Class<?>) EntryActivity.class);
-		startActivity(intent);
+	@Override
+	public void onClick(View v) {
+		if(v.getId()==R.id.button1){
+			Intent intent = new Intent(getActivity(), (Class<?>) EntryActivity.class);
+			intent.putExtra("ADD", "add");
+			startActivity(intent);
+			getActivity().finish();
+		}
 		
 	}
+	
 
 	protected void NotificationServiceStart() {
 

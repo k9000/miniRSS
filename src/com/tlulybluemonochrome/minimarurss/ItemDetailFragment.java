@@ -97,6 +97,9 @@ public class ItemDetailFragment extends Fragment implements
 	@Override
 	public void onLoadFinished(Loader<ArrayList<RssItem>> arg0,
 			ArrayList<RssItem> arg1) {
+		if(arg1 == null){
+			return;
+		}
 		item = arg1;
 		ArrayAdapter<RssItem> adapter = new ArrayAdapter<RssItem>(
 				getActivity(), android.R.layout.simple_list_item_activated_1,

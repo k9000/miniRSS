@@ -6,8 +6,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -53,6 +51,7 @@ public class EntryActivity extends Activity implements
 	private String mEmail;
 	private String mPassword;
 	private int mPosition;
+	private boolean mPass = false;
 
 	private int mflag;
 
@@ -89,7 +88,12 @@ public class EntryActivity extends Activity implements
 
 		button = (Button) findViewById(R.id.regist_button);
 		
-		showProgress(true);
+		mTitleView = (EditText) findViewById(R.id.title);
+
+		mUriView = (EditText) findViewById(R.id.uri);
+
+		
+		
 		Bundle args = new Bundle();
 		if (getIntent().getDataString() != null) {
 			mflag = 2;
@@ -110,12 +114,16 @@ public class EntryActivity extends Activity implements
 			mPageTitle.setText("RSS Feed 編集");
 			args.putString(ItemDetailFragment.ARG_ITEM_ID, mUri);
 		}
-		getLoaderManager().initLoader(mflag, args, this);
+		
+		if(getIntent().getExtras().getString("ADD") != null){
+			button.setText("Check");
+		}else{
+			showProgress(true);
+			getLoaderManager().initLoader(mflag, args, this);
+		}
+		
 
-		mTitleView = (EditText) findViewById(R.id.title);
-
-		mUriView = (EditText) findViewById(R.id.uri);
-
+		
 		mTitleView.setText(mTitle);
 		mUriView.setText(mUri);
 
@@ -229,6 +237,7 @@ public class EntryActivity extends Activity implements
 	}
 
 	public void clickButton_Regist(View v) {
+		if(mPass){
 		if (getIntent().getExtras().getString("URI") != null) {
 			items.set(mPosition, new RssFeed(mTitleView.getText().toString(),
 					mUriView.getText().toString(), 1));
@@ -254,6 +263,13 @@ public class EntryActivity extends Activity implements
 		
 		
 		this.finish();
+		}else{
+			Bundle args = new Bundle();
+			args.putString(ItemDetailFragment.ARG_ITEM_ID,mUriView.getText().toString());
+			mflag = 3;
+			showProgress(true);
+			getLoaderManager().initLoader(mflag, args, this);
+		}
 	}
 
 	public void clickButton_Cancel(View v) {
@@ -278,7 +294,12 @@ public class EntryActivity extends Activity implements
 	@Override
 	public void onLoadFinished(Loader<ArrayList<RssItem>> arg0,
 			ArrayList<RssItem> arg1) {
-		
+		if(arg1 == null){
+			return;
+		}
+		if(getIntent().getExtras().getString("ADD") != null){
+			button.setText("Add");
+		}
 
 		switch (mflag) {
 		case 1:
@@ -292,6 +313,7 @@ public class EntryActivity extends Activity implements
 					this, android.R.layout.simple_list_item_activated_1,
 					android.R.id.text1, arg1);
 			mListview.setAdapter(adapter);
+			mPass = true;
 			showProgress(false);
 			return;
 		}

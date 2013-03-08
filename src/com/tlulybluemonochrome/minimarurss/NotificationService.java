@@ -33,8 +33,8 @@ public class NotificationService extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 		// TODO 自動生成されたメソッド・スタブ
 
-		RssMessageNotification.titlenotify(getApplicationContext(), "minimaruRSS",
-				"更新中", "更新中", 99);
+		RssMessageNotification.titlenotify(getApplicationContext(),
+				"minimaruRSS", "更新中", "更新中", 99);
 
 		ArrayList<RssItem> arraylist = new ArrayList<RssItem>();
 
@@ -77,6 +77,10 @@ public class NotificationService extends IntentService {
 		} catch (Exception e) {
 			Log.d(TAG, "Error");
 		}
+
+		RssMessageNotification.cancel(getApplicationContext(), 99);
+		RssMessageNotification.titlenotify(getApplicationContext(),
+				"minimaruRSS", "タップして更新", "更新完了", 100);
 	}
 
 	// XMLをパースする
@@ -136,14 +140,6 @@ public class NotificationService extends IntentService {
 		}
 
 		return true;
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		RssMessageNotification.cancel(getApplicationContext(), 99);
-		RssMessageNotification.titlenotify(getApplicationContext(),
-				"minimaruRSS", "タップして更新", "更新完了", 100);
 	}
 
 }

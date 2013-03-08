@@ -144,6 +144,12 @@ public class SettingsFragment extends Fragment implements
 		editor.putBoolean("notification_switch", isChecked);
 		editor.commit();
 	}
+	
+	public void clickButton_Add(View v) {
+		Intent intent = new Intent(getActivity(), (Class<?>) EntryActivity.class);
+		startActivity(intent);
+		
+	}
 
 	protected void NotificationServiceStart() {
 

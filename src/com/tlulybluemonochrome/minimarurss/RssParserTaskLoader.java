@@ -16,14 +16,14 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 
 	private URL url;
 	private int wait;
-	private boolean html = false;
+	private int flag;
 
 	public RssParserTaskLoader(Context context, String url, int wait) {
 		super(context);
 
 		this.wait = wait;
 
-		html = false;
+		flag = 3;
 
 		try {
 			this.url = new URL(url);
@@ -32,12 +32,12 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 		}
 	}
 
-	public RssParserTaskLoader(EntryActivity context, String url) {
+	public RssParserTaskLoader(EntryActivity context, int flag, String url) {
 		super(context);
 
-		wait = 1000;
+		wait = 100;
 
-		html = true;
+		this.flag = flag;
 
 		try {
 			this.url = new URL(url);
@@ -51,21 +51,33 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 
 		ArrayList<RssItem> result = new ArrayList<RssItem>();
 
-		if (html) {
+		switch (flag) {
+		case 1:
+			try {
+				InputStream is = url.openConnection().getInputStream();
+				result = parseHtml(is);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			break;
+
+		case 2:
 			try {
 				InputStream is = url.openConnection().getInputStream();
 				result = parseRSS(is);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			break;
 
-		} else {
+		case 3:
 			try {
 				InputStream is = url.openConnection().getInputStream();
 				result = parseXml(is);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			break;
 		}
 
 		try {

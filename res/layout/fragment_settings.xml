@@ -13,34 +13,34 @@
         android:layout_height="wrap_content"
         android:text="Notification"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:padding="10dp" />
+        android:padding="8dp" />
 
     <Switch
         android:id="@+id/switch1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Notification"
-        android:padding="10dp" />
+        android:padding="8dp" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="NotificationFreqency(minutes)"
-        android:paddingLeft="10dp" />
+        android:paddingLeft="8dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingRight="15dp">
+        android:paddingRight="16dp">
 
         <SeekBar
             android:id="@+id/seekBar1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1" 
-            android:paddingTop="10dp"/>
+            android:paddingTop="8dp"/>
 
         <EditText
             android:id="@+id/editText1"
@@ -50,11 +50,14 @@
             android:gravity="center"
             android:inputType="number"
             android:focusable="false"
-            android:padding="10dp" >
+            android:padding="8dp" >
 
         </EditText>
 
     </LinearLayout>
+    
+    <Space android:layout_width="match_parent"
+        android:layout_height="8dp"/>
 
     <TextView
         android:id="@+id/textView2"
@@ -62,13 +65,13 @@
         android:layout_height="wrap_content"
         android:text="Theme"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:padding="10dp" />
+        android:padding="8dp" />
 
     <RadioGroup
         android:id="@+id/radioGroup1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp" >
+        android:paddingLeft="8dp" >
 
         <RadioButton
             android:id="@+id/radio0"
@@ -92,8 +95,27 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="アプリ再起動後から反映" 
-        android:paddingLeft="10dp" />
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:text="アプリ再起動後から反映" />
+    
+    <Space android:layout_width="match_parent"
+        android:layout_height="16dp"/>
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RSS Feed"
+        android:paddingLeft="8dp"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:onClick="clickButton_Add"
+        android:text="Add RSS Feed" />
 
 </LinearLayout>

@@ -17,8 +17,10 @@ import android.content.Loader;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +54,8 @@ public class EntryActivity extends Activity implements
 	private String mPassword;
 	private int mPosition;
 
+	private int mflag;
+
 	ArrayList<RssFeed> items;
 
 	// UI references.
@@ -59,8 +63,9 @@ public class EntryActivity extends Activity implements
 	private EditText mUriView;
 	private View mLoginFormView;
 	private View mLoginStatusView;
-	private TextView mLoginStatusMessageView;
+	private TextView mPageTitle;
 	private Button button;
+	private ListView mListview;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,26 +81,36 @@ public class EntryActivity extends Activity implements
 		} catch (Exception e) {
 			Toast.makeText(this, "error1", Toast.LENGTH_SHORT).show();
 		}
+		
+		mLoginFormView = findViewById(R.id.login_form);
+		mLoginStatusView = findViewById(R.id.login_status);
+		mPageTitle = (TextView) findViewById(R.id.textView1);
+		mListview = (ListView) findViewById(R.id.listView1);
 
 		button = (Button) findViewById(R.id.regist_button);
-
-		// Set up the login form.
+		
+		showProgress(true);
+		Bundle args = new Bundle();
 		if (getIntent().getDataString() != null) {
+			mflag = 2;
 			mUri = getIntent().getDataString();
-			// showProgress(true);
-			Bundle args = new Bundle();
-			// args.putString("TITLE", mTitleView.getText().toString());
 			args.putString(ItemDetailFragment.ARG_ITEM_ID, getIntent()
 					.getDataString());
-			getLoaderManager().initLoader(0, args, this);
+			
 		} else if (getIntent().getExtras().getString(Intent.EXTRA_TEXT) != null) {
-			// mUri = getIntent().getExtras().getString(Intent.EXTRA_TEXT);
+			mflag = 1;
+			args.putString(ItemDetailFragment.ARG_ITEM_ID, getIntent().getExtras().getString(Intent.EXTRA_TEXT));
+			
 		} else if (getIntent().getExtras().getString("URI") != null) {
+			mflag = 3;
 			mTitle = getIntent().getExtras().getString("TITLE");
 			mUri = getIntent().getExtras().getString("URI");
 			mPosition = getIntent().getExtras().getInt("POSITION");
 			button.setText("Edit");
+			mPageTitle.setText("RSS Feed 編集");
+			args.putString(ItemDetailFragment.ARG_ITEM_ID, mUri);
 		}
+		getLoaderManager().initLoader(mflag, args, this);
 
 		mTitleView = (EditText) findViewById(R.id.title);
 
@@ -114,9 +129,7 @@ public class EntryActivity extends Activity implements
 		 * false; } });
 		 */
 
-		mLoginFormView = findViewById(R.id.login_form);
-		mLoginStatusView = findViewById(R.id.login_status);
-		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
+		
 
 		/*
 		 * findViewById(R.id.sign_in_button).setOnClickListener( new
@@ -175,11 +188,13 @@ public class EntryActivity extends Activity implements
 	/**
 	 * Shows the progress UI and hides the login form.
 	 */
+	
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	private void showProgress(final boolean show) {
 		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
 		// for very easy animations. If available, use these APIs to fade-in
 		// the progress spinner.
+		/*
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
 			int shortAnimTime = getResources().getInteger(
 					android.R.integer.config_shortAnimTime);
@@ -205,23 +220,26 @@ public class EntryActivity extends Activity implements
 									: View.VISIBLE);
 						}
 					});
-		} else {
+		} else {*/
 			// The ViewPropertyAnimator APIs are not available, so simply show
 			// and hide the relevant UI components.
 			mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-		}
+			//mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+		//}
 	}
 
 	public void clickButton_Regist(View v) {
 		if (getIntent().getExtras().getString("URI") != null) {
 			items.set(mPosition, new RssFeed(mTitleView.getText().toString(),
 					mUriView.getText().toString(), 1));
-			startActivity(new Intent(this, (Class<?>) ItemListActivity.class));
+			Intent intent = new Intent(this, (Class<?>) ItemListActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_NO_ANIMATION);
+			startActivity(intent);
 
 		} else {
 			items.add(new RssFeed(mTitleView.getText().toString(), mUriView
 					.getText().toString(), 1));
+			Toast.makeText(this, mTitleView.getText().toString()+" を追加しました", Toast.LENGTH_SHORT).show();
 		}
 
 		try {
@@ -233,17 +251,25 @@ public class EntryActivity extends Activity implements
 		} catch (Exception e1) {
 			Toast.makeText(this, "error2", Toast.LENGTH_SHORT).show();
 		}
+		
+		
 		this.finish();
 	}
 
 	public void clickButton_Cancel(View v) {
+		if (getIntent().getExtras().getString("URI") != null) {
+			Intent intent = new Intent(this, (Class<?>) ItemListActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_NO_ANIMATION);
+			startActivity(intent);
+			}
+		
 		this.finish();
 	}
 
 	@Override
-	public Loader<ArrayList<RssItem>> onCreateLoader(int wait, Bundle args) {
+	public Loader<ArrayList<RssItem>> onCreateLoader(int flag, Bundle args) {
 		String url = args.getString(ItemDetailFragment.ARG_ITEM_ID);
-		RssParserTaskLoader appLoader = new RssParserTaskLoader(this, url);
+		RssParserTaskLoader appLoader = new RssParserTaskLoader(this, flag, url);
 
 		appLoader.forceLoad();
 		return appLoader;
@@ -252,11 +278,29 @@ public class EntryActivity extends Activity implements
 	@Override
 	public void onLoadFinished(Loader<ArrayList<RssItem>> arg0,
 			ArrayList<RssItem> arg1) {
-		if (arg1 != null) {
-			mTitleView.setText(arg1.get(0).getTitle());
-			// mUriView.setText(arg1.get(0).getUrl());
+		
 
+		switch (mflag) {
+		case 1:
+			mUriView.setText(arg1.get(0).getUrl());
+			break;
+		case 2:
+			mTitleView.setText(arg1.get(0).getTitle());
+			break;
+		case 3:
+			ArrayAdapter<RssItem> adapter = new ArrayAdapter<RssItem>(
+					this, android.R.layout.simple_list_item_activated_1,
+					android.R.id.text1, arg1);
+			mListview.setAdapter(adapter);
+			showProgress(false);
+			return;
 		}
+		mflag++;
+
+		Bundle args = new Bundle();
+		args.putString(ItemDetailFragment.ARG_ITEM_ID, mUriView.getText()
+				.toString());
+		getLoaderManager().restartLoader(mflag, args, this);
 
 	}
 

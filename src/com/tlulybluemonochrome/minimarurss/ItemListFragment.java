@@ -63,6 +63,8 @@ public class ItemListFragment extends ListFragment {
 		 * @param position
 		 */
 		public void onItemSelected(int tag, String url, int position);
+
+		public void onSetItems(ArrayList<RssFeed> items);
 	}
 
 	/**
@@ -72,6 +74,12 @@ public class ItemListFragment extends ListFragment {
 	private static Callbacks sDummyCallbacks = new Callbacks() {
 		@Override
 		public void onItemSelected(int tag, String url, int position) {
+		}
+
+		@Override
+		public void onSetItems(ArrayList<RssFeed> items) {
+			// TODO 自動生成されたメソッド・スタブ
+			
 		}
 	};
 
@@ -248,6 +256,7 @@ public class ItemListFragment extends ListFragment {
 		public boolean onStopDrag(int positionFrom, int positionTo) {
 			mDraggingPosition = -1;
 			mListView.invalidateViews();
+			mCallbacks.onSetItems(items);
 			return super.onStopDrag(positionFrom, positionTo);
 		}
 	}

@@ -181,6 +181,21 @@ public class ItemListActivity extends Activity implements
 	}
 
 	@Override
+	public void onSetItems(ArrayList<RssFeed> items) {
+		this.items = items;
+		try {
+			FileOutputStream fos = this.openFileOutput("SaveData.txt",
+					Context.MODE_PRIVATE);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(items);
+			oos.close();
+		} catch (Exception e1) {
+		}
+		
+	}
+	
+	
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 
@@ -205,6 +220,8 @@ public class ItemListActivity extends Activity implements
 
 		return ret;
 	}
+
+
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -267,4 +284,8 @@ public class ItemListActivity extends Activity implements
 		}
 
 	}
+
+
+
+
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
@@ -217,6 +218,12 @@ public class ItemListFragment extends ListFragment {
 				public boolean onMenuItemClick(MenuItem item) {
 					switch (item.getItemId()) {
 					case R.id.menu_edit:
+						Intent intent = new Intent(getActivity(), (Class<?>) EntryActivity.class);
+						intent.putExtra("TITLE", items.get(position).getTitle());
+						intent.putExtra("URI", items.get(position).getUrl());
+						intent.putExtra("POSITION",position);
+						startActivity(intent);
+						getActivity().finish();
 						break;
 
 					case R.id.menu_delete:

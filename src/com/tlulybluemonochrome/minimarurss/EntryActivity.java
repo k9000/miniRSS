@@ -12,10 +12,12 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
+import android.content.Intent;
 import android.content.Loader;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,10 +46,12 @@ public class EntryActivity extends Activity implements
 	// private UserLoginTask mAuthTask = null;
 
 	// Values for email and password at the time of the login attempt.
+	private String mTitle;
 	private String mUri;
 	private String mEmail;
 	private String mPassword;
-	
+	private int mPosition;
+
 	ArrayList<RssFeed> items;
 
 	// UI references.
@@ -56,64 +60,73 @@ public class EntryActivity extends Activity implements
 	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
+	private Button button;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_entry);
-		
+
 		try {
 			FileInputStream fis = openFileInput("SaveData.txt");
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			items = (ArrayList<RssFeed>) ois.readObject();
 			ois.close();
 		} catch (Exception e) {
-			Toast.makeText(this,"error1", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "error1", Toast.LENGTH_SHORT).show();
 		}
 
+		button = (Button) findViewById(R.id.regist_button);
+
 		// Set up the login form.
-		mUri = getIntent().getDataString();
+		if (getIntent().getDataString() != null) {
+			mUri = getIntent().getDataString();
+			// showProgress(true);
+			Bundle args = new Bundle();
+			// args.putString("TITLE", mTitleView.getText().toString());
+			args.putString(ItemDetailFragment.ARG_ITEM_ID, getIntent()
+					.getDataString());
+			getLoaderManager().initLoader(0, args, this);
+		} else if (getIntent().getExtras().getString(Intent.EXTRA_TEXT) != null) {
+			// mUri = getIntent().getExtras().getString(Intent.EXTRA_TEXT);
+		} else if (getIntent().getExtras().getString("URI") != null) {
+			mTitle = getIntent().getExtras().getString("TITLE");
+			mUri = getIntent().getExtras().getString("URI");
+			mPosition = getIntent().getExtras().getInt("POSITION");
+			button.setText("Edit");
+		}
+
 		mTitleView = (EditText) findViewById(R.id.title);
-		
 
 		mUriView = (EditText) findViewById(R.id.uri);
+
+		mTitleView.setText(mTitle);
 		mUriView.setText(mUri);
-		
+
 		/*
-		mPasswordView
-				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-					@Override
-					public boolean onEditorAction(TextView textView, int id,
-							KeyEvent keyEvent) {
-						if (id == R.id.login || id == EditorInfo.IME_NULL) {
-							// attemptLogin();
-							return true;
-						}
-						return false;
-					}
-				});*/
+		 * mPasswordView .setOnEditorActionListener(new
+		 * TextView.OnEditorActionListener() {
+		 * 
+		 * @Override public boolean onEditorAction(TextView textView, int id,
+		 * KeyEvent keyEvent) { if (id == R.id.login || id ==
+		 * EditorInfo.IME_NULL) { // attemptLogin(); return true; } return
+		 * false; } });
+		 */
 
 		mLoginFormView = findViewById(R.id.login_form);
 		mLoginStatusView = findViewById(R.id.login_status);
 		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
 
 		/*
-		findViewById(R.id.sign_in_button).setOnClickListener(
-				new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						showProgress(true);
-						getLoaderManager().initLoader(0, null, this.EntryActivity.class);
-						// attemptLogin();
-					}
-				});*/
-		
-		//showProgress(true);
-		Bundle args = new Bundle();
-		//args.putString("TITLE", mTitleView.getText().toString());
-		args.putString(ItemDetailFragment.ARG_ITEM_ID, getIntent().getDataString());
-        getLoaderManager().initLoader(0, args, this);
+		 * findViewById(R.id.sign_in_button).setOnClickListener( new
+		 * View.OnClickListener() {
+		 * 
+		 * @Override public void onClick(View view) { showProgress(true);
+		 * getLoaderManager().initLoader(0, null, this.EntryActivity.class); //
+		 * attemptLogin(); } });
+		 */
+
 	}
 
 	/*
@@ -199,38 +212,38 @@ public class EntryActivity extends Activity implements
 			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 		}
 	}
-	
-	
-	public void clickButton_Regist(View v){
-			 items.add(new RssFeed(mTitleView.getText().toString(),mUriView.getText().toString(),1));
-			 
-			 try {
-					FileOutputStream fos = this.openFileOutput("SaveData.txt",
-							Context.MODE_PRIVATE);
-					ObjectOutputStream oos = new ObjectOutputStream(fos);
-					oos.writeObject(items);
-					oos.close();
-				} catch (Exception e1) {
-					Toast.makeText(this,"error2", Toast.LENGTH_SHORT).show();
-				}
-			 this.finish();
-	}
-	
-	public void clickButton_Cancel(View v){
+
+	public void clickButton_Regist(View v) {
+		if (getIntent().getExtras().getString("URI") != null) {
+			items.set(mPosition, new RssFeed(mTitleView.getText().toString(),
+					mUriView.getText().toString(), 1));
+			startActivity(new Intent(this, (Class<?>) ItemListActivity.class));
+
+		} else {
+			items.add(new RssFeed(mTitleView.getText().toString(), mUriView
+					.getText().toString(), 1));
+		}
+
+		try {
+			FileOutputStream fos = this.openFileOutput("SaveData.txt",
+					Context.MODE_PRIVATE);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(items);
+			oos.close();
+		} catch (Exception e1) {
+			Toast.makeText(this, "error2", Toast.LENGTH_SHORT).show();
+		}
 		this.finish();
 	}
-	
-	
-	
 
-	
-	
+	public void clickButton_Cancel(View v) {
+		this.finish();
+	}
+
 	@Override
 	public Loader<ArrayList<RssItem>> onCreateLoader(int wait, Bundle args) {
 		String url = args.getString(ItemDetailFragment.ARG_ITEM_ID);
-		RssParserTaskLoader appLoader = new RssParserTaskLoader(this,
-				url);
-
+		RssParserTaskLoader appLoader = new RssParserTaskLoader(this, url);
 
 		appLoader.forceLoad();
 		return appLoader;
@@ -239,23 +252,19 @@ public class EntryActivity extends Activity implements
 	@Override
 	public void onLoadFinished(Loader<ArrayList<RssItem>> arg0,
 			ArrayList<RssItem> arg1) {
-		if(arg1!=null){
+		if (arg1 != null) {
 			mTitleView.setText(arg1.get(0).getTitle());
-			//mUriView.setText(arg1.get(0).getUrl());
-			
-			
+			// mUriView.setText(arg1.get(0).getUrl());
+
 		}
-		
-		
+
 	}
 
 	@Override
 	public void onLoaderReset(Loader<ArrayList<RssItem>> arg0) {
 		// TODO 自動生成されたメソッド・スタブ
-		
+
 	}
-
-
 
 	/**
 	 * Represents an asynchronous login/registration task used to authenticate

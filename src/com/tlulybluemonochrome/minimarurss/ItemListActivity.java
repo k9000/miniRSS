@@ -74,6 +74,9 @@ public class ItemListActivity extends Activity implements
 			items = (ArrayList<RssFeed>) ois.readObject();
 			ois.close();
 		} catch (Exception e) {
+		}
+		
+		if(items == null || items.isEmpty()){
 			items = new ArrayList<RssFeed>();
 
 			items.add(new RssFeed(
@@ -117,7 +120,6 @@ public class ItemListActivity extends Activity implements
 				oos.close();
 			} catch (Exception e1) {
 			}
-
 		}
 
 		super.onCreate(savedInstanceState);

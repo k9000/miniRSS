@@ -110,10 +110,10 @@ public class ItemListFragment extends ListFragment {
 			setActivatedPosition(savedInstanceState
 					.getInt(STATE_ACTIVATED_POSITION));
 		}
-		
+
 		View rootView = inflater.inflate(R.layout.fragment_item_list,
 				container, false);
-		
+
 		mListView = (SortableListView) rootView.findViewById(R.id.list);
 		mListView.setDragListener(new DragListener());
 		mListView.setSortable(true);
@@ -134,8 +134,6 @@ public class ItemListFragment extends ListFragment {
 
 		return rootView;
 	}
-
-
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -203,7 +201,7 @@ public class ItemListFragment extends ListFragment {
 	class DragListener extends SortableListView.SimpleDragListener {
 		@Override
 		public void onItemLongClick(AdapterView<?> parent, View view,
-				int position, long id) {
+				final int position, long id) {
 
 			// PopupMenuのインスタンスを作成
 			popup = new PopupMenu(getActivity(), view);
@@ -217,10 +215,20 @@ public class ItemListFragment extends ListFragment {
 			// ポップアップメニューのメニュー項目のクリック処理
 			popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 				public boolean onMenuItemClick(MenuItem item) {
-					// 押されたメニュー項目名をToastで表示
-					Toast.makeText(getActivity(),
-							"Clicked : " + item.getTitle(), Toast.LENGTH_SHORT)
-							.show();
+					switch (item.getItemId()) {
+					case R.id.menu_edit:
+						break;
+
+					case R.id.menu_delete:
+						Toast.makeText(getActivity(),
+								items.get(position).getTitle() + "を削除しました",
+								Toast.LENGTH_SHORT).show();
+						items.remove(position);
+						mListView.invalidateViews();
+						mCallbacks.onSetItems(items);
+						break;
+					}
+
 					return true;
 				}
 			});

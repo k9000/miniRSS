@@ -7,9 +7,15 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * A list fragment representing a list of Items. This fragment also supports
@@ -23,6 +29,10 @@ import android.widget.ListView;
 public class ItemListFragment extends ListFragment {
 
 	ArrayList<RssFeed> items;
+
+	SortableListView mListView;
+
+	int mDraggingPosition = -1;
 
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
@@ -79,16 +89,14 @@ public class ItemListFragment extends ListFragment {
 	}
 
 	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.fragment_item_list,
+				container, false);
 
-		// Restore the previously serialized activated item position.
-		if (savedInstanceState != null
-				&& savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
-			setActivatedPosition(savedInstanceState
-					.getInt(STATE_ACTIVATED_POSITION));
-
-		}
+		mListView = (SortableListView) rootView.findViewById(R.id.list);
+		mListView.setDragListener(new DragListener());
+		mListView.setSortable(true);
 
 		try {
 			FileInputStream fis = getActivity().openFileInput("SaveData.txt");
@@ -102,9 +110,36 @@ public class ItemListFragment extends ListFragment {
 				getActivity(), android.R.layout.simple_list_item_activated_1,
 				android.R.id.text1, items);
 
-		setListAdapter(adapter);
+		mListView.setAdapter(adapter);
 
+		return rootView;
 	}
+
+	/*
+	 * @Override public void onViewCreated(View view, Bundle savedInstanceState)
+	 * { super.onViewCreated(view, savedInstanceState);
+	 * 
+	 * // Restore the previously serialized activated item position. if
+	 * (savedInstanceState != null &&
+	 * savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
+	 * setActivatedPosition(savedInstanceState
+	 * .getInt(STATE_ACTIVATED_POSITION));
+	 * 
+	 * }
+	 * 
+	 * try { FileInputStream fis = getActivity().openFileInput("SaveData.txt");
+	 * ObjectInputStream ois = new ObjectInputStream(fis); items =
+	 * (ArrayList<RssFeed>) ois.readObject(); ois.close(); } catch (Exception e)
+	 * { }
+	 * 
+	 * ArrayAdapter<RssFeed> adapter = new ArrayAdapter<RssFeed>( getActivity(),
+	 * android.R.layout.simple_list_item_activated_1, android.R.id.text1,
+	 * items);
+	 * 
+	 * mListView.setListAdapter(adapter);
+	 * 
+	 * }
+	 */
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -167,6 +202,54 @@ public class ItemListFragment extends ListFragment {
 		}
 
 		mActivatedPosition = position;
+	}
+
+	class DragListener extends SortableListView.SimpleDragListener {
+		@Override
+		public int onStartDrag(int position) {
+			mDraggingPosition = position;
+			mListView.invalidateViews();
+			Log.d("test", String.valueOf(position));
+			return position;
+		}
+
+		@Override
+		public int onDuringDrag(int positionFrom, int positionTo) {
+			if (positionFrom < 0 || positionTo < 0
+					|| positionFrom == positionTo) {
+				return positionFrom;
+			}
+			int i;
+			if (positionFrom < positionTo) {
+				final int min = positionFrom;
+				final int max = positionTo;
+				final RssFeed data = items.get(min);
+				i = min;
+				while (i < max) {
+					items.set(i, items.get(++i));
+				}
+				items.set(max, data);
+			} else if (positionFrom > positionTo) {
+				final int min = positionTo;
+				final int max = positionFrom;
+				final RssFeed data = items.get(max);
+				i = max;
+				while (i > min) {
+					items.set(i, items.get(--i));
+				}
+				items.set(min, data);
+			}
+			mDraggingPosition = positionTo;
+			mListView.invalidateViews();
+			return positionTo;
+		}
+
+		@Override
+		public boolean onStopDrag(int positionFrom, int positionTo) {
+			mDraggingPosition = -1;
+			mListView.invalidateViews();
+			return super.onStopDrag(positionFrom, positionTo);
+		}
 	}
 
 }

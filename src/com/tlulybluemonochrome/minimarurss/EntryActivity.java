@@ -213,6 +213,11 @@ public class EntryActivity extends Activity implements
 				} catch (Exception e1) {
 					Toast.makeText(this,"error2", Toast.LENGTH_SHORT).show();
 				}
+			 this.finish();
+	}
+	
+	public void clickButton_Cancel(View v){
+		this.finish();
 	}
 	
 	

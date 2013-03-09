@@ -78,39 +78,43 @@ public class ItemListActivity extends Activity implements
 		
 		if(items == null || items.isEmpty()){
 			items = new ArrayList<RssFeed>();
+			items.add(new RssFeed(
+					"総合ニュース",
+					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss",
+					0xff00aeef));
 
 			items.add(new RssFeed(
 					"ピックアップ",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=ir",
-					1));
+					0xff99cc00));
 			items.add(new RssFeed(
 					"社会",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=y",
-					1));
+					0xffcc0000));
 			items.add(new RssFeed(
 					"国際",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=w",
-					1));
+					0xfff9f903));
 			items.add(new RssFeed(
 					"ビジネス",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=b",
-					1));
+					0xfffcb414));
 			items.add(new RssFeed(
 					"政治",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=p",
-					1));
+					0xffda31e5));
 			items.add(new RssFeed(
 					"エンタメ",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=e",
-					1));
+					0xff768342));
 			items.add(new RssFeed(
 					"スポーツ",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=s",
-					1));
+					0xff457387));
 			items.add(new RssFeed(
 					"テクノロジー",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=t",
-					1));
+					0xff545857));
 
 			try {
 				FileOutputStream fos = this.openFileOutput("SaveData.txt",

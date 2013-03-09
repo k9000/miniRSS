@@ -2,7 +2,11 @@ package com.tlulybluemonochrome.minimarurss;
 
 import java.io.Serializable;
 
-public class RssFeed implements Serializable {
+import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class RssFeed implements Serializable, Parcelable {
 	/**
 	 * 
 	 */
@@ -16,6 +20,28 @@ public class RssFeed implements Serializable {
 		this.url = url;
 		this.tag = tag;
 	}
+
+	public RssFeed(Parcel in) {
+		// writeToParcelで保存した順番で読み出す必要がある
+		title = in.readString();
+		url = in.readString();
+		tag = in.readInt();
+
+	}
+
+	public RssFeed() {
+
+	}
+
+	public static final Parcelable.Creator<RssFeed> CREATOR = new Parcelable.Creator<RssFeed>() {
+		public RssFeed createFromParcel(Parcel in) {
+			return new RssFeed(in);
+		}
+
+		public RssFeed[] newArray(int size) {
+			return new RssFeed[size];
+		}
+	};
 
 	@Override
 	public String toString() {
@@ -44,6 +70,27 @@ public class RssFeed implements Serializable {
 
 	public void setTag(int tag) {
 		this.tag = tag;
+	}
+
+	public Bitmap getImageData() {
+		Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+		bmp.eraseColor(getTag());
+		return bmp;
+	}
+
+	@Override
+	public int describeContents() {
+		// TODO 自動生成されたメソッド・スタブ
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO 自動生成されたメソッド・スタブ
+		dest.writeString(title);
+		dest.writeString(url);
+		dest.writeInt(tag);
+
 	}
 
 }

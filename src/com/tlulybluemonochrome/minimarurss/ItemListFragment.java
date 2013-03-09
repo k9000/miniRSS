@@ -9,13 +9,13 @@ import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -127,9 +127,8 @@ public class ItemListFragment extends ListFragment {
 		} catch (Exception e) {
 		}
 
-		ArrayAdapter<RssFeed> adapter = new ArrayAdapter<RssFeed>(
-				getActivity(), android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, items);
+		CustomAdapter adapter = new CustomAdapter(
+				getActivity(), 0, items);
 
 		mListView.setAdapter(adapter);
 
@@ -219,8 +218,8 @@ public class ItemListFragment extends ListFragment {
 					switch (item.getItemId()) {
 					case R.id.menu_edit:
 						Intent intent = new Intent(getActivity(), (Class<?>) EntryActivity.class);
-						intent.putExtra("TITLE", items.get(position).getTitle());
-						intent.putExtra("URI", items.get(position).getUrl());
+						//intent.putExtra("Parcelable", (Parcelable)items);
+						intent.putExtra("EDIT", true);
 						intent.putExtra("POSITION",position);
 						startActivity(intent);
 						getActivity().finish();

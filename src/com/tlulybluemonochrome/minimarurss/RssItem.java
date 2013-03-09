@@ -22,8 +22,17 @@ public class RssItem implements Parcelable, Serializable {
 		this.tag = tag;
 	}
 
-	public RssItem() {
+	public RssItem(Parcel in) {
+		// writeToParcelで保存した順番で読み出す必要がある
+		title = in.readString();
+		url = in.readString();
+		text = in.readString();
+		tag = in.readInt();
 
+	}
+	
+	public RssItem(){
+		
 	}
 
 	@Override

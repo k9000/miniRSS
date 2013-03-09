@@ -8,8 +8,10 @@ import java.util.ArrayList;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Build;
@@ -100,9 +102,8 @@ public class EntryActivity extends Activity implements
 		mUriView = (EditText) findViewById(R.id.uri);
 
 		imageButton = (ImageButton) findViewById(R.id.imageButton1);
-		
-		CheckBox checkBox = (CheckBox) findViewById(R.id.checkBox1);
 
+		CheckBox checkBox = (CheckBox) findViewById(R.id.checkBox1);
 
 		Bundle args = new Bundle();
 		if (getIntent().getDataString() != null) {
@@ -143,20 +144,18 @@ public class EntryActivity extends Activity implements
 		mTitleView.setText(mTitle);
 		mUriView.setText(mUri);
 		checkBox.setChecked(noti);
-		
+
 		// チェックボックスがクリックされた時に呼び出されるコールバックリスナーを登録します
-        checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            // チェックボックスがクリックされた時に呼び出されます
-            public void onClick(View v) {
-                CheckBox checkBox = (CheckBox) v;
-                // チェックボックスのチェック状態を取得します
-                noti = checkBox.isChecked();
-                
-            }
-        });
+		checkBox.setOnClickListener(new View.OnClickListener() {
+			@Override
+			// チェックボックスがクリックされた時に呼び出されます
+			public void onClick(View v) {
+				CheckBox checkBox = (CheckBox) v;
+				// チェックボックスのチェック状態を取得します
+				noti = checkBox.isChecked();
 
-
+			}
+		});
 
 	}
 
@@ -170,13 +169,13 @@ public class EntryActivity extends Activity implements
 	public void clickButton_Regist(View v) {
 		if (mPass) {
 			if (getIntent().getBooleanExtra("EDIT", false)) {
-				items.set(mPosition,
-						new RssFeed(mTitleView.getText().toString(), mUriView
-								.getText().toString(), selectColor,noti));
+				items.set(mPosition, new RssFeed(mTitleView.getText()
+						.toString(), mUriView.getText().toString(),
+						selectColor, noti));
 
 			} else {
 				items.add(new RssFeed(mTitleView.getText().toString(), mUriView
-						.getText().toString(), selectColor,noti));
+						.getText().toString(), selectColor, noti));
 				Toast.makeText(this,
 						mTitleView.getText().toString() + " を追加しました",
 						Toast.LENGTH_SHORT).show();
@@ -250,7 +249,28 @@ public class EntryActivity extends Activity implements
 	@Override
 	public void onLoadFinished(Loader<ArrayList<RssItem>> arg0,
 			ArrayList<RssItem> arg1) {
+		showProgress(false);
 		if (arg1 == null) {
+			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+					this);
+			// アラートダイアログのタイトルを設定します
+			// alertDialogBuilder.setTitle("フィードを取得出来ませんでした");
+			// アラートダイアログのメッセージを設定します
+			alertDialogBuilder.setMessage("フィードを取得出来ませんでした");
+			// アラートダイアログの肯定ボタンがクリックされた時に呼び出されるコールバックリスナーを登録します
+			alertDialogBuilder.setPositiveButton("OK",
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// class.EntryActivity.finish();
+						}
+					});
+			// アラートダイアログのキャンセルが可能かどうかを設定します
+			alertDialogBuilder.setCancelable(true);
+			AlertDialog alertDialog = alertDialogBuilder.create();
+			// アラートダイアログを表示します
+			alertDialog.show();
+
 			return;
 		}
 		if (getIntent().getExtras().getString("ADD") != null) {
@@ -270,7 +290,6 @@ public class EntryActivity extends Activity implements
 					android.R.id.text1, arg1);
 			mListview.setAdapter(adapter);
 			mPass = true;
-			showProgress(false);
 			return;
 		}
 		mflag++;

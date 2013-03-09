@@ -100,7 +100,7 @@ public class RssMessageNotification {
 				.setAutoCancel(true);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			builder.setPriority(Notification.PRIORITY_HIGH).setStyle(
+			builder.setPriority(Notification.PRIORITY_LOW).setStyle(
 					new Notification.BigTextStyle().bigText(text)
 							.setBigContentTitle(title)
 							.setSummaryText("minimaruRSS"));

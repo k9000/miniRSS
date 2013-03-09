@@ -104,9 +104,6 @@ public class NotificationService extends IntentService {
 			Log.d(TAG, "Error");
 		}
 
-		RssMessageNotification.cancel(getApplicationContext(), 99);
-		RssMessageNotification.titlenotify(getApplicationContext(),
-				"minimaruRSS", "タップして更新", "更新完了", 100);
 	}
 
 	// XMLをパースする
@@ -201,6 +198,14 @@ public class NotificationService extends IntentService {
 		}
 		mBmp.setPixels(pixels, 0, width, 0, 0, width, height);
 		return mBmp;
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		RssMessageNotification.cancel(getApplicationContext(), 99);
+		RssMessageNotification.titlenotify(getApplicationContext(),
+				"minimaruRSS", "タップして更新", "更新完了", 100);
 	}
 
 }

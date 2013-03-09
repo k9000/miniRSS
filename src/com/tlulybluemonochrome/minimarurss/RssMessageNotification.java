@@ -36,42 +36,19 @@ public class RssMessageNotification {
 	 * presentation of rss message notifications. Make sure to follow the <a
 	 * href="https://developer.android.com/design/patterns/notifications.html">
 	 * Notification design guidelines</a> when doing so.
-	 *@param color 
+	 * 
+	 * @param color
 	 * 
 	 * @see #cancel(Context)
 	 */
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public static void notify(final Context context, final String title,
-			final String text, final String url, final int id, int col) {
+			final String text, final String url, final int id, Bitmap bitmap) {
 		final Resources res = context.getResources();
 
 		// This image is used as the notification's large icon (thumbnail).
 		// TODO: Remove this if your notification has no relevant thumbnail.
-		final Bitmap picture = BitmapFactory.decodeResource(res,
-				R.drawable.ic_launcher);
-		Bitmap mBmp = picture.copy(picture.getConfig(), true);  
-		/*
-		int width = mBmp.getWidth();
-		int height = mBmp.getHeight();
-		for (int y = 0; y < height; y++) {
-		  for (int x = 0; x < width; x++) {
-		    if( mBmp.getPixel(x, y)!=0){ mBmp.setPixel(x, y, color); }
-		  }
-		}*/
-		
-		int width = mBmp.getWidth();
-		int height = mBmp.getHeight();
-		int[] pixels = new int[width * height];
-		mBmp.getPixels(pixels, 0, width, 0, 0, width, height);
-		for (int y = 0; y < height; y++) {
-		  for (int x = 0; x < width; x++) {
-		    if( pixels[x + y * width]!=0){ pixels[x + y * width] = col; }
-		  }
-		}
-		
-		//mBmp.eraseColor(color);
-		mBmp.setPixels(pixels, 0, width, 0, 0, width, height);
-		
+
 
 		final String ticker = title;
 
@@ -94,7 +71,7 @@ public class RssMessageNotification {
 
 				// Provide a large icon, shown with the notification in the
 				// notification drawer on devices running Android 3.0 or later.
-				.setLargeIcon(mBmp)
+				.setLargeIcon(bitmap)
 
 				// Set ticker text (preview) information for this notification.
 				.setTicker(ticker)

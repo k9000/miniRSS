@@ -33,13 +33,6 @@ import android.widget.Toast;
 public class EntryActivity extends Activity implements
 		LoaderCallbacks<ArrayList<RssItem>> {
 	/**
-	 * A dummy authentication store containing known user names and passwords.
-	 * TODO: remove after connecting to a real authentication system.
-	 */
-	private static final String[] DUMMY_CREDENTIALS = new String[] {
-			"foo@example.com:hello", "bar@example.com:world" };
-
-	/**
 	 * The default email to populate the email field with.
 	 */
 	public static final String EXTRA_EMAIL = "com.example.android.authenticatordemo.extra.EMAIL";
@@ -52,11 +45,8 @@ public class EntryActivity extends Activity implements
 	// Values for email and password at the time of the login attempt.
 	private String mTitle;
 	private String mUri;
-	private String mEmail;
-	private String mPassword;
 	private int mPosition;
 	private boolean mPass = false;
-	private RssFeed mItem;
 	private boolean noti = false;
 
 	int selectColor = 0xff00aeef;
@@ -68,12 +58,12 @@ public class EntryActivity extends Activity implements
 	// UI references.
 	private EditText mTitleView;
 	private EditText mUriView;
-	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mPageTitle;
 	private Button button;
 	private ListView mListview;
-	ImageButton imageButton;
+	private ImageButton imageButton;
+	private CheckBox checkBox;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,35 +80,30 @@ public class EntryActivity extends Activity implements
 			Toast.makeText(this, "error1", Toast.LENGTH_SHORT).show();
 		}
 
-		mLoginFormView = findViewById(R.id.login_form);
+		// レイアウトID登録
 		mLoginStatusView = findViewById(R.id.login_status);
 		mPageTitle = (TextView) findViewById(R.id.textView1);
 		mListview = (ListView) findViewById(R.id.listView1);
-
 		button = (Button) findViewById(R.id.regist_button);
-
 		mTitleView = (EditText) findViewById(R.id.title);
-
 		mUriView = (EditText) findViewById(R.id.uri);
-
 		imageButton = (ImageButton) findViewById(R.id.imageButton1);
-
-		CheckBox checkBox = (CheckBox) findViewById(R.id.checkBox1);
+		checkBox = (CheckBox) findViewById(R.id.checkBox1);
 
 		Bundle args = new Bundle();
-		if (getIntent().getDataString() != null) {
-			mflag = 2;
+		if (getIntent().getDataString() != null) {// RSS_Linkクリックから
+			mflag = 2;// タイトル取得を目指す
 			mUri = getIntent().getDataString();
 			args.putString(ItemDetailFragment.ARG_ITEM_ID, getIntent()
 					.getDataString());
 
-		} else if (getIntent().getStringExtra(Intent.EXTRA_TEXT) != null) {
-			mflag = 1;
+		} else if (getIntent().getStringExtra(Intent.EXTRA_TEXT) != null) {// ページ共有から
+			mflag = 1;// URI取得を目指す
 			args.putString(ItemDetailFragment.ARG_ITEM_ID, getIntent()
 					.getExtras().getString(Intent.EXTRA_TEXT));
 
-		} else if (getIntent().getBooleanExtra("EDIT", false)) {
-			mflag = 3;
+		} else if (getIntent().getBooleanExtra("EDIT", false)) {// 編集クリックから
+			mflag = 3;// 記事一覧取得を目指す
 			// mItem = getIntent().getParcelableExtra("Parcelable");
 			mPosition = getIntent().getExtras().getInt("POSITION");
 			mTitle = items.get(mPosition).getTitle();
@@ -127,19 +112,18 @@ public class EntryActivity extends Activity implements
 			button.setText("Edit");
 			mPageTitle.setText("RSS Feed 編集");
 			args.putString(ItemDetailFragment.ARG_ITEM_ID, mUri);
-			// CustomDataのデータをViewの各Widgetにセットする
-
 			selectColor = items.get(mPosition).getTag();
 
 		}
 
-		if (getIntent().getExtras().getString("ADD") != null) {
+		if (getIntent().getExtras().getString("ADD") != null) {// 設定の追加ボタンから
 			button.setText("Check");
 		} else {
 			showProgress(true);
 			getLoaderManager().initLoader(mflag, args, this);
 		}
 
+		// 状態に合わせてUIの文字とか変更
 		imageButton.setBackgroundColor(selectColor);
 		mTitleView.setText(mTitle);
 		mUriView.setText(mUri);
@@ -159,6 +143,7 @@ public class EntryActivity extends Activity implements
 
 	}
 
+	// プログレスバーのON/OFF
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	private void showProgress(final boolean show) {
 
@@ -166,14 +151,15 @@ public class EntryActivity extends Activity implements
 
 	}
 
+	// 登録ボタン
 	public void clickButton_Regist(View v) {
-		if (mPass) {
-			if (getIntent().getBooleanExtra("EDIT", false)) {
+		if (mPass) {// 認証クリア
+			if (getIntent().getBooleanExtra("EDIT", false)) {// 編集モード
 				items.set(mPosition, new RssFeed(mTitleView.getText()
 						.toString(), mUriView.getText().toString(),
 						selectColor, noti));
 
-			} else {
+			} else {// 追加モード
 				items.add(new RssFeed(mTitleView.getText().toString(), mUriView
 						.getText().toString(), selectColor, noti));
 				Toast.makeText(this,
@@ -181,12 +167,14 @@ public class EntryActivity extends Activity implements
 						Toast.LENGTH_SHORT).show();
 			}
 
+			// アプリ画面起動
 			Intent intent = new Intent(this, (Class<?>) ItemListActivity.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
 					| Intent.FLAG_ACTIVITY_NEW_TASK
 					| Intent.FLAG_ACTIVITY_NO_ANIMATION);
 			startActivity(intent);
 
+			// データーセーブ
 			try {
 				FileOutputStream fos = this.openFileOutput("SaveData.txt",
 						Context.MODE_PRIVATE);
@@ -197,8 +185,9 @@ public class EntryActivity extends Activity implements
 				Toast.makeText(this, "error2", Toast.LENGTH_SHORT).show();
 			}
 
+			// 終了
 			this.finish();
-		} else {
+		} else {// URIチェック
 			Bundle args = new Bundle();
 			args.putString(ItemDetailFragment.ARG_ITEM_ID, mUriView.getText()
 					.toString());
@@ -208,6 +197,7 @@ public class EntryActivity extends Activity implements
 		}
 	}
 
+	// キャンセルボタン
 	public void clickButton_Cancel(View v) {
 		if (getIntent().getBooleanExtra("EDIT", false)
 				|| getIntent().getExtras().getString("ADD") != null) {
@@ -221,10 +211,12 @@ public class EntryActivity extends Activity implements
 		this.finish();
 	}
 
+	// 色選択
 	public void clickButton_Color(View v) {
 
 		ColorPickerDialog mColorPickerDialog;
 
+		// 色選択ダイアログ
 		mColorPickerDialog = new ColorPickerDialog(this,
 				new ColorPickerDialog.OnColorChangedListener() {
 					@Override
@@ -237,6 +229,7 @@ public class EntryActivity extends Activity implements
 		mColorPickerDialog.show();
 	}
 
+	// ASyncTaskLoader始動
 	@Override
 	public Loader<ArrayList<RssItem>> onCreateLoader(int flag, Bundle args) {
 		String url = args.getString(ItemDetailFragment.ARG_ITEM_ID);
@@ -249,8 +242,8 @@ public class EntryActivity extends Activity implements
 	@Override
 	public void onLoadFinished(Loader<ArrayList<RssItem>> arg0,
 			ArrayList<RssItem> arg1) {
-		showProgress(false);
-		if (arg1 == null) {
+		showProgress(false);// プログレスバー消す
+		if (arg1 == null) {// 失敗時
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 					this);
 			// アラートダイアログのタイトルを設定します
@@ -273,18 +266,18 @@ public class EntryActivity extends Activity implements
 
 			return;
 		}
-		if (getIntent().getExtras().getString("ADD") != null) {
+		if (getIntent().getExtras().getString("ADD") != null) {// URIチェック通過
 			button.setText("Add");
 		}
 
 		switch (mflag) {
-		case 1:
+		case 1:// RSSのURIget
 			mUriView.setText(arg1.get(0).getUrl());
 			break;
-		case 2:
+		case 2:// RSSのタイトルget
 			mTitleView.setText(arg1.get(0).getTitle());
 			break;
-		case 3:
+		case 3:// 記事一覧get
 			ArrayAdapter<RssItem> adapter = new ArrayAdapter<RssItem>(this,
 					android.R.layout.simple_list_item_activated_1,
 					android.R.id.text1, arg1);
@@ -294,6 +287,7 @@ public class EntryActivity extends Activity implements
 		}
 		mflag++;
 
+		// Loader再始動
 		Bundle args = new Bundle();
 		args.putString(ItemDetailFragment.ARG_ITEM_ID, mUriView.getText()
 				.toString());

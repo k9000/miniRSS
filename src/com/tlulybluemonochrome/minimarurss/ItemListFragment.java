@@ -114,10 +114,12 @@ public class ItemListFragment extends ListFragment {
 		View rootView = inflater.inflate(R.layout.fragment_item_list,
 				container, false);
 
+		// 並べ替えListView登録
 		mListView = (SortableListView) rootView.findViewById(R.id.list);
 		mListView.setDragListener(new DragListener());
 		mListView.setSortable(true);
 
+		// セーブデータオープン
 		try {
 			FileInputStream fis = getActivity().openFileInput("SaveData.txt");
 			ObjectInputStream ois = new ObjectInputStream(fis);
@@ -126,8 +128,7 @@ public class ItemListFragment extends ListFragment {
 		} catch (Exception e) {
 		}
 
-		CustomAdapter adapter = new CustomAdapter(
-				getActivity(), 0, items);
+		CustomAdapter adapter = new CustomAdapter(getActivity(), 0, items);
 
 		mListView.setAdapter(adapter);
 
@@ -155,6 +156,7 @@ public class ItemListFragment extends ListFragment {
 		mCallbacks = sDummyCallbacks;
 	}
 
+	// リストクリック(リスナーに飛ばす)
 	@Override
 	public void onListItemClick(ListView listView, View view, int position,
 			long id) {
@@ -166,6 +168,7 @@ public class ItemListFragment extends ListFragment {
 				items.get(position).getUrl(), position);
 	}
 
+	// タブレット用
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -198,6 +201,7 @@ public class ItemListFragment extends ListFragment {
 	}
 
 	class DragListener extends SortableListView.SimpleDragListener {
+		// リスト長押し
 		@Override
 		public void onItemLongClick(AdapterView<?> parent, View view,
 				final int position, long id) {
@@ -215,22 +219,23 @@ public class ItemListFragment extends ListFragment {
 			popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 				public boolean onMenuItemClick(MenuItem item) {
 					switch (item.getItemId()) {
-					case R.id.menu_edit:
-						Intent intent = new Intent(getActivity(), (Class<?>) EntryActivity.class);
-						//intent.putExtra("Parcelable", (Parcelable)items);
+					case R.id.menu_edit:// 編集クリック
+						Intent intent = new Intent(getActivity(),
+								(Class<?>) EntryActivity.class);
+						// intent.putExtra("Parcelable", (Parcelable)items);
 						intent.putExtra("EDIT", true);
-						intent.putExtra("POSITION",position);
+						intent.putExtra("POSITION", position);
 						startActivity(intent);
 						getActivity().finish();
 						break;
 
-					case R.id.menu_delete:
+					case R.id.menu_delete:// 削除クリック
 						Toast.makeText(getActivity(),
 								items.get(position).getTitle() + "を削除しました",
 								Toast.LENGTH_SHORT).show();
 						items.remove(position);
 						mListView.invalidateViews();
-						mCallbacks.onSetItems(items);
+						mCallbacks.onSetItems(items);// リスナーでPagerViewer更新
 						break;
 					}
 
@@ -240,6 +245,7 @@ public class ItemListFragment extends ListFragment {
 
 		}
 
+		// ドラッグ開始
 		@Override
 		public int onStartDrag(int position) {
 			Vibrator vibrator = (Vibrator) getActivity().getSystemService(
@@ -250,6 +256,7 @@ public class ItemListFragment extends ListFragment {
 			return position;
 		}
 
+		// ドラッグ中
 		@Override
 		public int onDuringDrag(int positionFrom, int positionTo) {
 			if (positionFrom < 0 || positionTo < 0
@@ -282,6 +289,7 @@ public class ItemListFragment extends ListFragment {
 			return positionTo;
 		}
 
+		// ドラッグ終了
 		@Override
 		public boolean onStopDrag(int positionFrom, int positionTo) {
 			mDraggingPosition = -1;

@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 
@@ -41,6 +40,7 @@ public class RssMessageNotification {
 	 * 
 	 * @see #cancel(Context)
 	 */
+	// 記事用
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public static void notify(final Context context, final String title,
 			final String text, final String url, final int id, Bitmap bitmap) {
@@ -48,7 +48,6 @@ public class RssMessageNotification {
 
 		// This image is used as the notification's large icon (thumbnail).
 		// TODO: Remove this if your notification has no relevant thumbnail.
-
 
 		final String ticker = title;
 
@@ -99,7 +98,7 @@ public class RssMessageNotification {
 				// Automatically dismiss the notification when it is touched.
 				.setAutoCancel(true);
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {// Android4.1以降
 			builder.setPriority(Notification.PRIORITY_LOW).setStyle(
 					new Notification.BigTextStyle().bigText(text)
 							.setBigContentTitle(title)
@@ -115,6 +114,7 @@ public class RssMessageNotification {
 		notify(context, notification, id);
 	}
 
+	// 更新中と更新完了
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public static void titlenotify(final Context context, final String title,
 			final String text, final String ticker, final int id) {

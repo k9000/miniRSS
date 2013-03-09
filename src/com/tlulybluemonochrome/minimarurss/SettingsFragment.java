@@ -32,7 +32,7 @@ import android.widget.Switch;
  * 
  */
 public class SettingsFragment extends Fragment implements
-		CompoundButton.OnCheckedChangeListener,OnClickListener {
+		CompoundButton.OnCheckedChangeListener, OnClickListener {
 
 	Switch s;
 	SeekBar seekBar;
@@ -57,6 +57,7 @@ public class SettingsFragment extends Fragment implements
 		final View rootView = inflater.inflate(R.layout.fragment_settings,
 				container, false);
 
+		// ON/OFFボタンのリスナー
 		mChecked = sharedPreferences.getBoolean("notification_switch", false);
 		s = (Switch) rootView.findViewById(R.id.switch1);
 		s.setChecked(mChecked);
@@ -72,6 +73,7 @@ public class SettingsFragment extends Fragment implements
 		// シークバーの初期値をTextViewに表示
 		editText.setText(String.valueOf(seekBar.getProgress() + 1));
 
+		// シークバーのリスナー
 		seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
@@ -103,6 +105,7 @@ public class SettingsFragment extends Fragment implements
 
 		mRadioGroupOs = (RadioGroup) rootView.findViewById(R.id.radioGroup1);
 
+		// ラジオボタンの初期値
 		String theme_preference = sharedPreferences.getString(
 				"theme_preference", "Light");
 		if (theme_preference.equals("Light"))
@@ -112,6 +115,7 @@ public class SettingsFragment extends Fragment implements
 		else if (theme_preference.equals("Transparent"))
 			mRadioGroupOs.check(R.id.radio2);
 
+		// ラジオボタンのリスナー
 		mRadioGroupOs.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(RadioGroup group, int id) {
@@ -126,14 +130,16 @@ public class SettingsFragment extends Fragment implements
 			}
 
 		});
-		
-		button = (Button)rootView.findViewById(R.id.button1);
+
+		// Add RSS Feedボタンのリスナー
+		button = (Button) rootView.findViewById(R.id.button1);
 		button.setOnClickListener(this);
 
 		// Inflate the layout for this fragment
 		return rootView;
 	}
 
+	// ON/OFFボタン
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		mChecked = isChecked;
@@ -150,21 +156,22 @@ public class SettingsFragment extends Fragment implements
 		editor.putBoolean("notification_switch", isChecked);
 		editor.commit();
 	}
-	
+
+	// Add RSS Feedボタン
 	@Override
 	public void onClick(View v) {
-		if(v.getId()==R.id.button1){
-			Intent intent = new Intent(getActivity(), (Class<?>) EntryActivity.class);
+		if (v.getId() == R.id.button1) {
+			Intent intent = new Intent(getActivity(),
+					(Class<?>) EntryActivity.class);
 			intent.putExtra("ADD", "add");
 			startActivity(intent);
 			getActivity().finish();
 		}
-		
+
 	}
-	
 
+	// NotificationServiceをAlarmManagerに登録
 	protected void NotificationServiceStart() {
-
 		Intent intent = new Intent(getActivity(), NotificationService.class);
 		PendingIntent pendingIntent = PendingIntent.getService(getActivity(),
 				-1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -174,6 +181,7 @@ public class SettingsFragment extends Fragment implements
 				System.currentTimeMillis(), mMinute, pendingIntent);
 	}
 
+	// NotificationServiceのAlarmManager登録解除
 	protected void NotificationServiceStop() {
 		getActivity().stopService(
 				new Intent(getActivity(), NotificationService.class));

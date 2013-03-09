@@ -68,6 +68,7 @@ public class ItemListActivity extends Activity implements
 			theme = android.R.style.Theme_DeviceDefault_Wallpaper;
 		setTheme(theme);
 
+		// セーブデータオープン
 		try {
 			FileInputStream fis = openFileInput("SaveData.txt");
 			ObjectInputStream ois = new ObjectInputStream(fis);
@@ -76,7 +77,7 @@ public class ItemListActivity extends Activity implements
 		} catch (Exception e) {
 		}
 
-		if (items == null || items.isEmpty()) {
+		if (items == null || items.isEmpty()) {// セーブ空のとき
 			items = new ArrayList<RssFeed>();
 			items.add(new RssFeed(
 					"総合ニュース",
@@ -116,7 +117,7 @@ public class ItemListActivity extends Activity implements
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=t",
 					0xff545857, false));
 
-			try {
+			try {// セーブ書き込み
 				FileOutputStream fos = this.openFileOutput("SaveData.txt",
 						Context.MODE_PRIVATE);
 				ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -129,7 +130,7 @@ public class ItemListActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_item_list);
 
-		if (findViewById(R.id.item_detail_container) != null) {
+		if (findViewById(R.id.item_detail_container) != null) {// タブレット用
 			// The detail container view will be present only in the
 			// large-screen layouts (res/values-large and
 			// res/values-sw600dp). If this view is present, then the
@@ -142,11 +143,9 @@ public class ItemListActivity extends Activity implements
 					R.id.item_list)).setActivateOnItemClick(true);
 		}
 
-		// sharedPreferences =
-		// PreferenceManager.getDefaultSharedPreferences(this);
-
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
+		// View
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
 
 		// Set up the ViewPager with the sections adapter.
@@ -156,7 +155,7 @@ public class ItemListActivity extends Activity implements
 			public void onPageSelected(int position) {
 			}
 
-			// スクロール時
+			// スクロール時処理(タブレット用)
 			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2) {
 				if (mTwoPane)
@@ -180,12 +179,14 @@ public class ItemListActivity extends Activity implements
 	 * Callback method from {@link ItemListFragment.Callbacks} indicating that
 	 * the item with the given ID was selected.
 	 */
+	// ItemLsitFragmentのリスナー
 	@Override
 	public void onItemSelected(int tag, String url, int position) {
 		mViewPager.setCurrentItem(position + 2);
 
 	}
 
+	// 並べ替え用
 	@Override
 	public void onSetItems(ArrayList<RssFeed> items) {
 		this.items = items;
@@ -200,6 +201,7 @@ public class ItemListActivity extends Activity implements
 
 	}
 
+	// 右上のメニュー作成
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -209,6 +211,7 @@ public class ItemListActivity extends Activity implements
 		return true;
 	}
 
+	// メニューボタンクリック
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		boolean ret = true;
@@ -248,13 +251,13 @@ public class ItemListActivity extends Activity implements
 			// getIntent().getStringExtra(ItemDetailFragment.ARG_ITEM_ID));
 			Fragment fragment;
 
-			if (position == 0)
+			if (position == 0)// 設定画面
 				fragment = new SettingsFragment();
-			else if (position == 1 && mTwoPane)
+			else if (position == 1 && mTwoPane)// トップページ(タブレット用)
 				fragment = new TopPageFragment();
-			else if (position == 1)
+			else if (position == 1)// フィードリスト
 				fragment = new ItemListFragment();
-			else {
+			else {// 記事一覧
 				Bundle arguments = new Bundle();
 				arguments.putString(ItemDetailFragment.ARG_ITEM_ID,
 						items.get(position - 2).getUrl());

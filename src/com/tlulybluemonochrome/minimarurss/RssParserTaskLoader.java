@@ -18,10 +18,11 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	private int wait;
 	private int flag;
 
+	// ItewDetailFragmentから
 	public RssParserTaskLoader(Context context, String url, int wait) {
 		super(context);
 
-		this.wait = wait;
+		this.wait = wait;// 引っ張って更新の機嫌取り
 
 		flag = 3;
 
@@ -32,10 +33,11 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 		}
 	}
 
+	// EntryActivityｃから
 	public RssParserTaskLoader(EntryActivity context, int flag, String url) {
 		super(context);
 
-		wait = 100;
+		wait = 100;// 雰囲気用
 
 		this.flag = flag;
 
@@ -52,7 +54,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 		ArrayList<RssItem> result = new ArrayList<RssItem>();
 
 		switch (flag) {
-		case 1:
+		case 1:// RSSのURI獲得を目指す
 			try {
 				InputStream is = url.openConnection().getInputStream();
 				result = parseHtml(is);
@@ -62,7 +64,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 			}
 			break;
 
-		case 2:
+		case 2:// RSSのタイトル獲得を目指す
 			try {
 				InputStream is = url.openConnection().getInputStream();
 				result = parseRSS(is);
@@ -72,7 +74,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 			}
 			break;
 
-		case 3:
+		case 3:// RSSの記事一覧の獲得を目指す
 			try {
 				InputStream is = url.openConnection().getInputStream();
 				result = parseXml(is);

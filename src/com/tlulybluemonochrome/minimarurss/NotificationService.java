@@ -32,6 +32,7 @@ public class NotificationService extends IntentService {
 		// TODO 自動生成されたコンストラクター・スタブ
 	}
 
+	// アラームマネージャ用コンストラクタ
 	public NotificationService() {
 		super("NotificationService");
 	}
@@ -46,11 +47,10 @@ public class NotificationService extends IntentService {
 				"minimaruRSS", "更新中", "更新中", 99);
 
 		ArrayList<RssItem> arraylist = new ArrayList<RssItem>();
-		oldlist = new ArrayList<RssItem>();
 
 		ArrayList<RssFeed> urilist = new ArrayList<RssFeed>();
 
-		try {
+		try {// URIセーブデータオープン
 			FileInputStream fis = openFileInput("SaveData.txt");
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			urilist = (ArrayList<RssFeed>) ois.readObject();
@@ -59,7 +59,7 @@ public class NotificationService extends IntentService {
 			Toast.makeText(this, "error1", Toast.LENGTH_SHORT).show();
 		}
 
-		try {
+		try {// 既読セーブデータオープン
 			FileInputStream fis = openFileInput("SaveData.dat");
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			oldlist = (ArrayList<RssItem>) ois.readObject();
@@ -68,10 +68,11 @@ public class NotificationService extends IntentService {
 			Log.d(TAG, "Error");
 		}
 
+		// 全URLチェック
 		for (int i = 0; i < urilist.size(); i++) {
 
-			if (urilist.get(i).getNoti()) {
-				try {
+			if (urilist.get(i).getNoti()) {// Notifications設定確認
+				try {// 記事取得
 					URL url = new URL(urilist.get(i).getUrl());
 					InputStream is = url.openConnection().getInputStream();
 					arraylist.addAll(parseXml(is, urilist.get(i).getTag()));
@@ -82,20 +83,21 @@ public class NotificationService extends IntentService {
 			}
 		}
 
+		// 未読記事通知
 		for (int i = 0; i < arraylist.size(); i++) {
 			if (arraylist.get(i).getTag() != 0) {
 				RssMessageNotification.notify(getApplicationContext(),
 						arraylist.get(i).getTitle(),
 						arraylist.get(i).getText(), arraylist.get(i).getUrl(),
 						i, Picuture(arraylist.get(i).getTag()));
-				try {
+				try {// 通知の間を置く
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
 				}
 			}
 		}
 
-		try {
+		try {// 既読判定書き込み
 			FileOutputStream fos = openFileOutput("SaveData.dat", MODE_PRIVATE);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(arraylist);
@@ -130,7 +132,7 @@ public class NotificationService extends IntentService {
 							currentItem.setUrl(parser.nextText());
 						} else if (tag.equals("description")) {
 							currentItem.setText(parser.nextText().replaceAll(
-									"<.+?>", ""));
+									"<.+?>", ""));// タグ除去
 						}
 					}
 					break;
@@ -153,6 +155,7 @@ public class NotificationService extends IntentService {
 
 	}
 
+	// 未読チェック
 	public boolean Serch(RssItem item) {
 
 		for (int i = 0; i < oldlist.size(); i++) {
@@ -163,6 +166,7 @@ public class NotificationService extends IntentService {
 		return false;
 	}
 
+	// アイコン生成
 	public Bitmap Picuture(int color) {
 		if (color == mColor) {
 			return mBmp;
@@ -200,6 +204,7 @@ public class NotificationService extends IntentService {
 		return mBmp;
 	}
 
+	// Service終了
 	@Override
 	public void onDestroy() {
 		super.onDestroy();

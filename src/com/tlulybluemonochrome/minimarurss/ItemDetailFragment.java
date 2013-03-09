@@ -84,6 +84,7 @@ public class ItemDetailFragment extends Fragment implements
 		return rootView;
 	}
 
+	// ASyncTaskLoader始動
 	@Override
 	public Loader<ArrayList<RssItem>> onCreateLoader(int wait, Bundle args) {
 		String url = args.getString(ItemDetailFragment.ARG_ITEM_ID);
@@ -97,15 +98,16 @@ public class ItemDetailFragment extends Fragment implements
 	@Override
 	public void onLoadFinished(Loader<ArrayList<RssItem>> arg0,
 			ArrayList<RssItem> arg1) {
-		if(arg1 == null){
+		if (arg1 == null) {// 失敗時(意味ないかも)
 			return;
 		}
+		// リスト更新
 		item = arg1;
 		ArrayAdapter<RssItem> adapter = new ArrayAdapter<RssItem>(
 				getActivity(), android.R.layout.simple_list_item_activated_1,
 				android.R.id.text1, item);
 		mListView.setAdapter(adapter);
-		if (mFlag) {
+		if (mFlag) {// 引っ張って更新したとき
 			mListView.completeRefreshing();
 			mFlag = false;
 		}

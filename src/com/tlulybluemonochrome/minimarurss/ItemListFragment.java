@@ -9,7 +9,6 @@ import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.MenuItem;

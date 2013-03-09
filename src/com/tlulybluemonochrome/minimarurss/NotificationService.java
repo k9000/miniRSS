@@ -15,8 +15,12 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
 import android.util.Xml;
+import android.widget.Toast;
 
 public class NotificationService extends IntentService {
+	
+	ArrayList<RssItem> oldlist;
+	
 
 	public NotificationService(String name) {
 		super(name);
@@ -37,31 +41,48 @@ public class NotificationService extends IntentService {
 				"minimaruRSS", "更新中", "更新中", 99);
 
 		ArrayList<RssItem> arraylist = new ArrayList<RssItem>();
+		oldlist = new ArrayList<RssItem>();
+
+		ArrayList<RssFeed> urilist = new ArrayList<RssFeed>();
+
+		try {
+			FileInputStream fis = openFileInput("SaveData.txt");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			urilist = (ArrayList<RssFeed>) ois.readObject();
+			ois.close();
+		} catch (Exception e) {
+			Toast.makeText(this, "error1", Toast.LENGTH_SHORT).show();
+		}
 
 		try {
 			FileInputStream fis = openFileInput("SaveData.dat");
 			ObjectInputStream ois = new ObjectInputStream(fis);
-			arraylist = (ArrayList<RssItem>) ois.readObject();
+			oldlist = (ArrayList<RssItem>) ois.readObject();
 			ois.close();
 		} catch (Exception e) {
 			Log.d(TAG, "Error");
 		}
 
-		try {
-			URL url = new URL(
-					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss");
-			InputStream is = url.openConnection().getInputStream();
-			arraylist = parseXml(is, arraylist);
-		} catch (Exception e) {
-			e.printStackTrace();
+		for (int i = 0; i < urilist.size(); i++) {
+
+			if (urilist.get(i).getNoti()) {
+				try {
+					URL url = new URL(urilist.get(i).getUrl());
+					InputStream is = url.openConnection().getInputStream();
+					arraylist.addAll(parseXml(is,urilist.get(i).getTag()));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			}
 		}
 
 		for (int i = 0; i < arraylist.size(); i++) {
-			if (arraylist.get(i).getTag() == 0) {
+			if (arraylist.get(i).getTag() != 0) {
 				RssMessageNotification.notify(getApplicationContext(),
 						arraylist.get(i).getTitle(),
 						arraylist.get(i).getText(), arraylist.get(i).getUrl(),
-						i);
+						i,arraylist.get(i).getTag());
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
@@ -84,8 +105,8 @@ public class NotificationService extends IntentService {
 	}
 
 	// XMLをパースする
-	public ArrayList<RssItem> parseXml(InputStream is,
-			ArrayList<RssItem> oldlist) throws IOException,
+	public ArrayList<RssItem> parseXml(InputStream is, int color)
+			throws IOException,
 			XmlPullParserException {
 		XmlPullParser parser = Xml.newPullParser();
 		ArrayList<RssItem> list = new ArrayList<RssItem>();
@@ -100,7 +121,7 @@ public class NotificationService extends IntentService {
 					tag = parser.getName();
 					if (tag.equals("item")) {
 						currentItem = new RssItem();
-						// currentItem.setTag("URL");
+						currentItem.setTag(color);
 					} else if (currentItem != null) {
 						if (tag.equals("title")) {
 							currentItem.setTitle(parser.nextText());
@@ -115,10 +136,9 @@ public class NotificationService extends IntentService {
 				case XmlPullParser.END_TAG:
 					tag = parser.getName();
 					if (tag.equals("item")) {
-						if (Serch(currentItem, oldlist))
+						if (Serch(currentItem)){
 							currentItem.setTag(0);
-						else
-							currentItem.setTag(1);
+						}
 						list.add(currentItem);
 					}
 					break;
@@ -132,14 +152,14 @@ public class NotificationService extends IntentService {
 
 	}
 
-	public boolean Serch(RssItem item, ArrayList<RssItem> oldlist) {
+	public boolean Serch(RssItem item) {
 
 		for (int i = 0; i < oldlist.size(); i++) {
 			if (item.getUrl().equals(oldlist.get(i).getUrl()))
-				return false;
+				return true;
 		}
 
-		return true;
+		return false;
 	}
 
 }

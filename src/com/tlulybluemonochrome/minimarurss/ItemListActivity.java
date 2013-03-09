@@ -75,46 +75,46 @@ public class ItemListActivity extends Activity implements
 			ois.close();
 		} catch (Exception e) {
 		}
-		
-		if(items == null || items.isEmpty()){
+
+		if (items == null || items.isEmpty()) {
 			items = new ArrayList<RssFeed>();
 			items.add(new RssFeed(
 					"総合ニュース",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss",
-					0xff00aeef));
+					0xff00aeef, true));
 
 			items.add(new RssFeed(
 					"ピックアップ",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=ir",
-					0xff99cc00));
+					0xff99cc00, false));
 			items.add(new RssFeed(
 					"社会",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=y",
-					0xffcc0000));
+					0xffcc0000, false));
 			items.add(new RssFeed(
 					"国際",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=w",
-					0xfff9f903));
+					0xfff9f903, false));
 			items.add(new RssFeed(
 					"ビジネス",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=b",
-					0xfffcb414));
+					0xfffcb414, false));
 			items.add(new RssFeed(
 					"政治",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=p",
-					0xffda31e5));
+					0xffda31e5, false));
 			items.add(new RssFeed(
 					"エンタメ",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=e",
-					0xff768342));
+					0xff768342, false));
 			items.add(new RssFeed(
 					"スポーツ",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=s",
-					0xff457387));
+					0xff457387, false));
 			items.add(new RssFeed(
 					"テクノロジー",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=t",
-					0xff545857));
+					0xff545857, false));
 
 			try {
 				FileOutputStream fos = this.openFileOutput("SaveData.txt",
@@ -197,10 +197,9 @@ public class ItemListActivity extends Activity implements
 			oos.close();
 		} catch (Exception e1) {
 		}
-		
+
 	}
-	
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -226,8 +225,6 @@ public class ItemListActivity extends Activity implements
 
 		return ret;
 	}
-
-
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -290,8 +287,5 @@ public class ItemListActivity extends Activity implements
 		}
 
 	}
-
-
-
 
 }

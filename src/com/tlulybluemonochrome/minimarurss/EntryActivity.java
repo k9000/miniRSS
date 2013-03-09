@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -54,6 +55,7 @@ public class EntryActivity extends Activity implements
 	private int mPosition;
 	private boolean mPass = false;
 	private RssFeed mItem;
+	private boolean noti = false;
 
 	int selectColor = 0xff00aeef;
 
@@ -98,6 +100,9 @@ public class EntryActivity extends Activity implements
 		mUriView = (EditText) findViewById(R.id.uri);
 
 		imageButton = (ImageButton) findViewById(R.id.imageButton1);
+		
+		CheckBox checkBox = (CheckBox) findViewById(R.id.checkBox1);
+
 
 		Bundle args = new Bundle();
 		if (getIntent().getDataString() != null) {
@@ -117,6 +122,7 @@ public class EntryActivity extends Activity implements
 			mPosition = getIntent().getExtras().getInt("POSITION");
 			mTitle = items.get(mPosition).getTitle();
 			mUri = items.get(mPosition).getUrl();
+			noti = items.get(mPosition).getNoti();
 			button.setText("Edit");
 			mPageTitle.setText("RSS Feed 編集");
 			args.putString(ItemDetailFragment.ARG_ITEM_ID, mUri);
@@ -136,6 +142,21 @@ public class EntryActivity extends Activity implements
 		imageButton.setBackgroundColor(selectColor);
 		mTitleView.setText(mTitle);
 		mUriView.setText(mUri);
+		checkBox.setChecked(noti);
+		
+		// チェックボックスがクリックされた時に呼び出されるコールバックリスナーを登録します
+        checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            // チェックボックスがクリックされた時に呼び出されます
+            public void onClick(View v) {
+                CheckBox checkBox = (CheckBox) v;
+                // チェックボックスのチェック状態を取得します
+                noti = checkBox.isChecked();
+                
+            }
+        });
+
+
 
 	}
 
@@ -151,11 +172,11 @@ public class EntryActivity extends Activity implements
 			if (getIntent().getBooleanExtra("EDIT", false)) {
 				items.set(mPosition,
 						new RssFeed(mTitleView.getText().toString(), mUriView
-								.getText().toString(), selectColor));
+								.getText().toString(), selectColor,noti));
 
 			} else {
 				items.add(new RssFeed(mTitleView.getText().toString(), mUriView
-						.getText().toString(), selectColor));
+						.getText().toString(), selectColor,noti));
 				Toast.makeText(this,
 						mTitleView.getText().toString() + " を追加しました",
 						Toast.LENGTH_SHORT).show();

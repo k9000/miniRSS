@@ -59,9 +59,9 @@ public class ItemListActivity extends Activity implements
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		String thme_preference = sharedPreferences.getString(
 				"theme_preference", "Light");
-		int theme = android.R.style.Theme_Holo_Light;
+		int theme = android.R.style.Theme_Holo_Light_DarkActionBar;
 		if (thme_preference.equals("Light"))
-			theme = android.R.style.Theme_Holo_Light;
+			theme = android.R.style.Theme_Holo_Light_DarkActionBar;
 		else if (thme_preference.equals("Dark"))
 			theme = android.R.style.Theme_Holo;
 		else if (thme_preference.equals("Transparent"))

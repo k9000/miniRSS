@@ -158,6 +158,13 @@ public class EntryActivity extends Activity implements
 				items.set(mPosition, new RssFeed(mTitleView.getText()
 						.toString(), mUriView.getText().toString(),
 						selectColor, noti));
+				// アプリ画面起動
+				Intent intent = new Intent(this,
+						(Class<?>) ItemListActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+						| Intent.FLAG_ACTIVITY_NEW_TASK
+						| Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				startActivity(intent);
 
 			} else {// 追加モード
 				items.add(new RssFeed(mTitleView.getText().toString(), mUriView
@@ -166,13 +173,6 @@ public class EntryActivity extends Activity implements
 						mTitleView.getText().toString() + " を追加しました",
 						Toast.LENGTH_SHORT).show();
 			}
-
-			// アプリ画面起動
-			Intent intent = new Intent(this, (Class<?>) ItemListActivity.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-					| Intent.FLAG_ACTIVITY_NEW_TASK
-					| Intent.FLAG_ACTIVITY_NO_ANIMATION);
-			startActivity(intent);
 
 			// データーセーブ
 			try {
@@ -242,7 +242,6 @@ public class EntryActivity extends Activity implements
 	@Override
 	public void onLoadFinished(Loader<ArrayList<RssItem>> arg0,
 			ArrayList<RssItem> arg1) {
-		showProgress(false);// プログレスバー消す
 		if (arg1 == null) {// 失敗時
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 					this);
@@ -255,7 +254,7 @@ public class EntryActivity extends Activity implements
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							// class.EntryActivity.finish();
+							 EntryActivity.this.finish();
 						}
 					});
 			// アラートダイアログのキャンセルが可能かどうかを設定します
@@ -266,6 +265,7 @@ public class EntryActivity extends Activity implements
 
 			return;
 		}
+		showProgress(false);// プログレスバー消す
 		if (getIntent().getExtras().getString("ADD") != null) {// URIチェック通過
 			button.setText("Add");
 		}

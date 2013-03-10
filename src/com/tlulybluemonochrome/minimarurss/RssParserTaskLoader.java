@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
@@ -155,10 +156,16 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	// HTMLをパースする
 	public ArrayList<RssItem> parseHtml(InputStream is) throws IOException,
 			XmlPullParserException {
+
+		XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+		factory.setValidating(false);
+		factory.setFeature(Xml.FEATURE_RELAXED, true);
+		factory.setNamespaceAware(true);
+		XmlPullParser parser = factory.newPullParser();
+
 		ArrayList<RssItem> list = new ArrayList<RssItem>();
-		XmlPullParser parser = Xml.newPullParser();
 		try {
-			parser.setInput(is, null);
+			parser.setInput(is, "UTF-8");
 			int eventType = parser.getEventType();
 			RssItem currentItem = null;
 			while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -173,13 +180,10 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 							String rel = parser.getAttributeValue(null, "rel");
 							String type = parser
 									.getAttributeValue(null, "type");
-							String title = parser.getAttributeValue(null,
-									"title");
 							String herf = parser
 									.getAttributeValue(null, "href");
 							if (rel.equals("alternate")
 									&& type.equals("application/rss+xml")) {
-								currentItem.setTitle(title);
 								currentItem.setUrl(herf);
 								list.add(currentItem);
 								return list;

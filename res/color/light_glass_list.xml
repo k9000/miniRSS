@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- グラデーション陰影 -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="270"
+                android:startColor="#555555"
+                android:endColor="#BBBBBB"
+                android:type="linear" />
+            <corners
+                android:bottomRightRadius="16dp"
+    	android:bottomLeftRadius="16dp"
+    	android:topLeftRadius="16dp"
+    	android:topRightRadius="16dp"
+       />
+            </shape>
+    </item>
+    <!-- グラデーション下地 -->
+    <item android:top="1dp"
+        android:bottom="1dp"
+        android:right="1dp"
+        android:left="1dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="270"
+                android:startColor="#FFFFFF"
+                android:endColor="#999999"
+                android:type="linear" />
+             <corners
+    	android:bottomRightRadius="16dp"
+    	android:bottomLeftRadius="16dp"
+    	android:topLeftRadius="16dp"
+    	android:topRightRadius="16dp"
+       />
+        </shape>
+    </item>
+    
+    <!-- グラデーション陰影 -->
+    <item android:top="24dp"
+        android:bottom="1dp"
+        android:right="1dp"
+        android:left="1dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="270"
+                android:startColor="#BBBBBB"
+                android:endColor="#DDDDDD"
+                android:type="linear" />
+            <corners
+    	android:bottomRightRadius="16dp"
+    	android:bottomLeftRadius="16dp"
+       />
+        </shape>
+    </item>
+</layer-list>

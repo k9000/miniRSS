@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- グラデーション下地 -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="270"
+                android:startColor="#FF33B5E5"
+                android:endColor="#000000"
+                android:type="linear" />
+        </shape>
+    </item>
+    
+    <!-- グラデーション陰影 -->
+    <item android:top="12dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="180"
+                android:startColor="#99000000"
+                android:centerColor="#33000000"
+                android:endColor="#99000000"
+                android:type="linear" />
+        </shape>
+    </item>
+    
+    <!-- グラデーション陰影 -->
+    <item android:top="18dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="270"
+                android:startColor="#0033B5E5"
+                android:endColor="#6633B5E5"
+                android:type="linear" />
+        </shape>
+    </item>
+</layer-list>

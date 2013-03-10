@@ -23,5 +23,35 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">16dp</item>
     </style>
+    <!--  
+    <style name="MaruButton" parent="@android:Widget.Button">
+        <item name="android:background">@drawable/button_design</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    -->
+    <style name="metalList" parent="@android:style/Widget.ListView">
+        <item name="android:background">@color/metal</item>
+    </style>
+    
+    <style name="metal_actionbar" parent="@android:style/Widget.Holo.ActionBar">
+        <item name="android:background">@color/metal</item>
+    </style>
+    
+ 
+    <style name="DarkGlass" parent="@android:style/Theme.Holo">
+        <item name="android:actionBarStyle">@style/metal_actionbar</item>
+        <item name="android:listChoiceBackgroundIndicator">@color/glass_list</item>
+        <item name="android:listPreferredItemHeight">48dp</item>
+        <item name="android:colorForeground">@color/glass_bar</item>
+        <item name="android:colorBackground">#000000</item>
+    </style>
+    
+    <style name="LightGlass" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/metal_actionbar</item>
+        <item name="android:listChoiceBackgroundIndicator">@color/light_glass_list</item>
+        <item name="android:listPreferredItemHeight">48dp</item>
+        <item name="android:colorForeground">@color/glass_bar</item>
+    </style>
+    
 
 </resources>

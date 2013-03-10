@@ -2,6 +2,7 @@ package com.tlulybluemonochrome.minimarurss;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -56,7 +57,12 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 		switch (flag) {
 		case 1:// RSSのURI獲得を目指す
 			try {
-				InputStream is = url.openConnection().getInputStream();
+				HttpURLConnection conn = (HttpURLConnection) url
+						.openConnection();
+				conn.addRequestProperty("User-Agent", "desktop");
+				conn.setDoInput(true);
+				conn.connect();
+				InputStream is = conn.getInputStream();
 				result = parseHtml(is);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -66,7 +72,12 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 
 		case 2:// RSSのタイトル獲得を目指す
 			try {
-				InputStream is = url.openConnection().getInputStream();
+				HttpURLConnection conn = (HttpURLConnection) url
+						.openConnection();
+				conn.addRequestProperty("User-Agent", "desktop");
+				conn.setDoInput(true);
+				conn.connect();
+				InputStream is = conn.getInputStream();
 				result = parseRSS(is);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -76,7 +87,12 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 
 		case 3:// RSSの記事一覧の獲得を目指す
 			try {
-				InputStream is = url.openConnection().getInputStream();
+				HttpURLConnection conn = (HttpURLConnection) url
+						.openConnection();
+				conn.addRequestProperty("User-Agent", "desktop");
+				conn.setDoInput(true);
+				conn.connect();
+				InputStream is = conn.getInputStream();
 				result = parseXml(is);
 			} catch (Exception e) {
 				e.printStackTrace();

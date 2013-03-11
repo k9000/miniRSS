@@ -35,6 +35,7 @@ public class RssMessageNotification {
 	 * presentation of rss message notifications. Make sure to follow the <a
 	 * href="https://developer.android.com/design/patterns/notifications.html">
 	 * Notification design guidelines</a> when doing so.
+	 * @param page 
 	 * 
 	 * @param color
 	 * 
@@ -43,7 +44,7 @@ public class RssMessageNotification {
 	// 記事用
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public static void notify(final Context context, final String title,
-			final String text, final String url, final int id, Bitmap bitmap) {
+			final String text, final String url, final int id, Bitmap bitmap, String page) {
 		final Resources res = context.getResources();
 
 		// This image is used as the notification's large icon (thumbnail).
@@ -102,7 +103,7 @@ public class RssMessageNotification {
 			builder.setPriority(Notification.PRIORITY_LOW).setStyle(
 					new Notification.BigTextStyle().bigText(text)
 							.setBigContentTitle(title)
-							.setSummaryText("minimaruRSS"));
+							.setSummaryText(page));
 
 			notification = builder.build();
 

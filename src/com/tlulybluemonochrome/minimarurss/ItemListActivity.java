@@ -89,6 +89,10 @@ public class ItemListActivity extends Activity implements
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss",
 					0xff00aeef, true));
 			items.add(new RssFeed(
+					"4Gamer.net",
+					"http://www.4gamer.net/rss/index.xml",
+					0xffffc0cb, true));
+			items.add(new RssFeed(
 					"ORICON ニュース",
 					"http://rss.rssad.jp/rss/oricon/news/total",
 					0xff99cc00, true));
@@ -116,10 +120,6 @@ public class ItemListActivity extends Activity implements
 					"GIGAZINE",
 					"http://feed.rssad.jp/rss/gigazine/rss_2.0",
 					0xff2f4f4f, true));
-			items.add(new RssFeed(
-					"GIZMODE",
-					"http://feeds.gizmodo.jp/rss/gizmodo/index.xml",
-					0xffffc0cb, true));
 			items.add(new RssFeed(
 					"lifehacker",
 					"http://feeds.lifehacker.jp/rss/lifehacker/index.xml",

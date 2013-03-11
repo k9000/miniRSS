@@ -2,10 +2,7 @@ package com.tlulybluemonochrome.minimarurss;
 
 import java.io.Serializable;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public class RssItem implements Parcelable, Serializable {
+public class RssItem implements Serializable {
 	/**
 	 * 
 	 */
@@ -14,21 +11,14 @@ public class RssItem implements Parcelable, Serializable {
 	private String url;
 	private String text;
 	private int tag;
+	private String page;
 
-	public RssItem(String title, String url, String text, int tag) {
+	public RssItem(String title, String url, String text, int tag, String page) {
 		this.title = title;
 		this.url = url;
 		this.text = text;
 		this.tag = tag;
-	}
-
-	public RssItem(Parcel in) {
-		// writeToParcelで保存した順番で読み出す必要がある
-		title = in.readString();
-		url = in.readString();
-		text = in.readString();
-		tag = in.readInt();
-
+		this.page = page;
 	}
 	
 	public RssItem(){
@@ -55,6 +45,10 @@ public class RssItem implements Parcelable, Serializable {
 	public int getTag() {
 		return tag;
 	}
+	
+	public String getPage() {
+		return page;
+	}
 
 	public void setTitle(String title) {
 		this.title = title;
@@ -71,20 +65,11 @@ public class RssItem implements Parcelable, Serializable {
 	public void setTag(int tag) {
 		this.tag = tag;
 	}
-
-	@Override
-	public int describeContents() {
-		// TODO 自動生成されたメソッド・スタブ
-		return 0;
+	
+	public void setPage(String page) {
+		this.page = page;
 	}
 
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		// TODO 自動生成されたメソッド・スタブ
-		dest.writeString(title);
-		dest.writeString(url);
-		dest.writeString(text);
-		dest.writeInt(tag);
-	}
+
 
 }

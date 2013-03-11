@@ -75,7 +75,7 @@ public class NotificationService extends IntentService {
 				try {// 記事取得
 					URL url = new URL(urilist.get(i).getUrl());
 					InputStream is = url.openConnection().getInputStream();
-					arraylist.addAll(parseXml(is, urilist.get(i).getTag()));
+					arraylist.addAll(parseXml(is, urilist.get(i).getTag(),urilist.get(i).getTitle()));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -89,7 +89,7 @@ public class NotificationService extends IntentService {
 				RssMessageNotification.notify(getApplicationContext(),
 						arraylist.get(i).getTitle(),
 						arraylist.get(i).getText(), arraylist.get(i).getUrl(),
-						i, Picuture(arraylist.get(i).getTag()));
+						i, Picuture(arraylist.get(i).getTag()),arraylist.get(i).getPage());
 				try {// 通知の間を置く
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -109,7 +109,7 @@ public class NotificationService extends IntentService {
 	}
 
 	// XMLをパースする
-	public ArrayList<RssItem> parseXml(InputStream is, int color)
+	public ArrayList<RssItem> parseXml(InputStream is, int color, String page)
 			throws IOException, XmlPullParserException {
 		XmlPullParser parser = Xml.newPullParser();
 		ArrayList<RssItem> list = new ArrayList<RssItem>();
@@ -143,6 +143,7 @@ public class NotificationService extends IntentService {
 						if (Serch(currentItem)) {
 							currentItem.setTag(0);
 						}
+						currentItem.setPage(page);
 						list.add(currentItem);
 						i++;
 					}

@@ -91,7 +91,7 @@ public class NotificationService extends IntentService {
 						arraylist.get(i).getText(), arraylist.get(i).getUrl(),
 						i, Picuture(arraylist.get(i).getTag()));
 				try {// 通知の間を置く
-					Thread.sleep(2000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 				}
 			}

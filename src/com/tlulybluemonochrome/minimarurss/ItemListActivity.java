@@ -11,6 +11,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentPagerAdapter;
@@ -20,7 +21,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 /**
  * An activity representing a list of Items. This activity has different
@@ -69,55 +69,78 @@ public class ItemListActivity extends Activity implements
 		else if (thme_preference.equals("Transparent"))
 			theme = android.R.style.Theme_DeviceDefault_Wallpaper;
 		setTheme(theme);
+		
+		items = new ArrayList<RssFeed>();
 
 		// セーブデータオープン
 		try {
 			FileInputStream fis = openFileInput("SaveData.txt");
 			ObjectInputStream ois = new ObjectInputStream(fis);
-			items = (ArrayList<RssFeed>) ois.readObject();
+			items.addAll((ArrayList<RssFeed>) ois.readObject()) ;
 			ois.close();
 		} catch (Exception e) {
 		}
 
-		if (items == null || items.isEmpty()) {// セーブ空のとき
-			items = new ArrayList<RssFeed>();
+		if (items.isEmpty()||sharedPreferences.getInt(
+				"save_version", 0)!=1) {// セーブ空のとき
+			//items = new ArrayList<RssFeed>();
 			items.add(new RssFeed(
-					"総合ニュース",
+					"Googleニュース",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss",
 					0xff00aeef, true));
-
 			items.add(new RssFeed(
-					"ピックアップ",
-					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=ir",
-					0xff99cc00, false));
+					"ORICON ニュース",
+					"http://rss.rssad.jp/rss/oricon/news/total",
+					0xff99cc00, true));
 			items.add(new RssFeed(
-					"社会",
-					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=y",
-					0xffcc0000, false));
+					"映画.com",
+					"http://feeds.eiga.com/eiga_news",
+					0xffcc0000, true));
 			items.add(new RssFeed(
-					"国際",
-					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=w",
-					0xfff9f903, false));
+					"ASCII.jp",
+					"http://rss.rssad.jp/rss/ascii/rss.xml",
+					0xfff9f903, true));
 			items.add(new RssFeed(
-					"ビジネス",
-					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=b",
-					0xfffcb414, false));
+					"ガジェット通信",
+					"http://getnews.jp/feed/ext/orig",
+					0xfffcb414, true));
 			items.add(new RssFeed(
-					"政治",
-					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=p",
-					0xffda31e5, false));
+					"Impress Watch",
+					"http://rss.rssad.jp/rss/headline/headline.rdf",
+					0xffda31e5, true));
 			items.add(new RssFeed(
-					"エンタメ",
-					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=e",
-					0xff768342, false));
+					"Engadget",
+					"http://feed.rssad.jp/rss/engadget/rss",
+					0xff0000cd, true));
 			items.add(new RssFeed(
-					"スポーツ",
-					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=s",
-					0xff457387, false));
+					"GIGAZINE",
+					"http://feed.rssad.jp/rss/gigazine/rss_2.0",
+					0xff2f4f4f, true));
 			items.add(new RssFeed(
-					"テクノロジー",
-					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss&topic=t",
-					0xff545857, false));
+					"GIZMODE",
+					"http://feeds.gizmodo.jp/rss/gizmodo/index.xml",
+					0xffffc0cb, true));
+			items.add(new RssFeed(
+					"lifehacker",
+					"http://feeds.lifehacker.jp/rss/lifehacker/index.xml",
+					0xff808000, true));
+			items.add(new RssFeed(
+					"痛いニュース(ﾉ∀`)",
+					"http://blog.livedoor.jp/dqnplus/index.rdf",
+					0xff8b4513, true));
+			items.add(new RssFeed(
+					"アルファルファモザイク",
+					"http://alfalfalfa.com/index.rdf",
+					0xff808080, true));
+			items.add(new RssFeed(
+					"andronavi",
+					"http://andronavi.com/feed",
+					0xffadd8e6, true));
+			items.add(new RssFeed(
+					"オクトバ",
+					"http://octoba.net/feed",
+					0xff9370db, true));
+			
 
 			try {// セーブ書き込み
 				FileOutputStream fos = this.openFileOutput("SaveData.txt",
@@ -127,6 +150,9 @@ public class ItemListActivity extends Activity implements
 				oos.close();
 			} catch (Exception e1) {
 			}
+			Editor editor = sharedPreferences.edit();
+			editor.putInt("save_version",1);
+			editor.commit();
 		}
 
 		super.onCreate(savedInstanceState);

@@ -5,8 +5,10 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -230,13 +232,45 @@ public class ItemListFragment extends ListFragment {
 						break;
 
 					case R.id.menu_delete:// 削除クリック
-						Toast.makeText(getActivity(),
-								items.get(position).getTitle() + "を削除しました",
-								Toast.LENGTH_SHORT).show();
-						items.remove(position);
-						mListView.invalidateViews();
-						mCallbacks.onSetItems(items);// リスナーでPagerViewer更新
+						AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+								getActivity());
+						// アラートダイアログのタイトルを設定します
+						alertDialogBuilder.setTitle(items.get(position)
+								.getTitle());
+						// アラートダイアログのメッセージを設定します
+						alertDialogBuilder.setMessage("このRSSフィードを削除しますか");
+						// アラートダイアログの肯定ボタンがクリックされた時に呼び出されるコールバックリスナーを登録します
+						alertDialogBuilder.setPositiveButton("OK",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										Toast.makeText(
+												getActivity(),
+												items.get(position).getTitle()
+														+ "を削除しました",
+												Toast.LENGTH_SHORT).show();
+										items.remove(position);
+										mListView.invalidateViews();
+										mCallbacks.onSetItems(items);// リスナーでPagerViewer更新
+
+									}
+								});
+						alertDialogBuilder.setNegativeButton("Cancel",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+									}
+								});
+						// アラートダイアログのキャンセルが可能かどうかを設定します
+						alertDialogBuilder.setCancelable(true);
+						AlertDialog alertDialog = alertDialogBuilder.create();
+						// アラートダイアログを表示します
+						alertDialog.show();
+
 						break;
+
 					}
 
 					return true;

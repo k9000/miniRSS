@@ -21,11 +21,14 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	private int wait;
 	private int flag;
 	private Activity activity;
+	private int colorTag = 0x33b5e5;
 
 	// ItewDetailFragmentから
 	public RssParserTaskLoader(Context context, String url, int wait,
-			Activity activity) {
+			int color, Activity activity) {
 		super(context);
+		
+		this.colorTag = color;
 
 		this.activity = activity;
 
@@ -41,8 +44,10 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	}
 
 	// EntryActivityｃから
-	public RssParserTaskLoader(EntryActivity context, int flag, String url) {
+	public RssParserTaskLoader(EntryActivity context, int flag, String url,Activity activity) {
 		super(context);
+		
+		this.activity = activity;
 
 		wait = 100;// 雰囲気用
 
@@ -100,7 +105,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 					conn.setDoInput(true);
 					conn.connect();
 					InputStream is = conn.getInputStream();
-					result = parseXml(is);
+					result = parseXml(is,colorTag);
 				} catch (Exception e) {
 					e.printStackTrace();
 					return null;
@@ -119,7 +124,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	}
 
 	// XMLをパースする
-	public ArrayList<RssItem> parseXml(InputStream is) throws IOException,
+	public ArrayList<RssItem> parseXml(InputStream is, int color) throws IOException,
 			XmlPullParserException {
 		ArrayList<RssItem> list = new ArrayList<RssItem>();
 		XmlPullParser parser = Xml.newPullParser();
@@ -134,7 +139,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 					tag = parser.getName();
 					if (tag.equals("item")) {
 						currentItem = new RssItem();
-						currentItem.setTag(0);
+						currentItem.setTag(color);
 						currentItem.setText("");
 					} else if (currentItem != null) {
 						if (tag.equals("title")) {

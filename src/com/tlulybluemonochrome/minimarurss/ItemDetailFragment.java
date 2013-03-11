@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 
 import com.tlulybluemonochrome.minimarurss.RefreshableListView.OnRefreshListener;
 import com.tlulybluemonochrome.minimarurss.RefreshableListView;
@@ -26,6 +25,8 @@ public class ItemDetailFragment extends Fragment implements
 		LoaderCallbacks<ArrayList<RssItem>> {
 
 	ArrayList<RssItem> item;
+	
+	CustomDetailAdapter adapter;
 
 	boolean mFlag = false;
 
@@ -52,9 +53,13 @@ public class ItemDetailFragment extends Fragment implements
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.main, container, false);
 
+		mListView = (RefreshableListView) rootView.findViewById(R.id.listview);
+
 		item = new ArrayList<RssItem>();
 
-		mListView = (RefreshableListView) rootView.findViewById(R.id.listview);
+		adapter = new CustomDetailAdapter(getActivity(), 0,
+				item);
+		mListView.setAdapter(adapter);
 
 		getLoaderManager().initLoader(0, getArguments(), this);
 
@@ -88,8 +93,9 @@ public class ItemDetailFragment extends Fragment implements
 	@Override
 	public Loader<ArrayList<RssItem>> onCreateLoader(int wait, Bundle args) {
 		String url = args.getString(ItemDetailFragment.ARG_ITEM_ID);
+		int color = args.getInt("COLOR");
 		RssParserTaskLoader appLoader = new RssParserTaskLoader(getActivity(),
-				url, wait, getActivity());
+				url, wait,color,  getActivity());
 
 		appLoader.forceLoad();
 		return appLoader;
@@ -103,9 +109,8 @@ public class ItemDetailFragment extends Fragment implements
 		}
 		// リスト更新
 		item = arg1;
-		ArrayAdapter<RssItem> adapter = new ArrayAdapter<RssItem>(
-				getActivity(), android.R.layout.simple_list_item_activated_1,
-				android.R.id.text1, item);
+		adapter = new CustomDetailAdapter(getActivity(), 0,
+				item);
 		mListView.setAdapter(adapter);
 		if (mFlag) {// 引っ張って更新したとき
 			mListView.completeRefreshing();

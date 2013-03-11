@@ -2,6 +2,8 @@ package com.tlulybluemonochrome.minimarurss;
 
 import java.io.Serializable;
 
+import android.graphics.Bitmap;
+
 public class RssItem implements Serializable {
 	/**
 	 * 
@@ -68,6 +70,12 @@ public class RssItem implements Serializable {
 	
 	public void setPage(String page) {
 		this.page = page;
+	}
+	
+	public Bitmap getImageData() {
+		Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+		bmp.eraseColor(tag);
+		return bmp;
 	}
 
 

@@ -64,7 +64,7 @@ public class RssFeed implements Serializable {
 
 	public Bitmap getImageData() {
 		Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-		bmp.eraseColor(getTag());
+		bmp.eraseColor(tag);
 		return bmp;
 	}
 

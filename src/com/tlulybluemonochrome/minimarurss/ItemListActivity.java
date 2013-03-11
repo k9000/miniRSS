@@ -302,6 +302,8 @@ public class ItemListActivity extends Activity implements
 				Bundle arguments = new Bundle();
 				arguments.putString(ItemDetailFragment.ARG_ITEM_ID,
 						items.get(position - 2).getUrl());
+				arguments.putInt("COLOR",
+						items.get(position - 2).getTag());
 				fragment = new ItemDetailFragment();
 				fragment.setArguments(arguments);
 			}

@@ -10,6 +10,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import android.app.Activity;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.util.Xml;
@@ -19,10 +20,14 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	private URL url;
 	private int wait;
 	private int flag;
+	private Activity activity;
 
 	// ItewDetailFragmentから
-	public RssParserTaskLoader(Context context, String url, int wait) {
+	public RssParserTaskLoader(Context context, String url, int wait,
+			Activity activity) {
 		super(context);
+
+		this.activity = activity;
 
 		this.wait = wait;// 引っ張って更新の機嫌取り
 
@@ -51,64 +56,66 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	}
 
 	@Override
-	public ArrayList<RssItem> loadInBackground() {
+	synchronized public ArrayList<RssItem> loadInBackground() {
+		synchronized (activity) {
 
-		ArrayList<RssItem> result = new ArrayList<RssItem>();
+			ArrayList<RssItem> result = new ArrayList<RssItem>();
 
-		switch (flag) {
-		case 1:// RSSのURI獲得を目指す
-			try {
-				HttpURLConnection conn = (HttpURLConnection) url
-						.openConnection();
-				conn.addRequestProperty("User-Agent", "desktop");
-				conn.setDoInput(true);
-				conn.connect();
-				InputStream is = conn.getInputStream();
-				result = parseHtml(is);
-			} catch (Exception e) {
-				e.printStackTrace();
+			switch (flag) {
+			case 1:// RSSのURI獲得を目指す
+				try {
+					HttpURLConnection conn = (HttpURLConnection) url
+							.openConnection();
+					conn.addRequestProperty("User-Agent", "desktop");
+					conn.setDoInput(true);
+					conn.connect();
+					InputStream is = conn.getInputStream();
+					result = parseHtml(is);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return null;
+				}
+				break;
+
+			case 2:// RSSのタイトル獲得を目指す
+				try {
+					HttpURLConnection conn = (HttpURLConnection) url
+							.openConnection();
+					conn.addRequestProperty("User-Agent", "desktop");
+					conn.setDoInput(true);
+					conn.connect();
+					InputStream is = conn.getInputStream();
+					result = parseRSS(is);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return null;
+				}
+				break;
+
+			case 3:// RSSの記事一覧の獲得を目指す
+				try {
+					HttpURLConnection conn = (HttpURLConnection) url
+							.openConnection();
+					conn.addRequestProperty("User-Agent", "desktop");
+					conn.setDoInput(true);
+					conn.connect();
+					InputStream is = conn.getInputStream();
+					result = parseXml(is);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return null;
+				}
+				break;
+			default:
 				return null;
 			}
-			break;
 
-		case 2:// RSSのタイトル獲得を目指す
 			try {
-				HttpURLConnection conn = (HttpURLConnection) url
-						.openConnection();
-				conn.addRequestProperty("User-Agent", "desktop");
-				conn.setDoInput(true);
-				conn.connect();
-				InputStream is = conn.getInputStream();
-				result = parseRSS(is);
-			} catch (Exception e) {
-				e.printStackTrace();
-				return null;
+				Thread.sleep(wait);
+			} catch (InterruptedException e) {
 			}
-			break;
-
-		case 3:// RSSの記事一覧の獲得を目指す
-			try {
-				HttpURLConnection conn = (HttpURLConnection) url
-						.openConnection();
-				conn.addRequestProperty("User-Agent", "desktop");
-				conn.setDoInput(true);
-				conn.connect();
-				InputStream is = conn.getInputStream();
-				result = parseXml(is);
-			} catch (Exception e) {
-				e.printStackTrace();
-				return null;
-			}
-			break;
-		default:
-			return null;
+			return result;
 		}
-
-		try {
-			Thread.sleep(wait);
-		} catch (InterruptedException e) {
-		}
-		return result;
 	}
 
 	// XMLをパースする

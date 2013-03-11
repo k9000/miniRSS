@@ -89,7 +89,7 @@ public class ItemDetailFragment extends Fragment implements
 	public Loader<ArrayList<RssItem>> onCreateLoader(int wait, Bundle args) {
 		String url = args.getString(ItemDetailFragment.ARG_ITEM_ID);
 		RssParserTaskLoader appLoader = new RssParserTaskLoader(getActivity(),
-				url, wait);
+				url, wait, getActivity());
 
 		appLoader.forceLoad();
 		return appLoader;

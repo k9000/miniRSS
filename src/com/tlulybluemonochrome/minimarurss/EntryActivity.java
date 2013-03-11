@@ -217,7 +217,7 @@ public class EntryActivity extends Activity implements
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if (getIntent().getBooleanExtra("EDIT", false)
-					|| getIntent().getExtras().getString("ADD") != null) {
+					|| getIntent().getExtras().getString("ADD") != null) {// 編集時
 				Intent intent = new Intent(this,
 						(Class<?>) ItemListActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -263,7 +263,16 @@ public class EntryActivity extends Activity implements
 	@Override
 	public void onLoadFinished(Loader<ArrayList<RssItem>> arg0,
 			ArrayList<RssItem> arg1) {
-		if (arg1 == null) {// 失敗時
+		if (arg1 == null && mflag != 2) {// タイトル以外で失敗時
+			if (getIntent().getBooleanExtra("EDIT", false)
+					|| getIntent().getExtras().getString("ADD") != null) {// 編集時
+				Intent intent = new Intent(this,
+						(Class<?>) ItemListActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+						| Intent.FLAG_ACTIVITY_NEW_TASK
+						| Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				startActivity(intent);
+			}
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 					this);
 			// アラートダイアログのタイトルを設定します

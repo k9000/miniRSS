@@ -117,7 +117,8 @@ public class NotificationService extends IntentService {
 			parser.setInput(is, null);
 			int eventType = parser.getEventType();
 			RssItem currentItem = null;
-			while (eventType != XmlPullParser.END_DOCUMENT) {
+			int i = 0;
+			while (eventType != XmlPullParser.END_DOCUMENT && i < 5) {//通知数制限
 				String tag = null;
 				switch (eventType) {
 				case XmlPullParser.START_TAG:
@@ -143,6 +144,7 @@ public class NotificationService extends IntentService {
 							currentItem.setTag(0);
 						}
 						list.add(currentItem);
+						i++;
 					}
 					break;
 				}

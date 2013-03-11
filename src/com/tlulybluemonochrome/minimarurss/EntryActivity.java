@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -211,6 +212,26 @@ public class EntryActivity extends Activity implements
 		this.finish();
 	}
 
+	// 戻るボタン
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if (getIntent().getBooleanExtra("EDIT", false)
+					|| getIntent().getExtras().getString("ADD") != null) {
+				Intent intent = new Intent(this,
+						(Class<?>) ItemListActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+						| Intent.FLAG_ACTIVITY_NEW_TASK
+						| Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				startActivity(intent);
+			}
+
+			this.finish();
+			return true;
+		}
+		return false;
+	}
+
 	// 色選択
 	public void clickButton_Color(View v) {
 
@@ -254,7 +275,7 @@ public class EntryActivity extends Activity implements
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							 EntryActivity.this.finish();
+							EntryActivity.this.finish();
 						}
 					});
 			// アラートダイアログのキャンセルが可能かどうかを設定します

@@ -16,9 +16,11 @@ import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 /**
  * An activity representing a list of Items. This activity has different
@@ -227,6 +229,19 @@ public class ItemListActivity extends Activity implements
 		}
 
 		return ret;
+	}
+
+	// 戻るボタン
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if (mTwoPane == false && mViewPager.getCurrentItem() != 1)
+				mViewPager.setCurrentItem(1);
+			else
+				this.finish();
+			return true;
+		}
+		return false;
 	}
 
 	/**

@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -27,7 +29,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	public RssParserTaskLoader(Context context, String url, int wait,
 			int color, Activity activity) {
 		super(context);
-		
+
 		this.colorTag = color;
 
 		this.activity = activity;
@@ -44,9 +46,10 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	}
 
 	// EntryActivityｃから
-	public RssParserTaskLoader(EntryActivity context, int flag, String url,Activity activity) {
+	public RssParserTaskLoader(EntryActivity context, int flag, String url,
+			Activity activity) {
 		super(context);
-		
+
 		this.activity = activity;
 
 		wait = 100;// 雰囲気用
@@ -105,7 +108,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 					conn.setDoInput(true);
 					conn.connect();
 					InputStream is = conn.getInputStream();
-					result = parseXml(is,colorTag);
+					result = parseXml(is, colorTag);
 				} catch (Exception e) {
 					e.printStackTrace();
 					return null;
@@ -124,8 +127,8 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	}
 
 	// XMLをパースする
-	public ArrayList<RssItem> parseXml(InputStream is, int color) throws IOException,
-			XmlPullParserException {
+	public ArrayList<RssItem> parseXml(InputStream is, int color)
+			throws IOException, XmlPullParserException {
 		ArrayList<RssItem> list = new ArrayList<RssItem>();
 		XmlPullParser parser = Xml.newPullParser();
 		try {
@@ -143,6 +146,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 						currentItem.setText("");
 					} else if (currentItem != null) {
 						if (tag.equals("title")) {
+
 							currentItem.setTitle(parser.nextText());
 						} else if (tag.equals("link")) {
 							currentItem.setUrl(parser.nextText());
@@ -151,7 +155,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 					break;
 				case XmlPullParser.END_TAG:
 					tag = parser.getName();
-					if (tag.equals("item")) {
+					if (tag.equals("item") && removePR(currentItem)) {
 						list.add(currentItem);
 					}
 					break;
@@ -163,6 +167,16 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 		}
 		return list;
 
+	}
+
+	// PR削除
+	private boolean removePR(RssItem currentItem) {
+		String title = currentItem.getTitle();
+		String regex = "^PR";
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(title);
+
+		return !m.find();
 	}
 
 	// HTMLをパースする

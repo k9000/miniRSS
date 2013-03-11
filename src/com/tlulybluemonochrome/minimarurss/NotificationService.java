@@ -8,6 +8,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -75,7 +78,8 @@ public class NotificationService extends IntentService {
 				try {// 記事取得
 					URL url = new URL(urilist.get(i).getUrl());
 					InputStream is = url.openConnection().getInputStream();
-					arraylist.addAll(parseXml(is, urilist.get(i).getTag(),urilist.get(i).getTitle()));
+					arraylist.addAll(parseXml(is, urilist.get(i).getTag(),
+							urilist.get(i).getTitle()));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -89,7 +93,8 @@ public class NotificationService extends IntentService {
 				RssMessageNotification.notify(getApplicationContext(),
 						arraylist.get(i).getTitle(),
 						arraylist.get(i).getText(), arraylist.get(i).getUrl(),
-						i, Picuture(arraylist.get(i).getTag()),arraylist.get(i).getPage());
+						i, Picuture(arraylist.get(i).getTag()), arraylist
+								.get(i).getPage());
 				try {// 通知の間を置く
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -118,7 +123,7 @@ public class NotificationService extends IntentService {
 			int eventType = parser.getEventType();
 			RssItem currentItem = null;
 			int i = 0;
-			while (eventType != XmlPullParser.END_DOCUMENT && i < 5) {//通知数制限
+			while (eventType != XmlPullParser.END_DOCUMENT && i < 5) {// 通知数制限
 				String tag = null;
 				switch (eventType) {
 				case XmlPullParser.START_TAG:
@@ -139,7 +144,7 @@ public class NotificationService extends IntentService {
 					break;
 				case XmlPullParser.END_TAG:
 					tag = parser.getName();
-					if (tag.equals("item")) {
+					if (tag.equals("item") && removePR(currentItem)) {
 						if (Serch(currentItem)) {
 							currentItem.setTag(0);
 						}
@@ -156,6 +161,16 @@ public class NotificationService extends IntentService {
 		}
 		return list;
 
+	}
+
+	// PR削除
+	private boolean removePR(RssItem currentItem) {
+		String title = currentItem.getTitle();
+		String regex = "^PR";
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(title);
+
+		return !m.find();
 	}
 
 	// 未読チェック

@@ -46,6 +46,7 @@ public class NotificationService extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 		// TODO 自動生成されたメソッド・スタブ
 
+		RssMessageNotification.cancel(getApplicationContext(), 100);
 		RssMessageNotification.titlenotify(getApplicationContext(),
 				"minimaruRSS", "更新中", "更新中", 99);
 
@@ -68,7 +69,7 @@ public class NotificationService extends IntentService {
 			oldlist = (ArrayList<RssItem>) ois.readObject();
 			ois.close();
 		} catch (Exception e) {
-			Log.d(TAG, "Error");
+			oldlist = null;
 		}
 
 		// 全URLチェック
@@ -175,6 +176,8 @@ public class NotificationService extends IntentService {
 
 	// 未読チェック
 	public boolean Serch(RssItem item) {
+		if(oldlist == null)
+			return false;
 
 		for (int i = 0; i < oldlist.size(); i++) {
 			if (item.getUrl().equals(oldlist.get(i).getUrl()))

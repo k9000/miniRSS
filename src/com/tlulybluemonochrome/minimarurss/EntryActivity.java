@@ -48,7 +48,7 @@ public class EntryActivity extends Activity implements
 	private String mUri;
 	private int mPosition;
 	private boolean mPass = false;
-	private boolean noti = false;
+	private boolean noti = true;
 
 	int selectColor = 0xff00aeef;
 
@@ -188,6 +188,13 @@ public class EntryActivity extends Activity implements
 
 			// 終了
 			this.finish();
+		} else if (mTitleView.getText().toString().equals("")) {// タイトル探し
+			Bundle args = new Bundle();
+			args.putString(ItemDetailFragment.ARG_ITEM_ID, mUriView.getText()
+					.toString());
+			mflag = 2;
+			showProgress(true);
+			getLoaderManager().initLoader(mflag, args, this);
 		} else {// URIチェック
 			Bundle args = new Bundle();
 			args.putString(ItemDetailFragment.ARG_ITEM_ID, mUriView.getText()
@@ -264,7 +271,7 @@ public class EntryActivity extends Activity implements
 	@Override
 	public void onLoadFinished(Loader<ArrayList<RssItem>> arg0,
 			ArrayList<RssItem> arg1) {
-		if (arg1 == null && mflag != 2) {// タイトル以外で失敗時
+		if (arg1 == null) {// 失敗時
 			if (getIntent().getBooleanExtra("EDIT", false)
 					|| getIntent().getExtras().getString("ADD") != null) {// 編集時
 				Intent intent = new Intent(this,
@@ -319,6 +326,7 @@ public class EntryActivity extends Activity implements
 		mflag++;
 
 		// Loader再始動
+		showProgress(true);// プログレスバー再表示
 		Bundle args = new Bundle();
 		args.putString(ItemDetailFragment.ARG_ITEM_ID, mUriView.getText()
 				.toString());

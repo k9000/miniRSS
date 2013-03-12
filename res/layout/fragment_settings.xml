@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingRight="16dp">
+        android:paddingRight="8dp">
 
         <SeekBar
             android:id="@+id/seekBar1"
@@ -46,9 +46,9 @@
             android:id="@+id/editText1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="2"
+            android:ems="3"
             android:gravity="center"
-            android:inputType="number"
+            android:maxLines="1"
             android:focusable="false"
             android:padding="8dp" >
 

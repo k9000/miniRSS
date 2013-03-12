@@ -39,7 +39,7 @@ public class SettingsFragment extends Fragment implements
 	EditText editText;
 	RadioGroup mRadioGroupOs;
 	boolean mChecked;
-	long mMinute = 600000;
+	int mMinute = 2;
 	Button button;
 
 	@Override
@@ -64,21 +64,22 @@ public class SettingsFragment extends Fragment implements
 		s.setOnCheckedChangeListener(this);
 
 		seekBar = (SeekBar) rootView.findViewById(R.id.seekBar1);
-		seekBar.setMax(59);
-		seekBar.setProgress(sharedPreferences.getInt("notification_freqescy",
-				10) - 1);
+		seekBar.setMax(4);
+		seekBar.setProgress(sharedPreferences
+				.getInt("notification_freqescy", 2));
 
 		editText = (EditText) rootView.findViewById(R.id.editText1);
 
 		// シークバーの初期値をTextViewに表示
-		editText.setText(String.valueOf(seekBar.getProgress() + 1));
+		frequencySet(seekBar.getProgress());
 
 		// シークバーのリスナー
 		seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
 				// ツマミをドラッグしたときに呼ばれる
-				editText.setText(String.valueOf(progress + 1));
+				frequencySet(progress);
+
 			}
 
 			public void onStartTrackingTouch(SeekBar seekBar) {
@@ -89,16 +90,16 @@ public class SettingsFragment extends Fragment implements
 				// ツマミを離したときに呼ばれる
 
 				if (mChecked) {
-					mMinute = (seekBar.getProgress() + 1) * 60000;
-					// NotificationServiceStop();
-					// NotificationServiceStart();
+
+					mMinute = seekBar.getProgress();
+					NotificationServiceSet();
+					NotificationServiceStart();
 				}
 
 				SharedPreferences sharedPreferences = PreferenceManager
 						.getDefaultSharedPreferences(getActivity());
 				Editor editor = sharedPreferences.edit();
-				editor.putInt("notification_freqescy",
-						seekBar.getProgress() + 1);
+				editor.putInt("notification_freqescy", seekBar.getProgress());
 				editor.commit();
 			}
 		});
@@ -144,7 +145,8 @@ public class SettingsFragment extends Fragment implements
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		mChecked = isChecked;
 		if (isChecked) {
-			// NotificationServiceStop();
+			NotificationServiceStop();
+			NotificationServiceSet();
 			NotificationServiceStart();
 		} else {
 			NotificationServiceStop();
@@ -156,6 +158,8 @@ public class SettingsFragment extends Fragment implements
 		editor.putBoolean("notification_switch", isChecked);
 		editor.commit();
 	}
+
+	
 
 	// Add RSS Feedボタン
 	@Override
@@ -169,16 +173,60 @@ public class SettingsFragment extends Fragment implements
 		}
 
 	}
+	
+	public void frequencySet(int position){
+		switch (position) {
+		case 0:
+			editText.setText(R.string.fifteen_min);
+			break;
+		case 1:
+			editText.setText(R.string.half_hour);
+			break;
+		case 2:
+			editText.setText(R.string.hour);
+			break;
+		case 3:
+			editText.setText(R.string.half_day);
+			break;
+		case 4:
+			editText.setText(R.string.day);
+			break;
+		}
+	}
+	
+	private void NotificationServiceStart() {
+		getActivity().startService(new Intent(getActivity(),NotificationService.class));
+		
+	}
 
 	// NotificationServiceをAlarmManagerに登録
-	protected void NotificationServiceStart() {
+	protected void NotificationServiceSet() {
+		long time = AlarmManager.INTERVAL_HOUR;
+		switch (mMinute) {
+		case 0:
+			time = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
+			break;
+		case 1:
+			time = AlarmManager.INTERVAL_HALF_HOUR;
+			break;
+		case 2:
+			time = AlarmManager.INTERVAL_HOUR;
+			break;
+		case 3:
+			time = AlarmManager.INTERVAL_HALF_DAY;
+			break;
+		case 4:
+			time = AlarmManager.INTERVAL_DAY;
+			break;
+		}
+
 		Intent intent = new Intent(getActivity(), NotificationService.class);
 		PendingIntent pendingIntent = PendingIntent.getService(getActivity(),
 				-1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		AlarmManager alarmManager = (AlarmManager) getActivity()
 				.getSystemService(Context.ALARM_SERVICE);
 		alarmManager.setInexactRepeating(AlarmManager.RTC,
-				System.currentTimeMillis(), mMinute, pendingIntent);
+				System.currentTimeMillis(), time, pendingIntent);
 	}
 
 	// NotificationServiceのAlarmManager登録解除

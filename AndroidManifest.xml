@@ -42,6 +42,10 @@
                 <action android:name="android.intent.action.TIME_SET" />
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" >
+                </action>
+            </intent-filter>
         </receiver>
 
         <activity

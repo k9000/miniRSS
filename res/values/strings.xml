@@ -12,5 +12,10 @@
     <string name="remove_rss">Do you want to remove this RSS Feed?</string>
     <string name="removed_rss">was removed</string>
     <string name="delete">Remove</string>
+    <string name="fifteen_min">15m</string>
+    <string name="half_hour">30m</string>
+    <string name="hour">1h</string>
+    <string name="half_day">12h</string>
+    <string name="day">1day</string>
 
 </resources>

@@ -35,6 +35,8 @@ public class CustomAdapter extends ArrayAdapter<RssFeed> {
 		imageView = (ImageView) convertView.findViewById(R.id.image);
 		if (item.getNoti()) {
 			imageView.setImageBitmap(item.getImageData());
+		} else {
+			imageView.setImageBitmap(null);
 		}
 
 		TextView textView;

@@ -12,5 +12,10 @@
     <string name="remove_rss">このRSSフィードを削除しますか</string>
     <string name="removed_rss"> を削除しました</string>
     <string name="delete">削除</string>
+    <string name="fifteen_min">15分</string>
+    <string name="half_hour">30分</string>
+    <string name="hour">1時間</string>
+    <string name="half_day">半日</string>
+    <string name="day">1日</string>
 
 </resources>

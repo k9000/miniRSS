@@ -3,15 +3,9 @@
 
     <item
         android:id="@+id/item_setting"
-        android:showAsAction="ifRoom"
         android:icon="@android:drawable/ic_menu_manage"
-        android:title="SETTING">
-    </item>
-    <item
-        android:id="@+id/item_list"
         android:showAsAction="ifRoom"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
-        android:title="LIST">
+        android:title="SETTING">
     </item>
 
 </menu>

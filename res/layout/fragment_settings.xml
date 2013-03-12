@@ -11,7 +11,7 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Notification"
+        android:text="@+string/notification"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:padding="8dp" />
 
@@ -19,14 +19,14 @@
         android:id="@+id/switch1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Notification"
+        android:text="@+string/notification_switch"
         android:padding="8dp" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="NotificationFreqency(minutes)"
+        android:text="@+string/notification_freqency"
         android:paddingLeft="8dp" />
 
     <LinearLayout
@@ -37,7 +37,7 @@
 
         <SeekBar
             android:id="@+id/seekBar1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1" 
             android:paddingTop="8dp"/>
@@ -63,7 +63,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Theme"
+        android:text="@+string/theme"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:padding="8dp" />
 
@@ -97,7 +97,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="8dp"
-        android:text="アプリ再起動後から反映" />
+        android:text="@+string/reflect_after_reboot" />
     
     <Space android:layout_width="match_parent"
         android:layout_height="16dp"/>
@@ -106,7 +106,7 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="RSS Feed"
+        android:text="@+string/rss_feed"
         android:paddingLeft="8dp"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -115,6 +115,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="Add RSS Feed" />
+        android:text="@+string/add_rss_feed" />
 
 </LinearLayout>

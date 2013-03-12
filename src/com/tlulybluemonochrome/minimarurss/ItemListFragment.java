@@ -238,7 +238,7 @@ public class ItemListFragment extends ListFragment {
 						alertDialogBuilder.setTitle(items.get(position)
 								.getTitle());
 						// アラートダイアログのメッセージを設定します
-						alertDialogBuilder.setMessage("このRSSフィードを削除しますか");
+						alertDialogBuilder.setMessage(R.string.remove_rss);
 						// アラートダイアログの肯定ボタンがクリックされた時に呼び出されるコールバックリスナーを登録します
 						alertDialogBuilder.setPositiveButton("OK",
 								new DialogInterface.OnClickListener() {
@@ -248,7 +248,7 @@ public class ItemListFragment extends ListFragment {
 										Toast.makeText(
 												getActivity(),
 												items.get(position).getTitle()
-														+ "を削除しました",
+														+ R.string.removed_rss ,
 												Toast.LENGTH_SHORT).show();
 										items.remove(position);
 										mListView.invalidateViews();
@@ -256,7 +256,7 @@ public class ItemListFragment extends ListFragment {
 
 									}
 								});
-						alertDialogBuilder.setNegativeButton("Cancel",
+						alertDialogBuilder.setNegativeButton(R.string.cancel,
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,

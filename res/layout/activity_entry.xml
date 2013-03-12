@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="RSS Feed 登録"
+            android:text="@+string/rss_feed_add"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <EditText
@@ -53,7 +53,7 @@
                 android:id="@+id/checkBox1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Notification" />
+                android:text="@+string/notification" />
 
             <ImageButton
                 android:id="@+id/imageButton1"
@@ -82,7 +82,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:onClick="clickButton_Cancel"
-                android:text="Cancel" />
+                android:text="@+string/cancel" />
 
             <Button
                 android:id="@+id/regist_button"
@@ -92,7 +92,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:onClick="clickButton_Regist"
-                android:text="Regist" />
+                android:text="@+string/regist" />
         </LinearLayout>
 
         <LinearLayout

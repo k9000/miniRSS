@@ -78,7 +78,7 @@ public class EntryActivity extends Activity implements
 			items = (ArrayList<RssFeed>) ois.readObject();
 			ois.close();
 		} catch (Exception e) {
-			Toast.makeText(this, "error1", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
 		}
 
 		// レイアウトID登録
@@ -110,15 +110,15 @@ public class EntryActivity extends Activity implements
 			mTitle = items.get(mPosition).getTitle();
 			mUri = items.get(mPosition).getUrl();
 			noti = items.get(mPosition).getNoti();
-			button.setText("Edit");
-			mPageTitle.setText("RSS Feed 編集");
+			button.setText(R.string.edit);
+			mPageTitle.setText(R.string.rss_feed_edit);
 			args.putString(ItemDetailFragment.ARG_ITEM_ID, mUri);
 			selectColor = items.get(mPosition).getTag();
 
 		}
 
 		if (getIntent().getExtras().getString("ADD") != null) {// 設定の追加ボタンから
-			button.setText("Check");
+			button.setText(R.string.check);
 		} else {
 			showProgress(true);
 			getLoaderManager().initLoader(mflag, args, this);
@@ -171,7 +171,7 @@ public class EntryActivity extends Activity implements
 				items.add(new RssFeed(mTitleView.getText().toString(), mUriView
 						.getText().toString(), selectColor, noti));
 				Toast.makeText(this,
-						mTitleView.getText().toString() + " を追加しました",
+						mTitleView.getText().toString() + R.string.was_added,
 						Toast.LENGTH_SHORT).show();
 			}
 
@@ -183,7 +183,7 @@ public class EntryActivity extends Activity implements
 				oos.writeObject(items);
 				oos.close();
 			} catch (Exception e1) {
-				Toast.makeText(this, "error2", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
 			}
 
 			// 終了
@@ -286,7 +286,7 @@ public class EntryActivity extends Activity implements
 			// アラートダイアログのタイトルを設定します
 			// alertDialogBuilder.setTitle("フィードを取得出来ませんでした");
 			// アラートダイアログのメッセージを設定します
-			alertDialogBuilder.setMessage("フィードを取得出来ませんでした");
+			alertDialogBuilder.setMessage(R.string.can_not_get_feed);
 			// アラートダイアログの肯定ボタンがクリックされた時に呼び出されるコールバックリスナーを登録します
 			alertDialogBuilder.setPositiveButton("OK",
 					new DialogInterface.OnClickListener() {
@@ -305,7 +305,7 @@ public class EntryActivity extends Activity implements
 		}
 		showProgress(false);// プログレスバー消す
 		if (getIntent().getExtras().getString("ADD") != null) {// URIチェック通過
-			button.setText("Add");
+			button.setText(R.string.add);
 		}
 
 		switch (mflag) {

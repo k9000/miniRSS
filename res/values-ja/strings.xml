@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">minimaruRSS</string>
+    <string name="notification">更新通知</string>
+    <string name="notification_switch">一定時間ごとに更新を通知</string>
+    <string name="notification_freqency">通知間隔</string>
+    <string name="theme">テーマ</string>
+    <string name="reflect_after_reboot">アプリ再起動後から反映されます</string>
+    <string name="rss_feed">RSSフィード</string>
+    <string name="add_rss_feed">RSSフィード追加</string>
+    <string name="remove_rss">このRSSフィードを削除しますか</string>
+    <string name="removed_rss"> を削除しました</string>
+    <string name="delete">削除</string>
+
+</resources>

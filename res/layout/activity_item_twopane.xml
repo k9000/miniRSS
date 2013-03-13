@@ -5,7 +5,8 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".ItemListActivity" >
+    tools:context=".ItemListActivity"
+    android:background="?android:colorBackground" >
 
     <fragment
         android:id="@+id/item_list"
@@ -31,11 +32,9 @@
             <android.support.v4.view.PagerTitleStrip
                 android:id="@+id/pager_title_strip"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="24dp"
                 android:layout_gravity="top"
-                android:background="#33b5e5"
-                android:paddingBottom="4dp"
-                android:paddingTop="4dp"
+                android:background="?android:colorForeground"
                 android:textColor="#fff" />
         </android.support.v4.view.ViewPager>
     </FrameLayout>

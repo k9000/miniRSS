@@ -63,11 +63,11 @@ public class ItemListActivity extends Activity implements
 				"theme_preference", "Light");
 		int theme = android.R.style.Theme_Holo_Light_DarkActionBar;
 		if (thme_preference.equals("Light"))
-			theme = android.R.style.Theme_Holo_Light_DarkActionBar;
+			theme = R.style.LightMetal;
 		else if (thme_preference.equals("Dark"))
-			theme = android.R.style.Theme_Holo;
+			theme = R.style.DarkGlass;
 		else if (thme_preference.equals("Transparent"))
-			theme = android.R.style.Theme_DeviceDefault_Wallpaper;
+			theme = R.style.Glass;
 		setTheme(theme);
 		
 		items = new ArrayList<RssFeed>();

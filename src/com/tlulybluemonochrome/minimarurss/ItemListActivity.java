@@ -60,8 +60,8 @@ public class ItemListActivity extends Activity implements
 		/* Preferencesからテーマ設定 */
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		String thme_preference = sharedPreferences.getString(
-				"theme_preference", "Light");
-		int theme = android.R.style.Theme_Holo_Light_DarkActionBar;
+				"theme_preference", "Dark");
+		int theme = R.style.DarkGlass;
 		if (thme_preference.equals("Light"))
 			theme = R.style.LightMetal;
 		else if (thme_preference.equals("Dark"))

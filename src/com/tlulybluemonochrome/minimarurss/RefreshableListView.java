@@ -252,13 +252,13 @@ public class RefreshableListView extends ListView {
 			if (height > mHeaderHeight && !mArrowUp) {
 				mArrow.startAnimation(AnimationUtils.loadAnimation(
 						getContext(), R.anim.rotate));
-				mText.setText("Release to update");
+				mText.setText(R.string.release_to_update);
 				rotateArrow();
 				mArrowUp = true;
 			} else if (height < mHeaderHeight && mArrowUp) {
 				mArrow.startAnimation(AnimationUtils.loadAnimation(
 						getContext(), R.anim.rotate));
-				mText.setText("Pull down to update");
+				mText.setText(R.string.pull_down_to_update);
 				rotateArrow();
 				mArrowUp = false;
 			}
@@ -283,7 +283,7 @@ public class RefreshableListView extends ListView {
 	private void startRefreshing() {
 		mArrow.setVisibility(View.INVISIBLE);
 		mProgress.setVisibility(View.VISIBLE);
-		mText.setText("Loading...");
+		mText.setText(R.string.loading);
 		mIsRefreshing = true;
 
 		if (mListener != null) {

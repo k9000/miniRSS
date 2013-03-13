@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -92,6 +95,7 @@ public class SettingsFragment extends Fragment implements
 				if (mChecked) {
 
 					mMinute = seekBar.getProgress();
+					NotificationServiceStop();
 					NotificationServiceSet();
 					NotificationServiceStart();
 				}
@@ -108,7 +112,7 @@ public class SettingsFragment extends Fragment implements
 
 		// ラジオボタンの初期値
 		String theme_preference = sharedPreferences.getString(
-				"theme_preference", "Light");
+				"theme_preference", "Dark");
 		if (theme_preference.equals("Light"))
 			mRadioGroupOs.check(R.id.radio0);
 		else if (theme_preference.equals("Dark"))
@@ -136,6 +140,41 @@ public class SettingsFragment extends Fragment implements
 		button = (Button) rootView.findViewById(R.id.button1);
 		button.setOnClickListener(this);
 
+		// SharedPreferenceの設定
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		int vCode = sharedPreferences.getInt("VersionCode", 1);
+		String vName = sharedPreferences.getString("VersionName", "1.0");
+
+		// 最新のバージョン情報を取得する
+		PackageInfo pi = null;
+		try {
+			pi = getActivity().getPackageManager().getPackageInfo(
+					getActivity().getPackageName(),
+					PackageManager.GET_META_DATA);
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		// 最新のバージョン情報をPreferenceに保存
+		editor.putInt("VersionCode", pi.versionCode);
+		editor.putString("VersionName", pi.versionName);
+		editor.commit();
+
+		if (pi != null) {
+			// VersionCode でVersionUPを判断する
+			if (pi.versionCode > vCode) {
+				// VersionCodeが上がっている場合
+				if (mChecked) {
+
+					NotificationServiceStop();
+					NotificationServiceSet();
+					NotificationServiceStart();
+				}
+
+			}
+
+		}
+
 		// Inflate the layout for this fragment
 		return rootView;
 	}
@@ -159,8 +198,6 @@ public class SettingsFragment extends Fragment implements
 		editor.commit();
 	}
 
-	
-
 	// Add RSS Feedボタン
 	@Override
 	public void onClick(View v) {
@@ -173,8 +210,8 @@ public class SettingsFragment extends Fragment implements
 		}
 
 	}
-	
-	public void frequencySet(int position){
+
+	public void frequencySet(int position) {
 		switch (position) {
 		case 0:
 			editText.setText(R.string.fifteen_min);
@@ -193,10 +230,11 @@ public class SettingsFragment extends Fragment implements
 			break;
 		}
 	}
-	
+
 	private void NotificationServiceStart() {
-		getActivity().startService(new Intent(getActivity(),NotificationService.class));
-		
+		getActivity().startService(
+				new Intent(getActivity(), NotificationService.class));
+
 	}
 
 	// NotificationServiceをAlarmManagerに登録

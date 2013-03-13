@@ -26,7 +26,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_marginLeft="15dp"
 	        android:layout_centerInParent="true"
-	        android:text="Pull down to update"
+	        android:text="@+string/pull_down_to_update"
 	        android:id="@+id/refreshable_list_text" />
 	</RelativeLayout>
 </LinearLayout>

@@ -248,7 +248,7 @@ public class ItemListFragment extends ListFragment {
 										Toast.makeText(
 												getActivity(),
 												items.get(position).getTitle()
-														+ R.string.removed_rss ,
+														+ getString(R.string.removed_rss) ,
 												Toast.LENGTH_SHORT).show();
 										items.remove(position);
 										mListView.invalidateViews();

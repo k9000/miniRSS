@@ -102,7 +102,8 @@ public class RssMessageNotification {
 				.setAutoCancel(true);
 
 		if (pin) {
-			builder.addAction(android.R.drawable.ic_delete, "ピンを外す",
+			builder.addAction(android.R.drawable.ic_delete, context
+					.getString(R.string.unpinned),
 
 			PendingIntent.getService(
 					context,
@@ -115,7 +116,8 @@ public class RssMessageNotification {
 					PendingIntent.FLAG_UPDATE_CURRENT));
 
 		} else {
-			builder.addAction(android.R.drawable.ic_input_add, "ピンで留める",
+			builder.addAction(android.R.drawable.ic_input_add, context
+					.getString(R.string.pinned),
 
 			PendingIntent.getService(
 					context,

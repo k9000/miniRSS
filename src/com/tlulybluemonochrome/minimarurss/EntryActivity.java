@@ -171,7 +171,7 @@ public class EntryActivity extends Activity implements
 				items.add(new RssFeed(mTitleView.getText().toString(), mUriView
 						.getText().toString(), selectColor, noti));
 				Toast.makeText(this,
-						mTitleView.getText().toString() + R.string.was_added,
+						mTitleView.getText().toString() + getString(R.string.was_added),
 						Toast.LENGTH_SHORT).show();
 			}
 

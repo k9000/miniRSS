@@ -12,6 +12,7 @@ public class NotificationChangeService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
+		RssMessageNotification.cancel(getApplicationContext(), intent.getIntExtra("ID", 0));
 		RssMessageNotification.notify(getApplicationContext(),
 				intent.getStringExtra("TITLE"), intent.getStringExtra("TEXT"),
 				intent.getStringExtra("URL"), intent.getIntExtra("ID", 0),

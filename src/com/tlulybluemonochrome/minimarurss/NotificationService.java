@@ -16,8 +16,11 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Xml;
 import android.widget.Toast;
@@ -29,6 +32,8 @@ public class NotificationService extends IntentService {
 	int mColor;
 
 	Bitmap mBmp;
+	
+	int count;
 
 	public NotificationService(String name) {
 		super(name);
@@ -46,9 +51,12 @@ public class NotificationService extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 		// TODO 自動生成されたメソッド・スタブ
 
-		RssMessageNotification.cancel(getApplicationContext(), 100);
+		RssMessageNotification.cancel(getApplicationContext(), 0);
 		RssMessageNotification.titlenotify(getApplicationContext(),
-				"minimaruRSS", "更新中", "更新中", 99);
+				"minimaruRSS", "更新中", "更新中", 0);
+		
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		count = sharedPreferences.getInt("COUNT", 1);
 
 		ArrayList<RssItem> arraylist = new ArrayList<RssItem>();
 
@@ -87,14 +95,14 @@ public class NotificationService extends IntentService {
 
 			}
 		}
-
+		
 		// 未読記事通知
 		for (int i = 0; i < arraylist.size(); i++) {
 			if (arraylist.get(i).getTag() != 0) {
 				RssMessageNotification.notify(getApplicationContext(),
 						arraylist.get(i).getTitle(),
 						arraylist.get(i).getText(), arraylist.get(i).getUrl(),
-						i, Picuture(arraylist.get(i).getTag()), arraylist
+						count++, Picuture(arraylist.get(i).getTag()), arraylist
 								.get(i).getPage(), false);
 				try {// 通知の間を置く
 					Thread.sleep(1000);
@@ -111,6 +119,10 @@ public class NotificationService extends IntentService {
 		} catch (Exception e) {
 			Log.d(TAG, "Error");
 		}
+		
+		Editor editor = sharedPreferences.edit();
+		editor.putInt("COUNT", count);
+		editor.commit();
 
 	}
 
@@ -229,9 +241,9 @@ public class NotificationService extends IntentService {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		RssMessageNotification.cancel(getApplicationContext(), 99);
+		RssMessageNotification.cancel(getApplicationContext(), 0);
 		RssMessageNotification.titlenotify(getApplicationContext(),
-				"minimaruRSS", "タップして更新", "更新完了", 100);
+				"minimaruRSS", "タップして更新", "更新完了", 0);
 	}
 
 }

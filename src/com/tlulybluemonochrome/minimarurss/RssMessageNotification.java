@@ -35,7 +35,8 @@ public class RssMessageNotification {
 	 * presentation of rss message notifications. Make sure to follow the <a
 	 * href="https://developer.android.com/design/patterns/notifications.html">
 	 * Notification design guidelines</a> when doing so.
-	 * @param page 
+	 * 
+	 * @param page
 	 * 
 	 * @param color
 	 * 
@@ -44,7 +45,8 @@ public class RssMessageNotification {
 	// 記事用
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public static void notify(final Context context, final String title,
-			final String text, final String url, final int id, Bitmap bitmap, String page) {
+			final String text, final String url, final int id, Bitmap bitmap,
+			String page, boolean pin) {
 		final Resources res = context.getResources();
 
 		// This image is used as the notification's large icon (thumbnail).
@@ -54,7 +56,7 @@ public class RssMessageNotification {
 
 		final Notification.Builder builder;
 
-		Notification notification;
+		Notification notification = new Notification();
 
 		builder = new Notification.Builder(context)
 
@@ -99,17 +101,55 @@ public class RssMessageNotification {
 				// Automatically dismiss the notification when it is touched.
 				.setAutoCancel(true);
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {// Android4.1以降
+		if (pin) {
+			builder.addAction(android.R.drawable.ic_delete, "ピンを外す",
+
+			PendingIntent.getService(
+					context,
+					id,
+					new Intent(context, NotificationChangeService.class)
+							.putExtra("TITLE", title).putExtra("TEXT", text)
+							.putExtra("URL", url).putExtra("ID", id)
+							.putExtra("BITMAP", bitmap).putExtra("PAGE", page)
+							.putExtra("SET", false),
+					PendingIntent.FLAG_UPDATE_CURRENT));
+
+		} else {
+			builder.addAction(android.R.drawable.ic_input_add, "ピンで留める",
+
+			PendingIntent.getService(
+					context,
+					id,
+					new Intent(context, NotificationChangeService.class)
+							.putExtra("TITLE", title).putExtra("TEXT", text)
+							.putExtra("URL", url).putExtra("ID", id)
+							.putExtra("BITMAP", bitmap).putExtra("PAGE", page)
+							.putExtra("PIN", true),
+					PendingIntent.FLAG_UPDATE_CURRENT));
+		}
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && pin) {// Android4.1以降
+			builder.setPriority(Notification.PRIORITY_MIN).setStyle(
+					new Notification.BigTextStyle().bigText(text)
+							.setBigContentTitle(title).setSummaryText(page));
+
+			notification = builder.build();
+
+		} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+				&& !pin) {
 			builder.setPriority(Notification.PRIORITY_LOW).setStyle(
 					new Notification.BigTextStyle().bigText(text)
-							.setBigContentTitle(title)
-							.setSummaryText(page));
+							.setBigContentTitle(title).setSummaryText(page));
 
 			notification = builder.build();
 
 		} else {
 
 			notification = builder.getNotification();
+		}
+
+		if (pin) {
+			notification.flags = Notification.FLAG_NO_CLEAR;// 常駐フラグ
 		}
 
 		notify(context, notification, id);
@@ -190,8 +230,8 @@ public class RssMessageNotification {
 		notify(context, notification, id);
 	}
 
-	private static void notify(final Context context,
-			final Notification notification, final int id) {
+	static void notify(final Context context, final Notification notification,
+			final int id) {
 		final NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		nm.notify(NOTIFICATION_TAG, id, notification);

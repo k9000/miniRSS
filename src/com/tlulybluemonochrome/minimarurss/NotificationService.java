@@ -95,7 +95,7 @@ public class NotificationService extends IntentService {
 						arraylist.get(i).getTitle(),
 						arraylist.get(i).getText(), arraylist.get(i).getUrl(),
 						i, Picuture(arraylist.get(i).getTag()), arraylist
-								.get(i).getPage());
+								.get(i).getPage(), false);
 				try {// 通知の間を置く
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -176,7 +176,7 @@ public class NotificationService extends IntentService {
 
 	// 未読チェック
 	public boolean Serch(RssItem item) {
-		if(oldlist == null)
+		if (oldlist == null)
 			return false;
 
 		for (int i = 0; i < oldlist.size(); i++) {

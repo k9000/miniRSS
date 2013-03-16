@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2013 k9000
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.tlulybluemonochrome.minimarurss;
 
 import java.util.ArrayList;
@@ -25,7 +41,7 @@ public class ItemDetailFragment extends Fragment implements
 		LoaderCallbacks<ArrayList<RssItem>> {
 
 	ArrayList<RssItem> item;
-	
+
 	CustomDetailAdapter adapter;
 
 	boolean mFlag = false;
@@ -57,8 +73,7 @@ public class ItemDetailFragment extends Fragment implements
 
 		item = new ArrayList<RssItem>();
 
-		adapter = new CustomDetailAdapter(getActivity(), 0,
-				item);
+		adapter = new CustomDetailAdapter(getActivity(), 0, item);
 		mListView.setAdapter(adapter);
 
 		getLoaderManager().initLoader(0, getArguments(), this);
@@ -95,7 +110,7 @@ public class ItemDetailFragment extends Fragment implements
 		String url = args.getString(ItemDetailFragment.ARG_ITEM_ID);
 		int color = args.getInt("COLOR");
 		RssParserTaskLoader appLoader = new RssParserTaskLoader(getActivity(),
-				url, wait,color,  getActivity());
+				url, wait, color, getActivity());
 
 		appLoader.forceLoad();
 		return appLoader;
@@ -109,8 +124,7 @@ public class ItemDetailFragment extends Fragment implements
 		}
 		// リスト更新
 		item = arg1;
-		adapter = new CustomDetailAdapter(getActivity(), 0,
-				item);
+		adapter = new CustomDetailAdapter(getActivity(), 0, item);
 		mListView.setAdapter(adapter);
 		if (mFlag) {// 引っ張って更新したとき
 			mListView.completeRefreshing();

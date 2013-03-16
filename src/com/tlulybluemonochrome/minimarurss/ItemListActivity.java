@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2013 k9000
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.tlulybluemonochrome.minimarurss;
 
 import java.io.FileInputStream;
@@ -69,78 +85,55 @@ public class ItemListActivity extends Activity implements
 		else if (thme_preference.equals("Transparent"))
 			theme = R.style.Glass;
 		setTheme(theme);
-		
+
 		items = new ArrayList<RssFeed>();
 
 		// セーブデータオープン
 		try {
 			FileInputStream fis = openFileInput("SaveData.txt");
 			ObjectInputStream ois = new ObjectInputStream(fis);
-			items.addAll((ArrayList<RssFeed>) ois.readObject()) ;
+			items.addAll((ArrayList<RssFeed>) ois.readObject());
 			ois.close();
 		} catch (Exception e) {
 		}
 
-		if (items.isEmpty()||sharedPreferences.getInt(
-				"save_version", 0)!=1) {// セーブ空のとき
-			//items = new ArrayList<RssFeed>();
+		if (items.isEmpty() || sharedPreferences.getInt("save_version", 0) != 1) {// セーブ空のとき
+			// items = new ArrayList<RssFeed>();
 			items.add(new RssFeed(
 					"Googleニュース",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss",
 					0xff00aeef, true));
-			items.add(new RssFeed(
-					"4Gamer.net",
-					"http://www.4gamer.net/rss/index.xml",
-					0xffffc0cb, true));
-			items.add(new RssFeed(
-					"ORICON ニュース",
-					"http://rss.rssad.jp/rss/oricon/news/total",
-					0xff99cc00, true));
-			items.add(new RssFeed(
-					"映画.com",
-					"http://feeds.eiga.com/eiga_news",
+			items.add(new RssFeed("4Gamer.net",
+					"http://www.4gamer.net/rss/index.xml", 0xffffc0cb, true));
+			items.add(new RssFeed("ORICON ニュース",
+					"http://rss.rssad.jp/rss/oricon/news/total", 0xff99cc00,
+					true));
+			items.add(new RssFeed("映画.com", "http://feeds.eiga.com/eiga_news",
 					0xffcc0000, true));
-			items.add(new RssFeed(
-					"ASCII.jp",
-					"http://rss.rssad.jp/rss/ascii/rss.xml",
-					0xfff9f903, true));
-			items.add(new RssFeed(
-					"ガジェット通信",
-					"http://getnews.jp/feed/ext/orig",
+			items.add(new RssFeed("ASCII.jp",
+					"http://rss.rssad.jp/rss/ascii/rss.xml", 0xfff9f903, true));
+			items.add(new RssFeed("ガジェット通信", "http://getnews.jp/feed/ext/orig",
 					0xfffcb414, true));
-			items.add(new RssFeed(
-					"Impress Watch",
+			items.add(new RssFeed("Impress Watch",
 					"http://rss.rssad.jp/rss/headline/headline.rdf",
 					0xffda31e5, true));
-			items.add(new RssFeed(
-					"Engadget",
-					"http://feed.rssad.jp/rss/engadget/rss",
-					0xff0000cd, true));
-			items.add(new RssFeed(
-					"GIGAZINE",
-					"http://feed.rssad.jp/rss/gigazine/rss_2.0",
-					0xff2f4f4f, true));
-			items.add(new RssFeed(
-					"lifehacker",
+			items.add(new RssFeed("Engadget",
+					"http://feed.rssad.jp/rss/engadget/rss", 0xff0000cd, true));
+			items.add(new RssFeed("GIGAZINE",
+					"http://feed.rssad.jp/rss/gigazine/rss_2.0", 0xff2f4f4f,
+					true));
+			items.add(new RssFeed("lifehacker",
 					"http://feeds.lifehacker.jp/rss/lifehacker/index.xml",
 					0xff808000, true));
-			items.add(new RssFeed(
-					"痛いニュース(ﾉ∀`)",
-					"http://blog.livedoor.jp/dqnplus/index.rdf",
-					0xff8b4513, true));
-			items.add(new RssFeed(
-					"アルファルファモザイク",
-					"http://alfalfalfa.com/index.rdf",
-					0xff808080, true));
-			items.add(new RssFeed(
-					"andronavi",
-					"http://andronavi.com/feed",
+			items.add(new RssFeed("痛いニュース(ﾉ∀`)",
+					"http://blog.livedoor.jp/dqnplus/index.rdf", 0xff8b4513,
+					true));
+			items.add(new RssFeed("アルファルファモザイク",
+					"http://alfalfalfa.com/index.rdf", 0xff808080, true));
+			items.add(new RssFeed("andronavi", "http://andronavi.com/feed",
 					0xffadd8e6, true));
-			items.add(new RssFeed(
-					"オクトバ",
-					"http://octoba.net/feed",
-					0xff9370db, true));
-			
+			items.add(new RssFeed("オクトバ", "http://octoba.net/feed", 0xff9370db,
+					true));
 
 			try {// セーブ書き込み
 				FileOutputStream fos = this.openFileOutput("SaveData.txt",
@@ -151,7 +144,7 @@ public class ItemListActivity extends Activity implements
 			} catch (Exception e1) {
 			}
 			Editor editor = sharedPreferences.edit();
-			editor.putInt("save_version",1);
+			editor.putInt("save_version", 1);
 			editor.commit();
 		}
 
@@ -302,8 +295,7 @@ public class ItemListActivity extends Activity implements
 				Bundle arguments = new Bundle();
 				arguments.putString(ItemDetailFragment.ARG_ITEM_ID,
 						items.get(position - 2).getUrl());
-				arguments.putInt("COLOR",
-						items.get(position - 2).getTag());
+				arguments.putInt("COLOR", items.get(position - 2).getTag());
 				fragment = new ItemDetailFragment();
 				fragment.setArguments(arguments);
 			}

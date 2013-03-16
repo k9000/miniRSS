@@ -33,6 +33,12 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.util.Xml;
 
+/**
+ * 更新確認
+ * 
+ * @author k9000
+ * 
+ */
 public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 
 	private URL url;
@@ -41,7 +47,20 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	private Activity activity;
 	private int colorTag = 0x33b5e5;
 
-	// ItewDetailFragmentから
+	/**
+	 * ItewDetailFragment用コンストラクタ
+	 * 
+	 * @param context
+	 *            context
+	 * @param url
+	 *            URL
+	 * @param wait
+	 *            待ち時間
+	 * @param color
+	 *            通知色
+	 * @param activity
+	 *            多重起動防止用
+	 */
 	public RssParserTaskLoader(Context context, String url, int wait,
 			int color, Activity activity) {
 		super(context);
@@ -61,7 +80,18 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 		}
 	}
 
-	// EntryActivityｃから
+	/**
+	 * EntryActivityｃ用コンストラクタ
+	 * 
+	 * @param context
+	 *            context
+	 * @param flag
+	 *            識別用
+	 * @param url
+	 *            URL
+	 * @param activity
+	 *            多重起動防止用
+	 */
 	public RssParserTaskLoader(EntryActivity context, int flag, String url,
 			Activity activity) {
 		super(context);
@@ -142,7 +172,17 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 		}
 	}
 
-	// XMLをパースする
+	/**
+	 * XMLをパースする
+	 * 
+	 * @param is
+	 *            InputStream
+	 * @param color
+	 *            色
+	 * @return 更新ページリスト
+	 * @throws IOException
+	 * @throws XmlPullParserException
+	 */
 	public ArrayList<RssItem> parseXml(InputStream is, int color)
 			throws IOException, XmlPullParserException {
 		ArrayList<RssItem> list = new ArrayList<RssItem>();
@@ -185,7 +225,12 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 
 	}
 
-	// PR削除
+	/**
+	 * PR削除判定
+	 * 
+	 * @param currentItem
+	 * @return 見つからなかったらtrue
+	 */
 	private boolean removePR(RssItem currentItem) {
 		String title = currentItem.getTitle();
 		String regex = "^PR";
@@ -195,7 +240,15 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 		return !m.find();
 	}
 
-	// HTMLをパースする
+	/**
+	 * HTMLをパースする
+	 * 
+	 * @param is
+	 *            InputStream
+	 * @return RSS用URI
+	 * @throws IOException
+	 * @throws XmlPullParserException
+	 */
 	public ArrayList<RssItem> parseHtml(InputStream is) throws IOException,
 			XmlPullParserException {
 
@@ -249,7 +302,15 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 
 	}
 
-	// RSSをパースする
+	/**
+	 * RSSをパースする
+	 * 
+	 * @param is
+	 *            InputStream
+	 * @return ページタイトル
+	 * @throws IOException
+	 * @throws XmlPullParserException
+	 */
 	public ArrayList<RssItem> parseRSS(InputStream is) throws IOException,
 			XmlPullParserException {
 		ArrayList<RssItem> list = new ArrayList<RssItem>();

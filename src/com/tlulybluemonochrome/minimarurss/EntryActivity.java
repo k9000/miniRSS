@@ -44,22 +44,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * Activity which displays a login screen to the user, offering registration as
- * well.
+ * RSSフィード登録と編集をするActivity
+ * 
+ * @author k9000
+ * 
  */
 public class EntryActivity extends Activity implements
 		LoaderCallbacks<ArrayList<RssItem>> {
-	/**
-	 * The default email to populate the email field with.
-	 */
+
 	public static final String EXTRA_EMAIL = "com.example.android.authenticatordemo.extra.EMAIL";
 
-	/**
-	 * Keep track of the login task to ensure we can cancel it if requested.
-	 */
-	// private UserLoginTask mAuthTask = null;
-
-	// Values for email and password at the time of the login attempt.
 	private String mTitle;
 	private String mUri;
 	private int mPosition;
@@ -160,7 +154,11 @@ public class EntryActivity extends Activity implements
 
 	}
 
-	// プログレスバーのON/OFF
+	/**
+	 * プログレスバーのON/OFF
+	 * 
+	 * @param show
+	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	private void showProgress(final boolean show) {
 
@@ -168,7 +166,11 @@ public class EntryActivity extends Activity implements
 
 	}
 
-	// 登録ボタン
+	/**
+	 * 登録ボタン
+	 * 
+	 * @param v
+	 */
 	public void clickButton_Regist(View v) {
 		if (mPass) {// 認証クリア
 			if (getIntent().getBooleanExtra("EDIT", false)) {// 編集モード
@@ -223,7 +225,11 @@ public class EntryActivity extends Activity implements
 		}
 	}
 
-	// キャンセルボタン
+	/**
+	 * キャンセルボタン
+	 * 
+	 * @param v
+	 */
 	public void clickButton_Cancel(View v) {
 		if (getIntent().getBooleanExtra("EDIT", false)
 				|| getIntent().getExtras().getString("ADD") != null) {
@@ -257,7 +263,11 @@ public class EntryActivity extends Activity implements
 		return false;
 	}
 
-	// 色選択
+	/**
+	 * 色選択
+	 * 
+	 * @param v
+	 */
 	public void clickButton_Color(View v) {
 
 		ColorPickerDialog mColorPickerDialog;

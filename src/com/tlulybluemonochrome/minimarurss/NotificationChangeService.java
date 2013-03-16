@@ -20,6 +20,12 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
+/**
+ * 通知をピン留めするサービス
+ * 
+ * @author k9000
+ * 
+ */
 public class NotificationChangeService extends IntentService {
 
 	public NotificationChangeService() {

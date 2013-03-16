@@ -43,11 +43,9 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Switch;
 
 /**
- * A simple {@link android.support.v4.app.Fragment} subclass. Activities that
- * contain this fragment must implement the
- * {@link SettingsFragment.OnFragmentInteractionListener} interface to handle
- * interaction events. Use the {@link SettingsFragment#newInstance} factory
- * method to create an instance of this fragment.
+ * 設定画面
+ * 
+ * @author k9000
  * 
  */
 public class SettingsFragment extends Fragment implements

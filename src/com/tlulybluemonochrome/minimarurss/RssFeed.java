@@ -20,6 +20,12 @@ import java.io.Serializable;
 
 import android.graphics.Bitmap;
 
+/**
+ * RSSフィードリストを1行毎に保存するクラス
+ * 
+ * @author k9000
+ * 
+ */
 public class RssFeed implements Serializable {
 	/**
 	 * 

@@ -23,7 +23,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * A simple {@link android.support.v4.app.Fragment} subclass.
+ * タブレット用トップページ
+ * 
+ * @author k9000
  * 
  */
 public class TopPageFragment extends Fragment {

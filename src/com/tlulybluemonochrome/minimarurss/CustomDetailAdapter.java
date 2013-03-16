@@ -26,6 +26,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * 更新ページリストを1行毎に格納するアダプタ
+ * 
+ * @author k9000
+ * 
+ */
 public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 	private LayoutInflater layoutInflater_;
 

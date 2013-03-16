@@ -20,6 +20,12 @@ import java.io.Serializable;
 
 import android.graphics.Bitmap;
 
+/**
+ * 更新ページリストを1行毎に保存するクラス
+ * 
+ * @author k9000
+ * 
+ */
 public class RssItem implements Serializable {
 	/**
 	 * 
@@ -38,9 +44,9 @@ public class RssItem implements Serializable {
 		this.tag = tag;
 		this.page = page;
 	}
-	
-	public RssItem(){
-		
+
+	public RssItem() {
+
 	}
 
 	@Override
@@ -63,7 +69,7 @@ public class RssItem implements Serializable {
 	public int getTag() {
 		return tag;
 	}
-	
+
 	public String getPage() {
 		return page;
 	}
@@ -83,17 +89,15 @@ public class RssItem implements Serializable {
 	public void setTag(int tag) {
 		this.tag = tag;
 	}
-	
+
 	public void setPage(String page) {
 		this.page = page;
 	}
-	
+
 	public Bitmap getImageData() {
 		Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
 		bmp.eraseColor(tag);
 		return bmp;
 	}
-
-
 
 }

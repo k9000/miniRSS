@@ -41,6 +41,12 @@ import android.util.Log;
 import android.util.Xml;
 import android.widget.Toast;
 
+/**
+ * 更新確認して通知するサービス
+ * 
+ * @author k9000
+ * 
+ */
 public class NotificationService extends IntentService {
 
 	ArrayList<RssItem> oldlist;

@@ -24,6 +24,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+/**
+ * スタートアップ
+ * 
+ * @author k9000
+ * 
+ */
 public class StartupReceiver extends BroadcastReceiver {
 	public StartupReceiver() {
 	}

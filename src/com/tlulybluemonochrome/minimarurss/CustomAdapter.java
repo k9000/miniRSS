@@ -26,9 +26,22 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * RSSフィードリストを1行毎に格納するアダプタ
+ * 
+ * @author k9000
+ * 
+ */
 public class CustomAdapter extends ArrayAdapter<RssFeed> {
 	private LayoutInflater layoutInflater_;
 
+	/**
+	 * コンストラクタ
+	 * 
+	 * @param context
+	 * @param textViewResourceId
+	 * @param objects
+	 */
 	public CustomAdapter(Context context, int textViewResourceId,
 			List<RssFeed> objects) {
 		super(context, textViewResourceId, objects);

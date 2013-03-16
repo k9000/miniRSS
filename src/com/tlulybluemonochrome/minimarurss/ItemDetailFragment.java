@@ -33,9 +33,10 @@ import com.tlulybluemonochrome.minimarurss.RefreshableListView.OnRefreshListener
 import com.tlulybluemonochrome.minimarurss.RefreshableListView;
 
 /**
- * A fragment representing a single Item detail screen. This fragment is either
- * contained in a {@link ItemListActivity} in two-pane mode (on tablets) or a
- * {@link ItemDetailActivity} on handsets.
+ * 更新ページ表示用フラグメント
+ * 
+ * @author k9000
+ * 
  */
 public class ItemDetailFragment extends Fragment implements
 		LoaderCallbacks<ArrayList<RssItem>> {

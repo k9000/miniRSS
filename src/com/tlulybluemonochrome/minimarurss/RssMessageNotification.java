@@ -29,10 +29,10 @@ import android.net.Uri;
 import android.os.Build;
 
 /**
- * Helper class for showing and canceling rss message notifications.
- * <p>
- * This class makes heavy use of the {@link NotificationCompat.Builder} helper
- * class to create notifications in a backward-compatible way.
+ * 通知
+ * 
+ * @author k9000
+ * 
  */
 public class RssMessageNotification {
 	/**
@@ -41,24 +41,25 @@ public class RssMessageNotification {
 	private static final String NOTIFICATION_TAG = "RssMessage";
 
 	/**
-	 * Shows the notification, or updates a previously shown notification of
-	 * this type, with the given parameters.
-	 * <p>
-	 * TODO: Customize this method's arguments to present relevant content in
-	 * the notification.
-	 * <p>
-	 * TODO: Customize the contents of this method to tweak the behavior and
-	 * presentation of rss message notifications. Make sure to follow the <a
-	 * href="https://developer.android.com/design/patterns/notifications.html">
-	 * Notification design guidelines</a> when doing so.
+	 * 記事用
 	 * 
+	 * @param context
+	 *            context
+	 * @param title
+	 *            タイトル
+	 * @param text
+	 *            本文
+	 * @param url
+	 *            URL
+	 * @param id
+	 *            複数通知用ID
+	 * @param bitmap
+	 *            色分け画像
 	 * @param page
-	 * 
-	 * @param color
-	 * 
-	 * @see #cancel(Context)
+	 *            ホームページタイトル
+	 * @param pin
+	 *            ピン留め有無
 	 */
-	// 記事用
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public static void notify(final Context context, final String title,
 			final String text, final String url, final int id, Bitmap bitmap,
@@ -173,7 +174,20 @@ public class RssMessageNotification {
 		notify(context, notification, id);
 	}
 
-	// 更新中と更新完了
+	/**
+	 * 更新中と更新完了通知
+	 * 
+	 * @param context
+	 *            context
+	 * @param title
+	 *            タイトル
+	 * @param text
+	 *            本文
+	 * @param ticker
+	 *            上に表示されるやつ
+	 * @param id
+	 *            識別用
+	 */
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public static void titlenotify(final Context context, final String title,
 			final String text, final String ticker, final int id) {
@@ -248,6 +262,13 @@ public class RssMessageNotification {
 		notify(context, notification, id);
 	}
 
+	/**
+	 * 通知
+	 * 
+	 * @param context
+	 * @param notification
+	 * @param id
+	 */
 	static void notify(final Context context, final Notification notification,
 			final int id) {
 		final NotificationManager nm = (NotificationManager) context
@@ -257,8 +278,10 @@ public class RssMessageNotification {
 	}
 
 	/**
-	 * Cancels any notifications of this type previously shown using
-	 * {@link #notify(Context, String, int)}.
+	 * 通知削除
+	 * 
+	 * @param context
+	 * @param id
 	 */
 	public static void cancel(final Context context, int id) {
 		final NotificationManager nm = (NotificationManager) context

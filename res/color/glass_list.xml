@@ -13,7 +13,7 @@
 
             <item android:left="1dp" 
                 android:right="1dp" 
-                android:top="24dp">
+                android:top="30dp">
             <shape android:shape="rectangle">
                     <solid android:color="#88000000" />
                 </shape>
@@ -22,7 +22,7 @@
             <item android:bottom="1dp" 
                 android:left="1dp" 
                 android:right="1dp" 
-                android:top="32dp">
+                android:top="40dp">
             <shape android:shape="rectangle">
                     <gradient android:angle="270" 
                         android:endColor="#44FFFFFF" 
@@ -38,33 +38,33 @@
         <layer-list>
 
             <item android:bottom="-2dp" android:top="-2dp"><shape android:shape="rectangle">
-                    <solid android:color="#FF33B5E5" />
+                    <solid android:color="#2233B5E5" />
                 </shape>
                 </item>
             <item>
                 <shape android:shape="rectangle">
                     <gradient android:angle="270" 
-                        android:endColor="#000000" 
-                        android:startColor="#888888" 
+                        android:endColor="#88000000" 
+                        android:startColor="#88888888" 
                         android:type="linear" />
                 </shape>
                 </item>
 
             <item android:left="1dp" 
                 android:right="1dp" 
-                android:top="24dp">
+                android:top="30dp">
                 <shape android:shape="rectangle">
-                    <solid android:color="#88000000" />
+                    <solid android:color="#44000000" />
                 </shape>
                 </item>
 
             <item android:bottom="1dp" 
                 android:left="1dp" 
                 android:right="1dp" 
-                android:top="32dp">
+                android:top="40dp">
                 <shape android:shape="rectangle">
                     <gradient android:angle="270" 
-                        android:endColor="#4433B5E5" 
+                        android:endColor="#2233B5E5" 
                         android:startColor="#0033B5E5" 
                         android:type="linear" />
                 </shape>

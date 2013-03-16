@@ -51,12 +51,12 @@ public class NotificationService extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 		// TODO 自動生成されたメソッド・スタブ
 
-		RssMessageNotification.cancel(getApplicationContext(), 0);
+		RssMessageNotification.cancel(getApplicationContext(), -1);
 		RssMessageNotification.titlenotify(getApplicationContext(),
-				"minimaruRSS", "更新中", "更新中", 0);
+				"minimaruRSS", "更新中", "更新中", -1);
 		
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-		count = sharedPreferences.getInt("COUNT", 1);
+		count = sharedPreferences.getInt("COUNT", 0);
 
 		ArrayList<RssItem> arraylist = new ArrayList<RssItem>();
 
@@ -241,9 +241,9 @@ public class NotificationService extends IntentService {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		RssMessageNotification.cancel(getApplicationContext(), 0);
+		RssMessageNotification.cancel(getApplicationContext(), -1);
 		RssMessageNotification.titlenotify(getApplicationContext(),
-				"minimaruRSS", "タップして更新", "更新完了", 0);
+				"minimaruRSS", "タップして更新", "更新完了", -1);
 	}
 
 }

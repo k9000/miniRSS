@@ -43,7 +43,7 @@
     
     <style name="Glass" parent="@android:style/Theme.DeviceDefault.Wallpaper">
         <item name="android:listChoiceBackgroundIndicator">@color/transparent_list</item>
-        <item name="android:listPreferredItemHeight">72dp</item>
+        <item name="android:listPreferredItemHeight">60dp</item>
         <item name="android:colorForeground">@color/glass_bar</item>
         <item name="android:colorBackground">#00000000</item>
     </style>
@@ -60,7 +60,7 @@
     <style name="LightMetal" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionBarStyle">@style/light_metal_actionbar</item>
         <item name="android:listChoiceBackgroundIndicator">@color/light_glass_list</item>
-        <item name="android:listPreferredItemHeight">72dp</item>
+        <item name="android:listPreferredItemHeight">60dp</item>
         <item name="android:colorForeground">@color/light_glass_bar</item>
         <item name="android:colorBackground">@color/light_glass_back</item>
     </style>

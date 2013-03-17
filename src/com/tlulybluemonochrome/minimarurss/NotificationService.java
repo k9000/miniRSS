@@ -124,9 +124,10 @@ public class NotificationService extends IntentService {
 			if (arraylist.get(i).getTag() != 0) {
 				RssMessageNotification.notify(getApplicationContext(),
 						arraylist.get(i).getTitle(),
-						arraylist.get(i).getText(), arraylist.get(i).getUrl(),
-						count++, Picuture(arraylist.get(i).getTag()), arraylist
-								.get(i).getPage(), false);
+						arraylist.get(i).getTitle() + "\n"
+								+ arraylist.get(i).getText(), arraylist.get(i)
+								.getUrl(), count++, Picuture(arraylist.get(i)
+								.getTag()), arraylist.get(i).getPage(), false);
 				try {// 通知の間を置く
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {

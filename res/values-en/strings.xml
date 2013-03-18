@@ -23,5 +23,6 @@
     <string name="pinned">Pinned</string>
     <string name="unpinned">Unpinned</string>
     <string name="jazzy_effects">Effect</string>
+    <string name="scroll_efect">Scroll Efect</string>
 
 </resources>

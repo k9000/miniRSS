@@ -33,6 +33,7 @@ import android.view.animation.AnimationSet;
 import android.view.animation.LayoutAnimationController;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.tlulybluemonochrome.minimarurss.RefreshableListView.OnRefreshListener;
 import com.tlulybluemonochrome.minimarurss.RefreshableListView;
@@ -126,6 +127,7 @@ public class ItemDetailFragment extends Fragment implements
 	public void onLoadFinished(Loader<ArrayList<RssItem>> arg0,
 			ArrayList<RssItem> arg1) {
 		if (arg1 == null) {// 失敗時(意味ないかも)
+			Toast.makeText(getActivity(), "null", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		// リスト更新

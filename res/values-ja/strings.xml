@@ -23,5 +23,6 @@
     <string name="pinned">ピンで留める</string>
     <string name="unpinned">ピンを外す</string>
     <string name="jazzy_effects">エフェクト</string>
+    <string name="scroll_efect">スクロール効果</string>
 
 </resources>

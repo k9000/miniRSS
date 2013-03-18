@@ -9,5 +9,6 @@
 	    android:layout_width="fill_parent" 
 	    android:layout_height="fill_parent"
 	    android:id="@+id/listview"
-	    android:divider="#00000000" />
+	    android:divider="#00000000"
+	    android:scrollbars="none" />
 </LinearLayout>

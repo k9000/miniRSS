@@ -147,22 +147,6 @@ public class ItemListActivity extends Activity implements
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_item_list);
-		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
-
-		String animation = sharedPreferences.getString("animation", "Tablet");
-		TransitionEffect effect = TransitionEffect.Tablet;
-		if (animation.equals("Tablet"))
-			effect = TransitionEffect.Tablet;
-		else if (animation.equals("Cube"))
-			effect = TransitionEffect.CubeOut;
-		else if (animation.equals("Flip"))
-			effect = TransitionEffect.FlipHorizontal;
-		else if (animation.equals("Zoom"))
-			effect = TransitionEffect.ZoomIn;
-		else if (animation.equals("Rotate"))
-			effect = TransitionEffect.RotateDown;
-
-		setupJazziness(effect);
 
 		if (findViewById(R.id.item_detail_container) != null) {// タブレット用
 			// The detail container view will be present only in the
@@ -176,6 +160,23 @@ public class ItemListActivity extends Activity implements
 			((ItemListFragment) getFragmentManager().findFragmentById(
 					R.id.item_list)).setActivateOnItemClick(true);
 		}
+
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
+
+		String animation = sharedPreferences.getString("animation", "Tablet");
+		TransitionEffect effect = TransitionEffect.Tablet;
+		if (animation.equals("Tablet"))
+			effect = TransitionEffect.Tablet;
+		else if (animation.equals("Cube"))
+			effect = TransitionEffect.CubeOut;
+		else if (animation.equals("Flip"))
+			effect = TransitionEffect.FlipHorizontal;
+		else if (animation.equals("Zoom"))
+			effect = TransitionEffect.ZoomIn;
+		else if (animation.equals("Rotate"))
+			effect = TransitionEffect.RotateUp;
+
+		setupJazziness(effect);
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
@@ -213,7 +214,7 @@ public class ItemListActivity extends Activity implements
 		mJazzy = (JazzyViewPager) findViewById(R.id.jazzy_pager);
 		mJazzy.setTransitionEffect(effect);
 		mJazzy.setAdapter(mSectionsPagerAdapter);
-		mJazzy.setPageMargin(30);
+		// mJazzy.setPageMargin(30);
 
 	}
 

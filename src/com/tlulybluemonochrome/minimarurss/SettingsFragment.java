@@ -55,6 +55,7 @@ public class SettingsFragment extends Fragment implements
 	SeekBar seekBar;
 	EditText editText;
 	RadioGroup mRadioGroupOs;
+	RadioGroup mRadioGroupOs2;
 	boolean mChecked;
 	int mMinute = 2;
 	Button button;
@@ -149,6 +150,39 @@ public class SettingsFragment extends Fragment implements
 			}
 
 		});
+
+		mRadioGroupOs2 = (RadioGroup) rootView.findViewById(R.id.radioGroup2);
+
+		// ラジオボタンの初期値
+		String animation_preference = sharedPreferences.getString("animation",
+				"Tablet");
+		if (animation_preference.equals("Tablet"))
+			mRadioGroupOs2.check(R.id.radio10);
+		else if (animation_preference.equals("Cube"))
+			mRadioGroupOs2.check(R.id.radio11);
+		else if (animation_preference.equals("Flip"))
+			mRadioGroupOs2.check(R.id.radio12);
+		else if (animation_preference.equals("Zoom"))
+			mRadioGroupOs2.check(R.id.radio13);
+		else if (animation_preference.equals("Rotate"))
+			mRadioGroupOs2.check(R.id.radio14);
+
+		// ラジオボタンのリスナー
+		mRadioGroupOs2
+				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					@Override
+					public void onCheckedChanged(RadioGroup group, int id) {
+						SharedPreferences sharedPreferences = PreferenceManager
+								.getDefaultSharedPreferences(getActivity());
+						Editor editor = sharedPreferences.edit();
+						editor.putString("animation",
+								(String) ((RadioButton) rootView
+										.findViewById(id)).getText());
+						editor.commit();
+
+					}
+
+				});
 
 		// Add RSS Feedボタンのリスナー
 		button = (Button) rootView.findViewById(R.id.button1);

@@ -63,8 +63,8 @@ public class ItemListActivity extends Activity implements
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
-	//ViewPager mViewPager;
-	
+	// ViewPager mViewPager;
+
 	private JazzyViewPager mJazzy;
 
 	@Override
@@ -148,7 +148,21 @@ public class ItemListActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_item_list);
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
-		setupJazziness(TransitionEffect.RotateUp);
+
+		String animation = sharedPreferences.getString("animation", "Tablet");
+		TransitionEffect effect = TransitionEffect.Tablet;
+		if (animation.equals("Tablet"))
+			effect = TransitionEffect.Tablet;
+		else if (animation.equals("Cube"))
+			effect = TransitionEffect.CubeOut;
+		else if (animation.equals("Flip"))
+			effect = TransitionEffect.FlipHorizontal;
+		else if (animation.equals("Zoom"))
+			effect = TransitionEffect.ZoomIn;
+		else if (animation.equals("Rotate"))
+			effect = TransitionEffect.RotateDown;
+
+		setupJazziness(effect);
 
 		if (findViewById(R.id.item_detail_container) != null) {// タブレット用
 			// The detail container view will be present only in the
@@ -166,11 +180,10 @@ public class ItemListActivity extends Activity implements
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
 		// View
-		
 
 		// Set up the ViewPager with the sections adapter.
-		//mViewPager = (ViewPager) findViewById(R.id.pager);
-		
+		// mViewPager = (ViewPager) findViewById(R.id.pager);
+
 		mJazzy.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
 			public void onPageSelected(int position) {
@@ -189,7 +202,7 @@ public class ItemListActivity extends Activity implements
 
 			}
 		});
-		//mViewPager.setAdapter(mSectionsPagerAdapter);
+		// mViewPager.setAdapter(mSectionsPagerAdapter);
 		mJazzy.setCurrentItem(getIntent().getIntExtra(
 				ItemDetailFragment.ARG_ITEM_ID, 1));
 
@@ -201,7 +214,7 @@ public class ItemListActivity extends Activity implements
 		mJazzy.setTransitionEffect(effect);
 		mJazzy.setAdapter(mSectionsPagerAdapter);
 		mJazzy.setPageMargin(30);
-		
+
 	}
 
 	/**
@@ -282,14 +295,13 @@ public class ItemListActivity extends Activity implements
 			super(fm);
 
 		}
-		
-		@Override
-	    public Object instantiateItem(ViewGroup container, int position) {
-	         Object obj = super.instantiateItem(container, position);
-	         mJazzy.setObjectForPosition(obj, position);
-	         return obj;
-	    }
 
+		@Override
+		public Object instantiateItem(ViewGroup container, int position) {
+			Object obj = super.instantiateItem(container, position);
+			mJazzy.setObjectForPosition(obj, position);
+			return obj;
+		}
 
 		// ページ生成
 		@Override
@@ -315,8 +327,8 @@ public class ItemListActivity extends Activity implements
 				fragment = new ItemDetailFragment();
 				fragment.setArguments(arguments);
 			}
-			//fragment.getView();
-			//mJazzy.setFragmentForPosition(getItemId(position), position);
+			// fragment.getView();
+			// mJazzy.setFragmentForPosition(getItemId(position), position);
 
 			return fragment;
 		}

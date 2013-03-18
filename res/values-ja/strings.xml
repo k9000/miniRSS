@@ -22,5 +22,6 @@
     <string name="loading">更新中...</string>
     <string name="pinned">ピンで留める</string>
     <string name="unpinned">ピンを外す</string>
+    <string name="jazzy_effects">エフェクト</string>
 
 </resources>

@@ -22,6 +22,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import com.jfeinstein.jazzyviewpager.JazzyViewPager;
+import com.jfeinstein.jazzyviewpager.JazzyViewPager.TransitionEffect;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -31,12 +34,13 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 
 /**
  * メインのActivity
@@ -59,7 +63,9 @@ public class ItemListActivity extends Activity implements
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
-	ViewPager mViewPager;
+	//ViewPager mViewPager;
+	
+	private JazzyViewPager mJazzy;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +147,8 @@ public class ItemListActivity extends Activity implements
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_item_list);
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
+		setupJazziness(TransitionEffect.RotateUp);
 
 		if (findViewById(R.id.item_detail_container) != null) {// タブレット用
 			// The detail container view will be present only in the
@@ -158,11 +166,12 @@ public class ItemListActivity extends Activity implements
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
 		// View
-		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
+		
 
 		// Set up the ViewPager with the sections adapter.
-		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+		//mViewPager = (ViewPager) findViewById(R.id.pager);
+		
+		mJazzy.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
 			public void onPageSelected(int position) {
 			}
@@ -180,11 +189,19 @@ public class ItemListActivity extends Activity implements
 
 			}
 		});
-		mViewPager.setAdapter(mSectionsPagerAdapter);
-		mViewPager.setCurrentItem(getIntent().getIntExtra(
+		//mViewPager.setAdapter(mSectionsPagerAdapter);
+		mJazzy.setCurrentItem(getIntent().getIntExtra(
 				ItemDetailFragment.ARG_ITEM_ID, 1));
 
 		// TODO: If exposing deep links into your app, handle intents here.
+	}
+
+	private void setupJazziness(TransitionEffect effect) {
+		mJazzy = (JazzyViewPager) findViewById(R.id.jazzy_pager);
+		mJazzy.setTransitionEffect(effect);
+		mJazzy.setAdapter(mSectionsPagerAdapter);
+		mJazzy.setPageMargin(30);
+		
 	}
 
 	/**
@@ -194,7 +211,7 @@ public class ItemListActivity extends Activity implements
 	// ItemLsitFragmentのリスナー
 	@Override
 	public void onItemSelected(int tag, String url, int position) {
-		mViewPager.setCurrentItem(position + 2);
+		mJazzy.setCurrentItem(position + 2);
 
 	}
 
@@ -229,10 +246,10 @@ public class ItemListActivity extends Activity implements
 		boolean ret = true;
 		switch (item.getItemId()) {
 		case R.id.item_setting:
-			mViewPager.setCurrentItem(0);
+			mJazzy.setCurrentItem(0);
 			break;
 		case R.id.item_list:
-			mViewPager.setCurrentItem(1);
+			mJazzy.setCurrentItem(1);
 			break;
 		default:
 			ret = super.onOptionsItemSelected(item);
@@ -245,8 +262,8 @@ public class ItemListActivity extends Activity implements
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if (mTwoPane == false && mViewPager.getCurrentItem() != 1)
-				mViewPager.setCurrentItem(1);
+			if (mTwoPane == false && mJazzy.getCurrentItem() != 1)
+				mJazzy.setCurrentItem(1);
 			else
 				this.finish();
 			return true;
@@ -265,6 +282,14 @@ public class ItemListActivity extends Activity implements
 			super(fm);
 
 		}
+		
+		@Override
+	    public Object instantiateItem(ViewGroup container, int position) {
+	         Object obj = super.instantiateItem(container, position);
+	         mJazzy.setObjectForPosition(obj, position);
+	         return obj;
+	    }
+
 
 		// ページ生成
 		@Override
@@ -290,6 +315,8 @@ public class ItemListActivity extends Activity implements
 				fragment = new ItemDetailFragment();
 				fragment.setArguments(arguments);
 			}
+			//fragment.getView();
+			//mJazzy.setFragmentForPosition(getItemId(position), position);
 
 			return fragment;
 		}

@@ -22,13 +22,13 @@
         android:layout_height="match_parent"
         android:layout_weight="3" >
 
-        <android.support.v4.view.ViewPager
+        <com.jfeinstein.jazzyviewpager.JazzyViewPager
             android:id="@+id/pager"
             android:name="com.tlulybluemonochrome.minimarurss.ItemListFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".ItemListActivity" >
-
+  
             <android.support.v4.view.PagerTitleStrip
                 android:id="@+id/pager_title_strip"
                 android:layout_width="match_parent"
@@ -36,7 +36,7 @@
                 android:layout_gravity="top"
                 android:background="?android:colorForeground"
                 android:textColor="#fff" />
-        </android.support.v4.view.ViewPager>
+        </com.jfeinstein.jazzyviewpager.JazzyViewPager>
     </FrameLayout>
 
 </LinearLayout>

@@ -133,9 +133,9 @@ public class ItemDetailFragment extends Fragment implements
 		adapter = new CustomDetailAdapter(getActivity(), 0, item);
 		mListView.setAdapter(adapter);
 		if (mFlag) {// 引っ張って更新したとき
-			mListView.completeRefreshing();
 			LayoutAnimationController anim = getListCascadeAnimation();
 			mListView.setLayoutAnimation(anim);
+			mListView.completeRefreshing();
 			mFlag = false;
 		}
 

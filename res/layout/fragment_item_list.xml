@@ -3,7 +3,9 @@
     android:id="@+id/list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:divider="#00000000" >
+    android:divider="#00000000"
+    android:dividerHeight="1dp"
+	android:scrollbars="none" >
     
 
 </com.tlulybluemonochrome.minimarurss.SortableListView>

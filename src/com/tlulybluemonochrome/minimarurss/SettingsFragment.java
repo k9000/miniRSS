@@ -127,7 +127,7 @@ public class SettingsFragment extends Fragment implements
 
 		// ラジオボタンの初期値
 		String theme_preference = sharedPreferences.getString(
-				"theme_preference", "Dark");
+				"theme_preference", "Light");
 		if (theme_preference.equals("Light"))
 			mRadioGroupOs.check(R.id.radio0);
 		else if (theme_preference.equals("Dark"))
@@ -155,10 +155,10 @@ public class SettingsFragment extends Fragment implements
 
 		// ラジオボタンの初期値
 		String animation_preference = sharedPreferences.getString("animation",
-				"Tablet");
-		if (animation_preference.equals("Tablet"))
+				"Cube");
+		if (animation_preference.equals("Cube"))
 			mRadioGroupOs2.check(R.id.radio10);
-		else if (animation_preference.equals("Cube"))
+		else if (animation_preference.equals("Tablet"))
 			mRadioGroupOs2.check(R.id.radio11);
 		else if (animation_preference.equals("Flip"))
 			mRadioGroupOs2.check(R.id.radio12);

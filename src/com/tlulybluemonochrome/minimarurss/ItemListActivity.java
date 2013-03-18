@@ -73,8 +73,8 @@ public class ItemListActivity extends Activity implements
 		/* Preferencesからテーマ設定 */
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		String thme_preference = sharedPreferences.getString(
-				"theme_preference", "Dark");
-		int theme = R.style.DarkGlass;
+				"theme_preference", "Light");
+		int theme = R.style.LightMetal;
 		if (thme_preference.equals("Light"))
 			theme = R.style.LightMetal;
 		else if (thme_preference.equals("Dark"))
@@ -163,8 +163,8 @@ public class ItemListActivity extends Activity implements
 
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
 
-		String animation = sharedPreferences.getString("animation", "Tablet");
-		TransitionEffect effect = TransitionEffect.Tablet;
+		String animation = sharedPreferences.getString("animation", "Cube");
+		TransitionEffect effect = TransitionEffect.CubeOut;
 		if (animation.equals("Tablet"))
 			effect = TransitionEffect.Tablet;
 		else if (animation.equals("Cube"))

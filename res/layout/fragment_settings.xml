@@ -3,6 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="?android:attr/activatedBackgroundIndicator"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:paddingRight="12dp"
+    android:paddingLeft="12dp"
     tools:context=".SettingsFragment" >
 
     <!-- TODO: Update blank fragment layout -->

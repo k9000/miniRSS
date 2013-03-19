@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.LinearLayout;
 
 /**
  * RSSフィードリストを1行毎に格納するアダプタ
@@ -34,6 +35,10 @@ import android.widget.TextView;
  */
 public class CustomAdapter extends ArrayAdapter<RssFeed> {
 	private LayoutInflater layoutInflater_;
+	
+	AccordionSet _as1;
+	LinearLayout btn;
+	LinearLayout row;
 
 	/**
 	 * コンストラクタ

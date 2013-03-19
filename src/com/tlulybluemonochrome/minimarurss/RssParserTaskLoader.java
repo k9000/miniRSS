@@ -206,6 +206,9 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 							currentItem.setTitle(parser.nextText());
 						} else if (tag.equals("link")) {
 							currentItem.setUrl(parser.nextText());
+						} else if (tag.equals("description")) {
+							currentItem.setText(parser.nextText().replaceAll(
+									"<.+?>", ""));// タグ除去
 						}
 					}
 					break;

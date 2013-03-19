@@ -34,7 +34,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -84,6 +83,72 @@ public class ItemListActivity extends Activity implements
 		setTheme(theme);
 
 		items = new ArrayList<RssFeed>();
+
+		// タイトルバーにプログレスアイコンを表示可能にする
+		// requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_item_list);
+
+		if (findViewById(R.id.item_detail_container) != null) {// タブレット用
+			// The detail container view will be present only in the
+			// large-screen layouts (res/values-large and
+			// res/values-sw600dp). If this view is present, then the
+			// activity should be in two-pane mode.
+			mTwoPane = true;
+
+			// In two-pane mode, list items should be given the
+			// 'activated' state when touched.
+			((ItemListFragment) getFragmentManager().findFragmentById(
+					R.id.item_list)).setActivateOnItemClick(true);
+		}
+
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
+
+		String animation = sharedPreferences.getString("animation", "Cube");
+		TransitionEffect effect = TransitionEffect.CubeOut;
+		if (animation.equals("Tablet"))
+			effect = TransitionEffect.Tablet;
+		else if (animation.equals("Cube"))
+			effect = TransitionEffect.CubeOut;
+		else if (animation.equals("Flip"))
+			effect = TransitionEffect.FlipHorizontal;
+		else if (animation.equals("Zoom"))
+			effect = TransitionEffect.ZoomIn;
+		else if (animation.equals("Rotate"))
+			effect = TransitionEffect.RotateUp;
+
+		setupJazziness(effect);
+
+		// Create the adapter that will return a fragment for each of the three
+		// primary sections of the app.
+		// View
+
+		// Set up the ViewPager with the sections adapter.
+		// mViewPager = (ViewPager) findViewById(R.id.pager);
+
+		mJazzy.setOnPageChangeListener(new OnPageChangeListener() {
+			@Override
+			public void onPageSelected(int position) {
+			}
+
+			// スクロール時処理(タブレット用)
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+				if (mTwoPane)
+					((ItemListFragment) getFragmentManager().findFragmentById(
+							R.id.item_list)).setActivatedPosition(arg0 - 2);
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+
+			}
+		});
+
+		// mViewPager.setAdapter(mSectionsPagerAdapter);
+		mJazzy.setCurrentItem(getIntent().getIntExtra(
+				ItemDetailFragment.ARG_ITEM_ID, 1));
 
 		// セーブデータオープン
 		try {
@@ -145,69 +210,8 @@ public class ItemListActivity extends Activity implements
 			editor.commit();
 		}
 
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_item_list);
-
-		if (findViewById(R.id.item_detail_container) != null) {// タブレット用
-			// The detail container view will be present only in the
-			// large-screen layouts (res/values-large and
-			// res/values-sw600dp). If this view is present, then the
-			// activity should be in two-pane mode.
-			mTwoPane = true;
-
-			// In two-pane mode, list items should be given the
-			// 'activated' state when touched.
-			((ItemListFragment) getFragmentManager().findFragmentById(
-					R.id.item_list)).setActivateOnItemClick(true);
-		}
-
-		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
-
-		String animation = sharedPreferences.getString("animation", "Cube");
-		TransitionEffect effect = TransitionEffect.CubeOut;
-		if (animation.equals("Tablet"))
-			effect = TransitionEffect.Tablet;
-		else if (animation.equals("Cube"))
-			effect = TransitionEffect.CubeOut;
-		else if (animation.equals("Flip"))
-			effect = TransitionEffect.FlipHorizontal;
-		else if (animation.equals("Zoom"))
-			effect = TransitionEffect.ZoomIn;
-		else if (animation.equals("Rotate"))
-			effect = TransitionEffect.RotateUp;
-
-		setupJazziness(effect);
-
-		// Create the adapter that will return a fragment for each of the three
-		// primary sections of the app.
-		// View
-
-		// Set up the ViewPager with the sections adapter.
-		// mViewPager = (ViewPager) findViewById(R.id.pager);
-
-		mJazzy.setOnPageChangeListener(new OnPageChangeListener() {
-			@Override
-			public void onPageSelected(int position) {
-			}
-
-			// スクロール時処理(タブレット用)
-			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2) {
-				if (mTwoPane)
-					((ItemListFragment) getFragmentManager().findFragmentById(
-							R.id.item_list)).setActivatedPosition(arg0 - 2);
-			}
-
-			@Override
-			public void onPageScrollStateChanged(int arg0) {
-
-			}
-		});
-		// mViewPager.setAdapter(mSectionsPagerAdapter);
-		mJazzy.setCurrentItem(getIntent().getIntExtra(
-				ItemDetailFragment.ARG_ITEM_ID, 1));
-
-		// TODO: If exposing deep links into your app, handle intents here.
+		// タイトルバーのプログレスアイコンを表示する
+		// setProgressBarIndeterminateVisibility(true);
 	}
 
 	private void setupJazziness(TransitionEffect effect) {

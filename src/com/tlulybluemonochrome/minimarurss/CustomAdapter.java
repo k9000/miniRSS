@@ -36,7 +36,6 @@ import android.widget.LinearLayout;
 public class CustomAdapter extends ArrayAdapter<RssFeed> {
 	private LayoutInflater layoutInflater_;
 	
-	AccordionSet _as1;
 	LinearLayout btn;
 	LinearLayout row;
 

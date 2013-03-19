@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ListFragment;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,7 +43,7 @@ import android.widget.Toast;
  * @author k9000
  * 
  */
-public class ItemListFragment extends ListFragment {
+public class ItemListFragment extends Fragment {
 
 	ArrayList<RssFeed> items;
 
@@ -147,6 +147,18 @@ public class ItemListFragment extends ListFragment {
 
 		mListView.setAdapter(adapter);
 
+		// リストクリック(リスナーに飛ばす)
+		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// Notify the active callbacks interface (the activity, if the
+				// fragment is attached to one) that an item has been selected.
+				mCallbacks.onItemSelected(items.get(position).getTag(), items
+						.get(position).getUrl(), position);
+			}
+		});
+
 		return rootView;
 	}
 
@@ -171,18 +183,6 @@ public class ItemListFragment extends ListFragment {
 		mCallbacks = sDummyCallbacks;
 	}
 
-	// リストクリック(リスナーに飛ばす)
-	@Override
-	public void onListItemClick(ListView listView, View view, int position,
-			long id) {
-		super.onListItemClick(listView, view, position, id);
-
-		// Notify the active callbacks interface (the activity, if the
-		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(items.get(position).getTag(),
-				items.get(position).getUrl(), position);
-	}
-
 	// タブレット用
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
@@ -200,16 +200,16 @@ public class ItemListFragment extends ListFragment {
 	public void setActivateOnItemClick(boolean activateOnItemClick) {
 		// When setting CHOICE_MODE_SINGLE, ListView will automatically
 		// give items the 'activated' state when touched.
-		getListView().setChoiceMode(
-				activateOnItemClick ? ListView.CHOICE_MODE_SINGLE
+		mListView
+				.setChoiceMode(activateOnItemClick ? ListView.CHOICE_MODE_SINGLE
 						: ListView.CHOICE_MODE_NONE);
 	}
 
 	public void setActivatedPosition(int position) {
 		if (position == ListView.INVALID_POSITION) {
-			getListView().setItemChecked(mActivatedPosition, false);
+			mListView.setItemChecked(mActivatedPosition, false);
 		} else {
-			getListView().setItemChecked(position, true);
+			mListView.setItemChecked(position, true);
 		}
 
 		mActivatedPosition = position;

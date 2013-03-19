@@ -37,13 +37,13 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerTitleStrip;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Toast;
 
 /**
  * メインのActivity
@@ -75,6 +75,8 @@ public class ItemListActivity extends Activity implements
 	// ViewPager mViewPager;
 
 	private JazzyViewPager mJazzy;
+
+	PagerTitleStrip mTitleStrip;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -130,34 +132,12 @@ public class ItemListActivity extends Activity implements
 
 		setupJazziness(effect);
 
+		mTitleStrip = (PagerTitleStrip) findViewById(R.id.pager_title_strip);
+
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
 		// View
 
-		// Set up the ViewPager with the sections adapter.
-		// mViewPager = (ViewPager) findViewById(R.id.pager);
-
-		/*
-		mJazzy.setOnPageChangeListener(new OnPageChangeListener() {
-			@Override
-			public void onPageSelected(int position) {
-			}
-
-			// スクロール時処理(タブレット用)
-			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2) {
-				if (mTwoPane)
-					((ItemListFragment) getFragmentManager().findFragmentById(
-							R.id.item_list)).setActivatedPosition(arg0 - 2);
-			}
-
-			@Override
-			public void onPageScrollStateChanged(int arg0) {
-
-			}
-		});*/
-
-		// mViewPager.setAdapter(mSectionsPagerAdapter);
 		mJazzy.setCurrentItem(getIntent().getIntExtra(
 				ItemDetailFragment.ARG_ITEM_ID, 1));
 
@@ -227,7 +207,6 @@ public class ItemListActivity extends Activity implements
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			hp = (HashMap<String, ArrayList<RssItem>>) ois.readObject();
 			ois.close();
-			Toast.makeText(this, "読み込み成功", Toast.LENGTH_SHORT).show();
 		} catch (Exception e) {
 		}
 
@@ -386,10 +365,10 @@ public class ItemListActivity extends Activity implements
 				return items.get(position - 2).getTitle();
 
 		}
-		
+
 		@Override
 		public int getItemPosition(Object object) {
-		    return POSITION_NONE;
+			return POSITION_NONE;
 		}
 
 	}

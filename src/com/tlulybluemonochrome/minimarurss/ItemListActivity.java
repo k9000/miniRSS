@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.jfeinstein.jazzyviewpager.JazzyViewPager;
 import com.jfeinstein.jazzyviewpager.JazzyViewPager.TransitionEffect;
@@ -28,18 +29,21 @@ import com.jfeinstein.jazzyviewpager.JazzyViewPager.TransitionEffect;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v13.app.FragmentStatePagerAdapter;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Toast;
 
 /**
  * メインのActivity
@@ -48,7 +52,7 @@ import android.view.ViewGroup;
  * 
  */
 public class ItemListActivity extends Activity implements
-		ItemListFragment.Callbacks {
+		ItemListFragment.Callbacks, LoaderCallbacks<ArrayList<RssItem>> {
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -59,6 +63,12 @@ public class ItemListActivity extends Activity implements
 	SharedPreferences sharedPreferences;
 
 	ArrayList<RssFeed> items;
+
+	HashMap<String, ArrayList<RssItem>> hp;
+
+	String url;
+
+	int i = 0;
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -85,7 +95,7 @@ public class ItemListActivity extends Activity implements
 		items = new ArrayList<RssFeed>();
 
 		// タイトルバーにプログレスアイコンを表示可能にする
-		// requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_item_list);
@@ -127,6 +137,7 @@ public class ItemListActivity extends Activity implements
 		// Set up the ViewPager with the sections adapter.
 		// mViewPager = (ViewPager) findViewById(R.id.pager);
 
+		/*
 		mJazzy.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
 			public void onPageSelected(int position) {
@@ -144,7 +155,7 @@ public class ItemListActivity extends Activity implements
 			public void onPageScrollStateChanged(int arg0) {
 
 			}
-		});
+		});*/
 
 		// mViewPager.setAdapter(mSectionsPagerAdapter);
 		mJazzy.setCurrentItem(getIntent().getIntExtra(
@@ -210,8 +221,22 @@ public class ItemListActivity extends Activity implements
 			editor.commit();
 		}
 
+		hp = new HashMap<String, ArrayList<RssItem>>();
+		try {// 既読セーブデータオープン
+			FileInputStream fis = openFileInput("RssData.dat");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			hp = (HashMap<String, ArrayList<RssItem>>) ois.readObject();
+			ois.close();
+			Toast.makeText(this, "読み込み成功", Toast.LENGTH_SHORT).show();
+		} catch (Exception e) {
+		}
+
+		Bundle arguments = new Bundle();
+		// arguments.putSerializable("RSS", items);
+		getLoaderManager().initLoader(0, arguments, this);
+
 		// タイトルバーのプログレスアイコンを表示する
-		// setProgressBarIndeterminateVisibility(true);
+		setProgressBarIndeterminateVisibility(true);
 	}
 
 	private void setupJazziness(TransitionEffect effect) {
@@ -245,6 +270,7 @@ public class ItemListActivity extends Activity implements
 			oos.close();
 		} catch (Exception e1) {
 		}
+		mSectionsPagerAdapter.notifyDataSetChanged();
 
 	}
 
@@ -294,7 +320,7 @@ public class ItemListActivity extends Activity implements
 	 * one of the sections/tabs/pages.
 	 */
 
-	public class SectionsPagerAdapter extends FragmentPagerAdapter {
+	public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
 		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
@@ -329,6 +355,8 @@ public class ItemListActivity extends Activity implements
 				arguments.putString(ItemDetailFragment.ARG_ITEM_ID,
 						items.get(position - 2).getUrl());
 				arguments.putInt("COLOR", items.get(position - 2).getTag());
+				arguments.putSerializable("LIST",
+						hp.get(items.get(position - 2).getUrl()));
 				fragment = new ItemDetailFragment();
 				fragment.setArguments(arguments);
 			}
@@ -358,6 +386,56 @@ public class ItemListActivity extends Activity implements
 				return items.get(position - 2).getTitle();
 
 		}
+		
+		@Override
+		public int getItemPosition(Object object) {
+		    return POSITION_NONE;
+		}
+
+	}
+
+	@Override
+	public Loader<ArrayList<RssItem>> onCreateLoader(int id, Bundle args) {
+		// ArrayList<RssItem> rsslist = args.get;
+		url = items.get(i).getUrl();
+		int color = items.get(i).getTag();
+		RssParserTaskLoader appLoader = new RssParserTaskLoader(this, url, 0,
+				color, this);
+
+		appLoader.forceLoad();
+		return appLoader;
+	}
+
+	@Override
+	public void onLoadFinished(Loader<ArrayList<RssItem>> arg0,
+			ArrayList<RssItem> arg1) {
+		hp.put(url, arg1);
+		i++;
+		if (i < items.size()) {
+			getLoaderManager().restartLoader(0, null, this);
+		} else {
+			try {// セーブ書き込み
+				FileOutputStream fos = this.openFileOutput("RssData.dat",
+						Context.MODE_PRIVATE);
+				ObjectOutputStream oos = new ObjectOutputStream(fos);
+				oos.writeObject(hp);
+				oos.close();
+			} catch (Exception e1) {
+			}
+			Editor editor = sharedPreferences.edit();
+			editor.putInt("save_version", 1);
+			editor.commit();
+		}
+		mSectionsPagerAdapter.notifyDataSetChanged();
+		setProgressBarIndeterminateVisibility(false);
+
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+	@Override
+	public void onLoaderReset(Loader<ArrayList<RssItem>> arg0) {
+		// TODO 自動生成されたメソッド・スタブ
 
 	}
 

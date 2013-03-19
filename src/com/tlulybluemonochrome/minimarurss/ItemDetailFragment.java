@@ -17,6 +17,7 @@
 package com.tlulybluemonochrome.minimarurss;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -80,10 +81,15 @@ public class ItemDetailFragment extends Fragment implements
 
 		item = new ArrayList<RssItem>();
 
+		if (getArguments().getSerializable("LIST") != null) {
+			item = (ArrayList<RssItem>) getArguments().getSerializable("LIST");
+		}
+
 		adapter = new CustomDetailAdapter(getActivity(), 0, item);
+
 		mListView.setAdapter(adapter);
 
-		getLoaderManager().initLoader(0, getArguments(), this);
+		// getLoaderManager().initLoader(0, getArguments(), this);
 
 		// 引っ張って更新
 		mListView.setOnRefreshListener(new OnRefreshListener() {
@@ -135,9 +141,9 @@ public class ItemDetailFragment extends Fragment implements
 		adapter = new CustomDetailAdapter(getActivity(), 0, item);
 		mListView.setAdapter(adapter);
 		if (mFlag) {// 引っ張って更新したとき
+			mListView.completeRefreshing();
 			LayoutAnimationController anim = getListCascadeAnimation();
 			mListView.setLayoutAnimation(anim);
-			mListView.completeRefreshing();
 			mFlag = false;
 		}
 

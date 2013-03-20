@@ -175,7 +175,7 @@ public class NotificationService extends IntentService {
 							currentItem.setUrl(parser.nextText());
 						} else if (tag.equals("description")) {
 							currentItem.setText(parser.nextText().replaceAll(
-									"<.+?>", ""));// タグ除去
+									"(<.+?>|\r\n|\n\r|\n|\r)", ""));// タグと改行除去
 						}
 					}
 					break;

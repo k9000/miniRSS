@@ -25,7 +25,6 @@ import java.util.HashMap;
 
 import com.jfeinstein.jazzyviewpager.JazzyViewPager;
 import com.jfeinstein.jazzyviewpager.JazzyViewPager.TransitionEffect;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -38,12 +37,14 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTitleStrip;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.LinearLayout;
 
 /**
  * メインのActivity
@@ -416,6 +417,12 @@ public class ItemListActivity extends Activity implements
 	public void onLoaderReset(Loader<ArrayList<RssItem>> arg0) {
 		// TODO 自動生成されたメソッド・スタブ
 
+	}
+	
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		Log.d("test", "FocusChanged");
+		super.onWindowFocusChanged(hasFocus);
 	}
 
 }

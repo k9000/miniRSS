@@ -17,13 +17,9 @@
 package com.tlulybluemonochrome.minimarurss;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.Intent;
 import android.content.Loader;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +29,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.LayoutAnimationController;
 import android.view.animation.TranslateAnimation;
-import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.tlulybluemonochrome.minimarurss.RefreshableListView.OnRefreshListener;
@@ -55,6 +50,8 @@ public class ItemDetailFragment extends Fragment implements
 	boolean mFlag = false;
 
 	private RefreshableListView mListView;
+
+	private boolean _first = true;
 
 	/**
 	 * The fragment argument representing the item ID that this fragment
@@ -85,7 +82,9 @@ public class ItemDetailFragment extends Fragment implements
 			item = (ArrayList<RssItem>) getArguments().getSerializable("LIST");
 		}
 
-		adapter = new CustomDetailAdapter(getActivity(), 0, item);
+		adapter = new CustomDetailAdapter(getActivity(), 0, item, _first);
+
+		_first = false;
 
 		mListView.setAdapter(adapter);
 
@@ -100,17 +99,6 @@ public class ItemDetailFragment extends Fragment implements
 				getLoaderManager().restartLoader(500,
 						ItemDetailFragment.this.getArguments(),
 						ItemDetailFragment.this);
-			}
-		});
-
-		// クリックしてブラウザ起動
-		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item
-						.get(position).getUrl()));
-				startActivity(intent);
 			}
 		});
 
@@ -138,7 +126,7 @@ public class ItemDetailFragment extends Fragment implements
 		}
 		// リスト更新
 		item = arg1;
-		adapter = new CustomDetailAdapter(getActivity(), 0, item);
+		adapter = new CustomDetailAdapter(getActivity(), 0, item, true);
 		mListView.setAdapter(adapter);
 		if (mFlag) {// 引っ張って更新したとき
 			mListView.completeRefreshing();

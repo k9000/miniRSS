@@ -216,6 +216,8 @@ public class ItemListFragment extends Fragment {
 	}
 
 	class DragListener extends SortableListView.SimpleDragListener {
+		private boolean mDrag;
+
 		// リスト長押し
 		@Override
 		public void onItemLongClick(AdapterView<?> parent, View view,
@@ -308,6 +310,7 @@ public class ItemListFragment extends Fragment {
 		public int onDuringDrag(int positionFrom, int positionTo) {
 			if (positionFrom < 0 || positionTo < 0
 					|| positionFrom == positionTo) {
+				mDrag = false;
 				return positionFrom;
 			}
 			popup.dismiss();
@@ -333,6 +336,7 @@ public class ItemListFragment extends Fragment {
 			}
 			mDraggingPosition = positionTo;
 			mListView.invalidateViews();
+			mDrag = true;
 			return positionTo;
 		}
 
@@ -341,7 +345,9 @@ public class ItemListFragment extends Fragment {
 		public boolean onStopDrag(int positionFrom, int positionTo) {
 			mDraggingPosition = -1;
 			mListView.invalidateViews();
-			mCallbacks.onSetItems(items);
+			if(mDrag){
+				mCallbacks.onSetItems(items);
+			}
 			return super.onStopDrag(positionFrom, positionTo);
 		}
 	}

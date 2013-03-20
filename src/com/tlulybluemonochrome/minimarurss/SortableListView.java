@@ -283,7 +283,7 @@ public class SortableListView extends ListView implements
 
 	/** ImageView 用 LayoutParams の座標情報を更新 */
 	protected void updateLayoutParams(int x, int y) {
-		mLayoutParams.y = getTop() + y;
+		mLayoutParams.y = getTop() + y + 32;
 	}
 
 	/** ドラッグイベントリスナーインターフェース */

@@ -27,7 +27,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -70,11 +71,11 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		}
 
 		// CustomDataのデータをViewの各Widgetにセットする
-		/*
-		 * ImageView imageView; imageView = (ImageView)
-		 * convertView.findViewById(R.id.image);
-		 * imageView.setImageBitmap(item.getImageData());
-		 */
+
+		ImageView imageView;
+		imageView = (ImageView) convertView.findViewById(R.id.image);
+		imageView.setImageBitmap(item.getImageData());
+
 		TextView textView;
 		textView = (TextView) convertView.findViewById(R.id.text);
 		textView.setText(item.getTitle());
@@ -84,7 +85,8 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		textView2.setText(item.getText());
 
 		// final AccordionSet _as1;
-		final Button btn = (Button) convertView.findViewById(R.id.btn1);
+		final ImageButton btn = (ImageButton) convertView
+				.findViewById(R.id.btn1);
 		final LinearLayout content = (LinearLayout) convertView
 				.findViewById(R.id.content1);
 

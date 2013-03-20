@@ -119,32 +119,42 @@ public class RssMessageNotification {
 				.setAutoCancel(true);
 
 		if (pin) {
-			builder.addAction(android.R.drawable.ic_delete, context
-					.getString(R.string.unpinned),
+			builder.addAction(android.R.drawable.checkbox_on_background,
+					context.getString(R.string.unpinned),
 
-			PendingIntent.getService(
-					context,
-					id,
-					new Intent(context, NotificationChangeService.class)
-							.putExtra("TITLE", title).putExtra("TEXT", text)
-							.putExtra("URL", url).putExtra("ID", id)
-							.putExtra("BITMAP", bitmap).putExtra("PAGE", page)
-							.putExtra("SET", false),
-					PendingIntent.FLAG_UPDATE_CURRENT));
+					PendingIntent
+							.getService(
+									context,
+									id,
+									new Intent(context,
+											NotificationChangeService.class)
+											.putExtra("TITLE", title)
+											.putExtra("TEXT", text)
+											.putExtra("URL", url)
+											.putExtra("ID", id)
+											.putExtra("BITMAP", bitmap)
+											.putExtra("PAGE", page)
+											.putExtra("SET", false),
+									PendingIntent.FLAG_UPDATE_CURRENT));
 
 		} else {
-			builder.addAction(android.R.drawable.ic_input_add, context
-					.getString(R.string.pinned),
+			builder.addAction(android.R.drawable.checkbox_off_background,
+					context.getString(R.string.pinned),
 
-			PendingIntent.getService(
-					context,
-					id,
-					new Intent(context, NotificationChangeService.class)
-							.putExtra("TITLE", title).putExtra("TEXT", text)
-							.putExtra("URL", url).putExtra("ID", id)
-							.putExtra("BITMAP", bitmap).putExtra("PAGE", page)
-							.putExtra("PIN", true),
-					PendingIntent.FLAG_UPDATE_CURRENT));
+					PendingIntent
+							.getService(
+									context,
+									id,
+									new Intent(context,
+											NotificationChangeService.class)
+											.putExtra("TITLE", title)
+											.putExtra("TEXT", text)
+											.putExtra("URL", url)
+											.putExtra("ID", id)
+											.putExtra("BITMAP", bitmap)
+											.putExtra("PAGE", page)
+											.putExtra("PIN", true),
+									PendingIntent.FLAG_UPDATE_CURRENT));
 		}
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && pin) {// Android4.1以降

@@ -35,7 +35,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -115,6 +114,7 @@ public class ItemListFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//setHasOptionsMenu(true);
 
 	}
 
@@ -203,6 +203,32 @@ public class ItemListFragment extends Fragment {
 			outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
 		}
 	}
+	/*
+	// 右上のメニュー作成
+		@Override
+			public void onCreateOptionsMenu(Menu menu,MenuInflater menuInflater) {
+				super.onCreateOptionsMenu(menu, menuInflater);
+				SharedPreferences sharedPreferences = PreferenceManager
+						.getDefaultSharedPreferences(getActivity());
+				menuInflater.inflate(R.menu.my_menu, menu);
+				// ON/OFFボタンのリスナー
+				Switch s2 = (Switch) menu.findItem(R.id.item_switch).getActionView();
+				s2.setOnCheckedChangeListener(null);
+				s2.setChecked(sharedPreferences.getBoolean("notification_switch", false));
+				s2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						SharedPreferences sharedPreferences = PreferenceManager
+								.getDefaultSharedPreferences(getActivity());
+						Editor editor = sharedPreferences.edit();
+						editor.putBoolean("notification_switch", isChecked);
+						editor.commit();
+					}
+				});
+				s2.setChecked(sharedPreferences.getBoolean("notification_switch", false));
+			}*/
 
 	/**
 	 * Turns on activate-on-click mode. When this mode is on, list items will be

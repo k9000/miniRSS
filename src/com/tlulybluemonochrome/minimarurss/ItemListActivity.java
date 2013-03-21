@@ -26,13 +26,10 @@ import java.util.HashMap;
 import com.jfeinstein.jazzyviewpager.JazzyViewPager;
 import com.jfeinstein.jazzyviewpager.JazzyViewPager.TransitionEffect;
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.PendingIntent;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
-import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -41,13 +38,9 @@ import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTitleStrip;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.CompoundButton;
 import android.widget.Switch;
-import android.widget.Toast;
 
 /**
  * メインのActivity
@@ -56,8 +49,8 @@ import android.widget.Toast;
  * 
  */
 public class ItemListActivity extends Activity implements
-		ItemListFragment.Callbacks, LoaderCallbacks<ArrayList<RssItem>>,
-		CompoundButton.OnCheckedChangeListener {
+		ItemListFragment.Callbacks, SettingsFragment.Callbacks,
+		LoaderCallbacks<ArrayList<RssItem>> {
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -82,6 +75,8 @@ public class ItemListActivity extends Activity implements
 	PagerTitleStrip mTitleStrip;
 
 	private Switch s;
+
+	private boolean mChecked;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -256,6 +251,7 @@ public class ItemListActivity extends Activity implements
 
 	}
 
+	/*
 	// 右上のメニュー作成
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -265,10 +261,29 @@ public class ItemListActivity extends Activity implements
 		inflater.inflate(R.menu.my_menu, menu);
 		// ON/OFFボタンのリスナー
 		s = (Switch) menu.findItem(R.id.item_switch).getActionView();
+		s.setOnCheckedChangeListener(null);
 		s.setChecked(sharedPreferences.getBoolean("notification_switch", false));
-		s.setOnCheckedChangeListener(this);
+		s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				if (!mChecked) {
+
+					SharedPreferences sharedPreferences = PreferenceManager
+							.getDefaultSharedPreferences(ItemListActivity.this);
+					Editor editor = sharedPreferences.edit();
+					editor.putBoolean("notification_switch", isChecked);
+					editor.commit();
+					//mSectionsPagerAdapter.notifyDataSetChanged();
+
+				}
+				mChecked = false;
+
+			}
+		});
+		s.setChecked(sharedPreferences.getBoolean("notification_switch", false));
 		return true;
-	}
+	}*/
 
 	// メニューボタンクリック
 	/*
@@ -418,68 +433,55 @@ public class ItemListActivity extends Activity implements
 
 	}
 
+	/*
+	 * @Override public void onCheckedChanged(CompoundButton buttonView, boolean
+	 * isChecked) { if (isChecked) { NotificationServiceStop();
+	 * NotificationServiceSet(); NotificationServiceStart(); } else {
+	 * NotificationServiceStop(); }
+	 * 
+	 * SharedPreferences sharedPreferences = PreferenceManager
+	 * .getDefaultSharedPreferences(this); Editor editor =
+	 * sharedPreferences.edit(); editor.putBoolean("notification_switch",
+	 * isChecked); editor.commit(); }
+	 * 
+	 * private void NotificationServiceStart() { startService(new Intent(this,
+	 * NotificationService.class));
+	 * 
+	 * }
+	 * 
+	 * // NotificationServiceをAlarmManagerに登録 protected void
+	 * NotificationServiceSet() { long time = AlarmManager.INTERVAL_HOUR; switch
+	 * (sharedPreferences.getInt("notification_freqescy", 2)) { case 0: time =
+	 * AlarmManager.INTERVAL_FIFTEEN_MINUTES; break; case 1: time =
+	 * AlarmManager.INTERVAL_HALF_HOUR; break; case 2: time =
+	 * AlarmManager.INTERVAL_HOUR; break; case 3: time =
+	 * AlarmManager.INTERVAL_HALF_DAY; break; case 4: time =
+	 * AlarmManager.INTERVAL_DAY; break; }
+	 * 
+	 * Intent intent = new Intent(this, NotificationService.class);
+	 * PendingIntent pendingIntent = PendingIntent.getService(this, -1, intent,
+	 * PendingIntent.FLAG_UPDATE_CURRENT); AlarmManager alarmManager =
+	 * (AlarmManager) this .getSystemService(Context.ALARM_SERVICE);
+	 * alarmManager.setInexactRepeating(AlarmManager.RTC,
+	 * System.currentTimeMillis(), time, pendingIntent); }
+	 * 
+	 * // NotificationServiceのAlarmManager登録解除 protected void
+	 * NotificationServiceStop() { stopService(new Intent(this,
+	 * NotificationService.class)); Intent intent = new Intent(this,
+	 * NotificationService.class); PendingIntent pendingIntent =
+	 * PendingIntent.getService(this, -1, intent,
+	 * PendingIntent.FLAG_UPDATE_CURRENT); AlarmManager alarmManager =
+	 * (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+	 * alarmManager.cancel(pendingIntent);
+	 * 
+	 * RssMessageNotification.cancel(this, 100); }
+	 */
+
 	@Override
-	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		if (isChecked) {
-			NotificationServiceStop();
-			NotificationServiceSet();
-			NotificationServiceStart();
-		} else {
-			NotificationServiceStop();
-		}
+	public void onCheckedChanged(boolean isChecked) {
+		mChecked = true;
+		s.setChecked(isChecked);
 
-		SharedPreferences sharedPreferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		Editor editor = sharedPreferences.edit();
-		editor.putBoolean("notification_switch", isChecked);
-		editor.commit();
-	}
-
-	private void NotificationServiceStart() {
-		startService(new Intent(this, NotificationService.class));
-
-	}
-
-	// NotificationServiceをAlarmManagerに登録
-	protected void NotificationServiceSet() {
-		long time = AlarmManager.INTERVAL_HOUR;
-		switch (sharedPreferences.getInt("notification_freqescy", 2)) {
-		case 0:
-			time = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
-			break;
-		case 1:
-			time = AlarmManager.INTERVAL_HALF_HOUR;
-			break;
-		case 2:
-			time = AlarmManager.INTERVAL_HOUR;
-			break;
-		case 3:
-			time = AlarmManager.INTERVAL_HALF_DAY;
-			break;
-		case 4:
-			time = AlarmManager.INTERVAL_DAY;
-			break;
-		}
-
-		Intent intent = new Intent(this, NotificationService.class);
-		PendingIntent pendingIntent = PendingIntent.getService(this, -1,
-				intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		AlarmManager alarmManager = (AlarmManager) this
-				.getSystemService(Context.ALARM_SERVICE);
-		alarmManager.setInexactRepeating(AlarmManager.RTC,
-				System.currentTimeMillis(), time, pendingIntent);
-	}
-
-	// NotificationServiceのAlarmManager登録解除
-	protected void NotificationServiceStop() {
-		stopService(new Intent(this, NotificationService.class));
-		Intent intent = new Intent(this, NotificationService.class);
-		PendingIntent pendingIntent = PendingIntent.getService(this, -1,
-				intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		alarmManager.cancel(pendingIntent);
-
-		RssMessageNotification.cancel(this, 100);
 	}
 
 }

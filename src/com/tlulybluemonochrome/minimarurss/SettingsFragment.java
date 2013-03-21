@@ -16,6 +16,7 @@
 
 package com.tlulybluemonochrome.minimarurss;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.PendingIntent;
@@ -29,6 +30,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -48,8 +51,7 @@ import android.widget.Switch;
  * @author k9000
  * 
  */
-public class SettingsFragment extends Fragment implements
-		CompoundButton.OnCheckedChangeListener, OnClickListener {
+public class SettingsFragment extends Fragment implements OnClickListener {
 
 	Switch s;
 	SeekBar seekBar;
@@ -60,9 +62,37 @@ public class SettingsFragment extends Fragment implements
 	int mMinute = 2;
 	Button button;
 
+	private Callbacks mCallbacks = sDummyCallbacks;
+	private Switch s2;
+
+	/**
+	 * A callback interface that all activities containing this fragment must
+	 * implement. This mechanism allows activities to be notified of item
+	 * selections.
+	 */
+	public interface Callbacks {
+		/**
+		 * Callback for when an item has been selected.
+		 * 
+		 */
+
+		public void onCheckedChanged(boolean isChecked);
+	}
+
+	private static Callbacks sDummyCallbacks = new Callbacks() {
+
+		@Override
+		public void onCheckedChanged(boolean isChecked) {
+			// TODO 自動生成されたメソッド・スタブ
+
+		}
+
+	};
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 	}
 
 	@Override
@@ -78,8 +108,34 @@ public class SettingsFragment extends Fragment implements
 		// ON/OFFボタンのリスナー
 		mChecked = sharedPreferences.getBoolean("notification_switch", false);
 		s = (Switch) rootView.findViewById(R.id.switch1);
+		s.setOnCheckedChangeListener(null);
 		s.setChecked(mChecked);
-		s.setOnCheckedChangeListener(this);
+		s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				s2.setChecked(isChecked);
+
+				mChecked = isChecked;
+				//mCallbacks.onCheckedChanged(isChecked);
+				if (isChecked) {
+					NotificationServiceStop();
+					NotificationServiceSet();
+					NotificationServiceStart();
+				} else {
+					NotificationServiceStop();
+				}
+
+				SharedPreferences sharedPreferences = PreferenceManager
+						.getDefaultSharedPreferences(getActivity());
+				Editor editor = sharedPreferences.edit();
+				editor.putBoolean("notification_switch", isChecked);
+				editor.commit();
+
+			}
+		});
+		s.setChecked(mChecked);
 
 		seekBar = (SeekBar) rootView.findViewById(R.id.seekBar1);
 		seekBar.setMax(4);
@@ -227,24 +283,65 @@ public class SettingsFragment extends Fragment implements
 		return rootView;
 	}
 
-	// ON/OFFボタン
+	
+	// 右上のメニュー作成
 	@Override
-	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		mChecked = isChecked;
-		if (isChecked) {
-			NotificationServiceStop();
-			NotificationServiceSet();
-			NotificationServiceStart();
-		} else {
-			NotificationServiceStop();
+		public void onCreateOptionsMenu(Menu menu,MenuInflater menuInflater) {
+			super.onCreateOptionsMenu(menu, menuInflater);
+			SharedPreferences sharedPreferences = PreferenceManager
+					.getDefaultSharedPreferences(getActivity());
+			menuInflater.inflate(R.menu.my_menu, menu);
+			// ON/OFFボタンのリスナー
+			s2 = (Switch) menu.findItem(R.id.item_switch).getActionView();
+			s2.setOnCheckedChangeListener(null);
+			s2.setChecked(sharedPreferences.getBoolean("notification_switch", false));
+			s2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView,
+						boolean isChecked) {
+					s.setChecked(isChecked);
+					
+				}
+			});
+			s2.setChecked(sharedPreferences.getBoolean("notification_switch", false));
 		}
 
-		SharedPreferences sharedPreferences = PreferenceManager
-				.getDefaultSharedPreferences(getActivity());
-		Editor editor = sharedPreferences.edit();
-		editor.putBoolean("notification_switch", isChecked);
-		editor.commit();
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		// Activities containing this fragment must implement its callbacks.
+		if (!(activity instanceof Callbacks)) {
+			throw new IllegalStateException(
+					"Activity must implement fragment's callbacks.");
+		}
+
+		mCallbacks = (Callbacks) activity;
+
 	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+
+		// Reset the active callbacks interface to the dummy implementation.
+		mCallbacks = sDummyCallbacks;
+	}
+
+	/*
+	 * // ON/OFFボタン
+	 * 
+	 * @Override public void onCheckedChanged(CompoundButton buttonView, boolean
+	 * isChecked) { mChecked = isChecked; Callbacks.onCheckedChanged(isChecked);
+	 * if (isChecked) { NotificationServiceStop(); NotificationServiceSet();
+	 * NotificationServiceStart(); } else { NotificationServiceStop(); }
+	 * 
+	 * SharedPreferences sharedPreferences = PreferenceManager
+	 * .getDefaultSharedPreferences(getActivity()); Editor editor =
+	 * sharedPreferences.edit(); editor.putBoolean("notification_switch",
+	 * isChecked); editor.commit(); }
+	 */
 
 	// Add RSS Feedボタン
 	@Override

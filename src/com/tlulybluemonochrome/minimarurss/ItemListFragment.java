@@ -310,10 +310,10 @@ public class ItemListFragment extends Fragment {
 		public int onDuringDrag(int positionFrom, int positionTo) {
 			if (positionFrom < 0 || positionTo < 0
 					|| positionFrom == positionTo) {
-				mDrag = false;
 				return positionFrom;
 			}
 			popup.dismiss();
+			mDrag = true;
 			int i;
 			if (positionFrom < positionTo) {
 				final int min = positionFrom;

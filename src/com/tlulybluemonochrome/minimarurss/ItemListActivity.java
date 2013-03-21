@@ -406,7 +406,7 @@ public class ItemListActivity extends Activity implements
 			editor.putInt("save_version", 1);
 			editor.commit();
 		}
-		mSectionsPagerAdapter.notifyDataSetChanged();
+		//mSectionsPagerAdapter.notifyDataSetChanged();
 		setProgressBarIndeterminateVisibility(false);
 
 		// TODO 自動生成されたメソッド・スタブ

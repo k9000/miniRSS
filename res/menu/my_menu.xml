@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/item_setting"
-        android:icon="@android:drawable/ic_menu_manage"
+        android:id="@+id/item_switch"
+        android:actionViewClass="android.widget.Switch"
         android:showAsAction="ifRoom"
-        android:title="SETTING">
+        android:title="Switch">
     </item>
 
 </menu>

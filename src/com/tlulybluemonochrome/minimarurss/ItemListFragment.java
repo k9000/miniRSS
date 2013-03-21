@@ -20,6 +20,8 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
+import com.tlulybluemonochrome.minimarurss.CustomAdapter.CheckedChangedListenerInterface;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -33,6 +35,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -144,20 +147,28 @@ public class ItemListFragment extends Fragment {
 		}
 
 		CustomAdapter adapter = new CustomAdapter(getActivity(), 0, items);
+		adapter.setListener(new CheckedChangedListenerInterface() {
 
-		mListView.setAdapter(adapter);
-
-		// リストクリック(リスナーに飛ばす)
-		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+			public void onCheckedChanged(int position, boolean isChecked) {
+				items.get(position).setNoti(isChecked);
+				mCallbacks.onSetItems(items);// リスナーでPagerViewer更新
+
+			}
+
+			// リストクリック(コールバックに飛ばす)
+			@Override
+			public void onClick(int position) {
+				// TODO 自動生成されたメソッド・スタブ
 				// Notify the active callbacks interface (the activity, if the
 				// fragment is attached to one) that an item has been selected.
 				mCallbacks.onItemSelected(items.get(position).getTag(), items
 						.get(position).getUrl(), position);
 			}
+
 		});
+
+		mListView.setAdapter(adapter);
 
 		return rootView;
 	}
@@ -345,11 +356,15 @@ public class ItemListFragment extends Fragment {
 		public boolean onStopDrag(int positionFrom, int positionTo) {
 			mDraggingPosition = -1;
 			mListView.invalidateViews();
-			if(mDrag){
+			if (mDrag) {
 				mCallbacks.onSetItems(items);
 			}
 			return super.onStopDrag(positionFrom, positionTo);
 		}
 	}
-
+	/*
+	 * @Override public void onCheckChanged(int position, boolean isChecked) {
+	 * // TODO 自動生成されたメソッド・スタブ items.get(position).setNoti(isChecked);
+	 * mCallbacks.onSetItems(items);// リスナーでPagerViewer更新 }
+	 */
 }

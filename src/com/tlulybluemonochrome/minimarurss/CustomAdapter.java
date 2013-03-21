@@ -16,14 +16,22 @@
 
 package com.tlulybluemonochrome.minimarurss;
 
+import java.util.EventListener;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 
@@ -35,9 +43,22 @@ import android.widget.LinearLayout;
  */
 public class CustomAdapter extends ArrayAdapter<RssFeed> {
 	private LayoutInflater layoutInflater_;
-	
+
 	LinearLayout btn;
 	LinearLayout row;
+
+	CheckedChangedListenerInterface listener = null;
+
+	private Switch s;
+
+	public interface CheckedChangedListenerInterface extends
+	EventListener {
+
+		public void onCheckedChanged(int position, boolean isChecked);
+
+		public void onClick(int position);
+
+	}
 
 	/**
 	 * コンストラクタ
@@ -54,13 +75,16 @@ public class CustomAdapter extends ArrayAdapter<RssFeed> {
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		// 特定の行(position)のデータを得る
 		RssFeed item = (RssFeed) getItem(position);
 
 		// convertViewは使い回しされている可能性があるのでnullの時だけ新しく作る
 		if (null == convertView) {
 			convertView = layoutInflater_.inflate(R.layout.custom_layout, null);
+		} else {
+			// s = (Switch) convertView.findViewById(R.id.switch1);
+			Log.d("test", String.valueOf(position));
 		}
 
 		// CustomDataのデータをViewの各Widgetにセットする
@@ -76,7 +100,51 @@ public class CustomAdapter extends ArrayAdapter<RssFeed> {
 		textView = (TextView) convertView.findViewById(R.id.text);
 		textView.setText(item.getTitle());
 
+		s = (Switch) convertView.findViewById(R.id.switch1);
+
+		s.setOnCheckedChangeListener(null);
+
+		s.setChecked(item.getNoti());
+
+		s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				if (listener != null) {
+					listener.onCheckedChanged(position, isChecked);
+				}
+
+			}
+		});
+		s.setChecked(item.getNoti());
+
+		// クリックしてブラウザ起動
+		convertView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				listener.onClick(position);
+			}
+		});
+
 		return convertView;
+	}
+
+	/**
+	 * リスナーを追加する
+	 * 
+	 * @param listener
+	 */
+	public void setListener(CheckedChangedListenerInterface listener) {
+		this.listener = listener;
+	}
+
+	/**
+	 * リスナーを削除する
+	 */
+	public void removeListener() {
+		this.listener = null;
 	}
 
 }

@@ -26,10 +26,13 @@ import java.util.HashMap;
 import com.jfeinstein.jazzyviewpager.JazzyViewPager;
 import com.jfeinstein.jazzyviewpager.JazzyViewPager.TransitionEffect;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.PendingIntent;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -37,14 +40,14 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTitleStrip;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.LinearLayout;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.Toast;
 
 /**
  * メインのActivity
@@ -53,7 +56,8 @@ import android.widget.LinearLayout;
  * 
  */
 public class ItemListActivity extends Activity implements
-		ItemListFragment.Callbacks, LoaderCallbacks<ArrayList<RssItem>> {
+		ItemListFragment.Callbacks, LoaderCallbacks<ArrayList<RssItem>>,
+		CompoundButton.OnCheckedChangeListener {
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -73,11 +77,11 @@ public class ItemListActivity extends Activity implements
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
-	// ViewPager mViewPager;
-
 	private JazzyViewPager mJazzy;
 
 	PagerTitleStrip mTitleStrip;
+
+	private Switch s;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -211,9 +215,7 @@ public class ItemListActivity extends Activity implements
 		} catch (Exception e) {
 		}
 
-		Bundle arguments = new Bundle();
-		// arguments.putSerializable("RSS", items);
-		getLoaderManager().initLoader(0, arguments, this);
+		getLoaderManager().initLoader(0, null, this);
 
 		// タイトルバーのプログレスアイコンを表示する
 		setProgressBarIndeterminateVisibility(true);
@@ -261,26 +263,23 @@ public class ItemListActivity extends Activity implements
 
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.my_menu, menu);
+		// ON/OFFボタンのリスナー
+		s = (Switch) menu.findItem(R.id.item_switch).getActionView();
+		s.setChecked(sharedPreferences.getBoolean("notification_switch", false));
+		s.setOnCheckedChangeListener(this);
 		return true;
 	}
 
 	// メニューボタンクリック
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		boolean ret = true;
-		switch (item.getItemId()) {
-		case R.id.item_setting:
-			mJazzy.setCurrentItem(0);
-			break;
-		case R.id.item_list:
-			mJazzy.setCurrentItem(1);
-			break;
-		default:
-			ret = super.onOptionsItemSelected(item);
-		}
-
-		return ret;
-	}
+	/*
+	 * @Override public boolean onOptionsItemSelected(MenuItem item) { boolean
+	 * ret = true; switch (item.getItemId()) { case R.id.item_setting:
+	 * mJazzy.setCurrentItem(0); break; case R.id.item_list:
+	 * mJazzy.setCurrentItem(1); break; default: ret =
+	 * super.onOptionsItemSelected(item); }
+	 * 
+	 * return ret; }
+	 */
 
 	// 戻るボタン
 	@Override
@@ -406,7 +405,7 @@ public class ItemListActivity extends Activity implements
 			editor.putInt("save_version", 1);
 			editor.commit();
 		}
-		//mSectionsPagerAdapter.notifyDataSetChanged();
+		// mSectionsPagerAdapter.notifyDataSetChanged();
 		setProgressBarIndeterminateVisibility(false);
 
 		// TODO 自動生成されたメソッド・スタブ
@@ -418,11 +417,69 @@ public class ItemListActivity extends Activity implements
 		// TODO 自動生成されたメソッド・スタブ
 
 	}
-	
+
 	@Override
-	public void onWindowFocusChanged(boolean hasFocus) {
-		Log.d("test", "FocusChanged");
-		super.onWindowFocusChanged(hasFocus);
+	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+		if (isChecked) {
+			NotificationServiceStop();
+			NotificationServiceSet();
+			NotificationServiceStart();
+		} else {
+			NotificationServiceStop();
+		}
+
+		SharedPreferences sharedPreferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		Editor editor = sharedPreferences.edit();
+		editor.putBoolean("notification_switch", isChecked);
+		editor.commit();
+	}
+
+	private void NotificationServiceStart() {
+		startService(new Intent(this, NotificationService.class));
+
+	}
+
+	// NotificationServiceをAlarmManagerに登録
+	protected void NotificationServiceSet() {
+		long time = AlarmManager.INTERVAL_HOUR;
+		switch (sharedPreferences.getInt("notification_freqescy", 2)) {
+		case 0:
+			time = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
+			break;
+		case 1:
+			time = AlarmManager.INTERVAL_HALF_HOUR;
+			break;
+		case 2:
+			time = AlarmManager.INTERVAL_HOUR;
+			break;
+		case 3:
+			time = AlarmManager.INTERVAL_HALF_DAY;
+			break;
+		case 4:
+			time = AlarmManager.INTERVAL_DAY;
+			break;
+		}
+
+		Intent intent = new Intent(this, NotificationService.class);
+		PendingIntent pendingIntent = PendingIntent.getService(this, -1,
+				intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		AlarmManager alarmManager = (AlarmManager) this
+				.getSystemService(Context.ALARM_SERVICE);
+		alarmManager.setInexactRepeating(AlarmManager.RTC,
+				System.currentTimeMillis(), time, pendingIntent);
+	}
+
+	// NotificationServiceのAlarmManager登録解除
+	protected void NotificationServiceStop() {
+		stopService(new Intent(this, NotificationService.class));
+		Intent intent = new Intent(this, NotificationService.class);
+		PendingIntent pendingIntent = PendingIntent.getService(this, -1,
+				intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		alarmManager.cancel(pendingIntent);
+
+		RssMessageNotification.cancel(this, 100);
 	}
 
 }

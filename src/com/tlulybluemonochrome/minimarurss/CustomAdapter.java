@@ -22,7 +22,9 @@ import java.util.List;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -31,7 +33,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.LinearLayout;
 
 /**
  * RSSフィードリストを1行毎に格納するアダプタ
@@ -41,9 +42,8 @@ import android.widget.LinearLayout;
  */
 public class CustomAdapter extends ArrayAdapter<RssFeed> {
 	private LayoutInflater layoutInflater_;
-
-	LinearLayout btn;
-	LinearLayout row;
+	
+	SortableListView list;
 
 	CheckedChangedListenerInterface listener = null;
 
@@ -74,6 +74,15 @@ public class CustomAdapter extends ArrayAdapter<RssFeed> {
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
+		
+		list = null;
+		try{
+		      list = (SortableListView)parent;
+		    }catch(Exception e){
+		      e.printStackTrace();
+		    }
+		list.requestDisallowInterceptTouchEvent(true);
+		
 		// 特定の行(position)のデータを得る
 		RssFeed item = (RssFeed) getItem(position);
 
@@ -84,6 +93,8 @@ public class CustomAdapter extends ArrayAdapter<RssFeed> {
 			// s = (Switch) convertView.findViewById(R.id.switch1);
 			Log.d("test", String.valueOf(position));
 		}
+		
+		//
 
 		// CustomDataのデータをViewの各Widgetにセットする
 		ImageView imageView;
@@ -97,6 +108,18 @@ public class CustomAdapter extends ArrayAdapter<RssFeed> {
 		TextView textView;
 		textView = (TextView) convertView.findViewById(R.id.text);
 		textView.setText(item.getTitle());
+		/*
+		convertView.setOnTouchListener(new OnTouchListener(){
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO 自動生成されたメソッド・スタブ
+				return false;
+			}
+			
+		});*/
+		
+		/*
 
 		s = (Switch) convertView.findViewById(R.id.switch1);
 
@@ -115,16 +138,20 @@ public class CustomAdapter extends ArrayAdapter<RssFeed> {
 
 			}
 		});
-		s.setChecked(item.getNoti());
+		s.setChecked(item.getNoti());*/
 
-		// クリックしてブラウザ起動
+		/*
 		convertView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				listener.onClick(position);
+				//list.performItemClick(v, position, (long)v.getId());
 			}
-		});
+		});*/
+		
+		//convertView.setTag(position);
+		//convertView.setOnLongClickListener(list);
+		//convertView.setOnTouchListener(list);
 
 		return convertView;
 	}

@@ -147,6 +147,7 @@ public class ItemListFragment extends Fragment {
 		}
 
 		CustomAdapter adapter = new CustomAdapter(getActivity(), 0, items);
+		
 		adapter.setListener(new CheckedChangedListenerInterface() {
 
 			@Override
@@ -168,7 +169,20 @@ public class ItemListFragment extends Fragment {
 
 		});
 
+		
+		
 		mListView.setAdapter(adapter);
+		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+					long arg3) {
+				// TODO 自動生成されたメソッド・スタブ
+				mCallbacks.onItemSelected(items.get(position).getTag(), items
+						.get(position).getUrl(), position);
+			} 
+			
+		});
 
 		return rootView;
 	}

@@ -252,38 +252,32 @@ public class ItemListActivity extends Activity implements
 	}
 
 	/*
-	// 右上のメニュー作成
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.my_menu, menu);
-		// ON/OFFボタンのリスナー
-		s = (Switch) menu.findItem(R.id.item_switch).getActionView();
-		s.setOnCheckedChangeListener(null);
-		s.setChecked(sharedPreferences.getBoolean("notification_switch", false));
-		s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
-				if (!mChecked) {
-
-					SharedPreferences sharedPreferences = PreferenceManager
-							.getDefaultSharedPreferences(ItemListActivity.this);
-					Editor editor = sharedPreferences.edit();
-					editor.putBoolean("notification_switch", isChecked);
-					editor.commit();
-					//mSectionsPagerAdapter.notifyDataSetChanged();
-
-				}
-				mChecked = false;
-
-			}
-		});
-		s.setChecked(sharedPreferences.getBoolean("notification_switch", false));
-		return true;
-	}*/
+	 * // 右上のメニュー作成
+	 * 
+	 * @Override public boolean onCreateOptionsMenu(Menu menu) {
+	 * super.onCreateOptionsMenu(menu);
+	 * 
+	 * MenuInflater inflater = getMenuInflater();
+	 * inflater.inflate(R.menu.my_menu, menu); // ON/OFFボタンのリスナー s = (Switch)
+	 * menu.findItem(R.id.item_switch).getActionView();
+	 * s.setOnCheckedChangeListener(null);
+	 * s.setChecked(sharedPreferences.getBoolean("notification_switch", false));
+	 * s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+	 * 
+	 * @Override public void onCheckedChanged(CompoundButton buttonView, boolean
+	 * isChecked) { if (!mChecked) {
+	 * 
+	 * SharedPreferences sharedPreferences = PreferenceManager
+	 * .getDefaultSharedPreferences(ItemListActivity.this); Editor editor =
+	 * sharedPreferences.edit(); editor.putBoolean("notification_switch",
+	 * isChecked); editor.commit();
+	 * //mSectionsPagerAdapter.notifyDataSetChanged();
+	 * 
+	 * } mChecked = false;
+	 * 
+	 * } }); s.setChecked(sharedPreferences.getBoolean("notification_switch",
+	 * false)); return true; }
+	 */
 
 	// メニューボタンクリック
 	/*
@@ -419,11 +413,10 @@ public class ItemListActivity extends Activity implements
 			Editor editor = sharedPreferences.edit();
 			editor.putInt("save_version", 1);
 			editor.commit();
-		}
-		// mSectionsPagerAdapter.notifyDataSetChanged();
-		setProgressBarIndeterminateVisibility(false);
 
-		// TODO 自動生成されたメソッド・スタブ
+			mSectionsPagerAdapter.notifyDataSetChanged();
+			setProgressBarIndeterminateVisibility(false);
+		}
 
 	}
 

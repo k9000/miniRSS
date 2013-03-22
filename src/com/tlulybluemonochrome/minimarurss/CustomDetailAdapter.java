@@ -42,13 +42,16 @@ import android.widget.TextView;
 public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 	private LayoutInflater layoutInflater_;
 
-	// private boolean _first = true;
-
-	AccordionSet _as1;
-
 	private boolean[] _first;
 
-	private AccordionSet accordionSet;
+	static class ViewHolder {
+		ImageView imageView;
+		TextView textView;
+		TextView textView2;
+		ImageButton btn;
+		LinearLayout content;
+		UrlImageView urlImageView;
+	}
 
 	public CustomDetailAdapter(Context context, int textViewResourceId,
 			List<RssItem> objects, boolean first) {
@@ -64,84 +67,72 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		//accordionSet.deleteAccordion();
-		accordionSet = null;
-		
+		// accordionSet.deleteAccordion();
+		// accordionSet = null;
+
+		ViewHolder holder;
+
+		// ビューを受け取る
+		View view = convertView;
+
 		// 特定の行(position)のデータを得る
 		final RssItem item = (RssItem) getItem(position);
 
 		// convertViewは使い回しされている可能性があるのでnullの時だけ新しく作る
-		if (null == convertView) {
-			convertView = layoutInflater_.inflate(
-					R.layout.custom_detail_layout, null);
-			_first[position] = true;
+		if (null == view) {
+
+			view = layoutInflater_.inflate(R.layout.custom_detail_layout, null);
+
+			ImageView imageView = (ImageView) view.findViewById(R.id.image);
+			TextView textView = (TextView) view.findViewById(R.id.text);
+			TextView textView2 = (TextView) view.findViewById(R.id.text2);
+			ImageButton btn = (ImageButton) view.findViewById(R.id.btn1);
+			LinearLayout content = (LinearLayout) view
+					.findViewById(R.id.content1);
+			UrlImageView urlImageView = (UrlImageView) view
+					.findViewById(R.id.urlImageView);
+			
+			
+
+			holder = new ViewHolder();
+			holder.imageView = imageView;
+			holder.textView = textView;
+			holder.textView2 = textView2;
+			holder.btn = btn;
+			holder.content = content;
+			holder.urlImageView = urlImageView;
+
+			view.setTag(holder);
+		} else {
+			holder = (ViewHolder) view.getTag();
 		}
 
-		// CustomDataのデータをViewの各Widgetにセットする
-
-		ImageView imageView;
-		imageView = (ImageView) convertView.findViewById(R.id.image);
-		imageView.setImageBitmap(item.getImageData());
-
-		TextView textView;
-		textView = (TextView) convertView.findViewById(R.id.text);
-		textView.setText(item.getTitle());
-
-		TextView textView2;
-		textView2 = (TextView) convertView.findViewById(R.id.text2);
-		textView2.setText(item.getText());
-
-		// final AccordionSet _as1;
-		final ImageButton btn = (ImageButton) convertView
-				.findViewById(R.id.btn1);
-		final LinearLayout content = (LinearLayout) convertView
-				.findViewById(R.id.content1);
-
-		// Log.d("test", "getview");
+		holder.content.setVisibility(View.GONE);//convertView使い回しを誤魔化す
 
 		// クリックしてブラウザ起動
-		convertView.setOnClickListener(new OnClickListener() {
-
+		view.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item
 						.getUrl()));
-
 				v.getContext().startActivity(intent);
-
 			}
 		});
-		
-		UrlImageView mImageView = (UrlImageView) convertView.findViewById(R.id.urlImageView);
-		
-		
-		if (item.getImage() == null) {
-			mImageView.setVisibility(View.GONE);
-			
-		}
-			//webview = (WebView) convertView.findViewById(R.id.webView1);
-			//webview.getSettings().setLoadWithOverviewMode(true);
-			//webview.loadUrl(item.getImage());
-		//}
-		
-		//float height = (getContext().getResources().getDisplayMetrics().density) * 300;
-		
 
-		//if (_first[position]) {
-			_first[position] = false;
-			accordionSet = new AccordionSet(btn, content,mImageView,item.getImage(),(getContext().getResources().getDisplayMetrics().density) * 100);
-			/*
-			Handler handler = new Handler();
-			handler.post(new Runnable() {
-				@Override
-				public void run() {
-					// Log.d("test", "run");
-					new AccordionSet(btn, content);
-				}
-			});*/
-		//}
+		// CustomDataのデータをViewの各Widgetにセットする
+		holder.imageView.setImageBitmap(item.getImageData());
+		holder.textView.setText(item.getTitle());
+		holder.textView2.setText(item.getText());
+
+		if (item.getImage() == null) {
+			holder.urlImageView.setVisibility(View.GONE);
+		}
 		
-		return convertView;
+		new AccordionSet(holder.btn, holder.content, holder.urlImageView,
+				item.getImage(), (getContext().getResources()
+						.getDisplayMetrics().density) * 100);
+
+		return view;
 	}
 
 }

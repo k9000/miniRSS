@@ -16,7 +16,6 @@
 
 package com.tlulybluemonochrome.minimarurss;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.PendingIntent;
@@ -30,8 +29,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -63,7 +60,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 	Button button;
 
 	private Callbacks mCallbacks = sDummyCallbacks;
-	private Switch s2;
+	//private Switch s2;
 
 	/**
 	 * A callback interface that all activities containing this fragment must
@@ -92,7 +89,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setHasOptionsMenu(true);
+		//setHasOptionsMenu(true);
 	}
 
 	@Override
@@ -115,7 +112,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				s2.setChecked(isChecked);
+				//s2.setChecked(isChecked);
 
 				mChecked = isChecked;
 				//mCallbacks.onCheckedChanged(isChecked);
@@ -283,7 +280,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		return rootView;
 	}
 
-	
+	/*
 	// 右上のメニュー作成
 	@Override
 		public void onCreateOptionsMenu(Menu menu,MenuInflater menuInflater) {
@@ -327,7 +324,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 
 		// Reset the active callbacks interface to the dummy implementation.
 		mCallbacks = sDummyCallbacks;
-	}
+	}*/
 
 	/*
 	 * // ON/OFFボタン

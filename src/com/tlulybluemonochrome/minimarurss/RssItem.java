@@ -36,13 +36,16 @@ public class RssItem implements Serializable {
 	private String text;
 	private int tag;
 	private String page;
+	private String image;
 
-	public RssItem(String title, String url, String text, int tag, String page) {
+	public RssItem(String title, String url, String text, int tag, String page,
+			String image) {
 		this.title = title;
 		this.url = url;
 		this.text = text;
 		this.tag = tag;
 		this.page = page;
+		this.image = image;
 	}
 
 	public RssItem() {
@@ -74,6 +77,10 @@ public class RssItem implements Serializable {
 		return page;
 	}
 
+	public String getImage() {
+		return image;
+	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
@@ -92,6 +99,10 @@ public class RssItem implements Serializable {
 
 	public void setPage(String page) {
 		this.page = page;
+	}
+
+	public void setImage(String stripImageTags) {
+		this.image = stripImageTags;
 	}
 
 	public Bitmap getImageData() {

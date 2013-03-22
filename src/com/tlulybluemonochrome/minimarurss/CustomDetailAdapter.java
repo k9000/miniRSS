@@ -18,10 +18,11 @@ package com.tlulybluemonochrome.minimarurss;
 
 import java.util.List;
 
+import jp.sharakova.android.urlimageview.UrlImageView;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,8 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 
 	private boolean[] _first;
 
+	private AccordionSet accordionSet;
+
 	public CustomDetailAdapter(Context context, int textViewResourceId,
 			List<RssItem> objects, boolean first) {
 		super(context, textViewResourceId, objects);
@@ -61,6 +64,9 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		//accordionSet.deleteAccordion();
+		accordionSet = null;
+		
 		// 特定の行(position)のデータを得る
 		final RssItem item = (RssItem) getItem(position);
 
@@ -68,6 +74,7 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		if (null == convertView) {
 			convertView = layoutInflater_.inflate(
 					R.layout.custom_detail_layout, null);
+			_first[position] = true;
 		}
 
 		// CustomDataのデータをViewの各Widgetにセットする
@@ -90,9 +97,6 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		final LinearLayout content = (LinearLayout) convertView
 				.findViewById(R.id.content1);
 
-		final LinearLayout layout = (LinearLayout) convertView
-				.findViewById(R.id.layout);
-
 		// Log.d("test", "getview");
 
 		// クリックしてブラウザ起動
@@ -107,9 +111,26 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 
 			}
 		});
+		
+		UrlImageView mImageView = (UrlImageView) convertView.findViewById(R.id.urlImageView);
+		
+		
+		if (item.getImage() == null) {
+			mImageView.setVisibility(View.GONE);
+			
+		}
+			//webview = (WebView) convertView.findViewById(R.id.webView1);
+			//webview.getSettings().setLoadWithOverviewMode(true);
+			//webview.loadUrl(item.getImage());
+		//}
+		
+		//float height = (getContext().getResources().getDisplayMetrics().density) * 300;
+		
 
-		if (_first[position]) {
+		//if (_first[position]) {
 			_first[position] = false;
+			accordionSet = new AccordionSet(btn, content,mImageView,item.getImage(),(getContext().getResources().getDisplayMetrics().density) * 100);
+			/*
 			Handler handler = new Handler();
 			handler.post(new Runnable() {
 				@Override
@@ -117,9 +138,9 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 					// Log.d("test", "run");
 					new AccordionSet(btn, content);
 				}
-			});
-		}
-
+			});*/
+		//}
+		
 		return convertView;
 	}
 

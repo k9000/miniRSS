@@ -20,18 +20,11 @@ import java.util.EventListener;
 import java.util.List;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 /**
@@ -47,7 +40,7 @@ public class CustomAdapter extends ArrayAdapter<RssFeed> {
 
 	CheckedChangedListenerInterface listener = null;
 
-	private Switch s;
+	//private Switch s;
 
 	public interface CheckedChangedListenerInterface extends
 	EventListener {
@@ -91,7 +84,7 @@ public class CustomAdapter extends ArrayAdapter<RssFeed> {
 			convertView = layoutInflater_.inflate(R.layout.custom_layout, null);
 		} else {
 			// s = (Switch) convertView.findViewById(R.id.switch1);
-			Log.d("test", String.valueOf(position));
+			//Log.d("test", String.valueOf(position));
 		}
 		
 		//

@@ -207,8 +207,10 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 						} else if (tag.equals("link")) {
 							currentItem.setUrl(parser.nextText());
 						} else if (tag.equals("description")) {
-							currentItem.setText(parser.nextText().replaceAll(
-									"(<.+?>|\r\n|\n\r|\n|\r)", ""));// タグと改行除去
+							String buf = parser.nextText();
+							currentItem.setImage(StripImageTags(buf));
+							currentItem.setText(buf.replaceAll(
+									"(<.+?>|\r\n|\n\r|\n|\r)", "").replaceAll("&nbsp;|&amp;", " "));// タグと改行除去
 						}
 					}
 					break;
@@ -226,6 +228,21 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 		}
 		return list;
 
+	}
+	
+	private static String StripImageTags(String str) {
+		Pattern o = Pattern.compile("<img.*jpg.*?>");
+		Pattern p = Pattern.compile("//.*jpg");
+		String matchstr = null;
+		Matcher n = o.matcher(str);
+		if (n.find()){
+			  str = n.group();
+			}
+		Matcher m = p.matcher(str);
+		if (m.find()){
+		  matchstr = "http:"+m.group();
+		}
+		return matchstr;
 	}
 
 	/**

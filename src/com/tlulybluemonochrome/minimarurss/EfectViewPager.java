@@ -412,7 +412,7 @@ public class EfectViewPager extends ViewPager {
 	}
 
 	private static boolean isSmall(float positionOffset) {
-		return Math.abs(positionOffset) < 0.0001;
+		return false; //Math.abs(positionOffset) < 0.0001;
 	}
 	
 	public static void setObjectForPosition(Object obj, int position) {

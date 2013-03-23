@@ -352,5 +352,17 @@ public class ItemListFragment extends Fragment {
 			return super.onStopDrag(positionFrom, positionTo);
 		}
 	}
+	
+	@Override
+	public void onDestroyView(){
+		popup = null;
+		mListView.setDragListener(null);
+		mListView.setAdapter(null);
+		mListView.setOnItemClickListener(null);
+		mListView = null;
+		items = null;
+		super.onDestroyView();
+ 
+	}
 
 }

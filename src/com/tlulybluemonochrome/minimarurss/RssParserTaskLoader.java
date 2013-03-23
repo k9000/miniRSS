@@ -210,7 +210,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 							String buf = parser.nextText();
 							currentItem.setImage(StripImageTags(buf));
 							currentItem.setText(buf.replaceAll(
-									"(<.+?>|\r\n|\n\r|\n|\r)", "").replaceAll("&nbsp;|&amp;", " "));// タグと改行除去
+									"(<.+?>|\r\n|\n\r|\n|\r|&nbsp;|&amp;|&#160;|&#38;)", ""));// タグと改行除去
 						}
 					}
 					break;

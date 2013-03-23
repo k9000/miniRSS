@@ -48,7 +48,7 @@ import android.widget.Switch;
  * @author k9000
  * 
  */
-public class SettingsFragment extends Fragment implements OnClickListener {
+public class SettingsFragment extends Fragment {
 
 	Switch s;
 	SeekBar seekBar;
@@ -62,7 +62,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setHasOptionsMenu(true);
+		// setHasOptionsMenu(true);
 	}
 
 	@Override
@@ -85,10 +85,10 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				//s2.setChecked(isChecked);
+				// s2.setChecked(isChecked);
 
 				mChecked = isChecked;
-				//mCallbacks.onCheckedChanged(isChecked);
+				// mCallbacks.onCheckedChanged(isChecked);
 				if (isChecked) {
 					NotificationServiceStop();
 					NotificationServiceSet();
@@ -212,7 +212,18 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 
 		// Add RSS Feedボタンのリスナー
 		button = (Button) rootView.findViewById(R.id.button1);
-		button.setOnClickListener(this);
+		button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (v.getId() == R.id.button1) {
+					Intent intent = new Intent(getActivity(),
+							(Class<?>) EntryActivity.class);
+					intent.putExtra("ADD", "add");
+					startActivity(intent);
+					getActivity().finish();
+				}
+			}
+		});
 
 		// SharedPreferenceの設定
 		SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -251,21 +262,6 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 
 		// Inflate the layout for this fragment
 		return rootView;
-	}
-
-
-
-	// Add RSS Feedボタン
-	@Override
-	public void onClick(View v) {
-		if (v.getId() == R.id.button1) {
-			Intent intent = new Intent(getActivity(),
-					(Class<?>) EntryActivity.class);
-			intent.putExtra("ADD", "add");
-			startActivity(intent);
-			getActivity().finish();
-		}
-
 	}
 
 	public void frequencySet(int position) {
@@ -336,6 +332,23 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 		alarmManager.cancel(pendingIntent);
 
 		RssMessageNotification.cancel(getActivity(), 100);
+	}
+
+	@Override
+	public void onDestroyView() {
+		s.setOnCheckedChangeListener(null);
+		s = null;
+		seekBar.setOnSeekBarChangeListener(null);
+		seekBar = null;
+		editText = null;
+		mRadioGroupOs.setOnCheckedChangeListener(null);
+		mRadioGroupOs = null;
+		mRadioGroupOs2.setOnCheckedChangeListener(null);
+		mRadioGroupOs2 = null;
+		button.setOnClickListener(null);
+		button = null;
+
+		super.onDestroyView();
 	}
 
 }

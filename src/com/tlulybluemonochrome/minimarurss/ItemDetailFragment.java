@@ -43,10 +43,6 @@ import com.tlulybluemonochrome.minimarurss.RefreshableListView;
 public class ItemDetailFragment extends Fragment implements
 		LoaderCallbacks<ArrayList<RssItem>> {
 
-	ArrayList<RssItem> item;
-
-	CustomDetailAdapter adapter;
-
 	boolean mFlag = false;
 
 	private RefreshableListView mListView;
@@ -74,16 +70,10 @@ public class ItemDetailFragment extends Fragment implements
 
 		mListView = (RefreshableListView) rootView.findViewById(R.id.listview);
 
-		item = new ArrayList<RssItem>();
-
 		if (getArguments().getSerializable("LIST") != null) {
-			item = (ArrayList<RssItem>) getArguments().getSerializable("LIST");
+			mListView.setAdapter(new CustomDetailAdapter(getActivity(), 0, (ArrayList<RssItem>) getArguments().getSerializable("LIST")));
 		}
-
-		adapter = new CustomDetailAdapter(getActivity(), 0, item);
-
-		mListView.setAdapter(adapter);
-
+		
 		// getLoaderManager().initLoader(0, getArguments(), this);
 
 		// 引っ張って更新
@@ -119,9 +109,7 @@ public class ItemDetailFragment extends Fragment implements
 			return;
 		}
 		// リスト更新
-		item = arg1;
-		adapter = new CustomDetailAdapter(getActivity(), 0, arg1);
-		mListView.setAdapter(adapter);
+		mListView.setAdapter(new CustomDetailAdapter(getActivity(), 0, arg1));
 		if (mFlag) {// 引っ張って更新したとき
 			mListView.completeRefreshing();
 			LayoutAnimationController anim = getListCascadeAnimation();
@@ -152,5 +140,15 @@ public class ItemDetailFragment extends Fragment implements
 		LayoutAnimationController controller = new LayoutAnimationController(
 				set, 0.5f);
 		return controller;
+	}
+	
+	@Override
+	public void onDestroyView(){
+		getLoaderManager().destroyLoader(0);
+		mListView.setAdapter(null);
+		mListView.setOnRefreshListener(null);
+		mListView = null;
+		super.onDestroyView();
+
 	}
 }

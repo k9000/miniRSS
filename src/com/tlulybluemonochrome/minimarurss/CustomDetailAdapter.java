@@ -72,13 +72,14 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 	}
 
 	@Override
-	public View getView(final int position, final View convertView,
+	public View getView(final int position, View convertView,
 			final ViewGroup parent) {
 
 		final ViewHolder holder;
 
 		// ビューを受け取る
 		View view = convertView;
+		
 
 		// 特定の行(position)のデータを得る
 		final RssItem item = (RssItem) getItem(position);
@@ -99,6 +100,9 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 
 			view.setTag(holder);
 		} else {
+			convertView.setOnClickListener(null);
+			convertView = null;
+			
 			holder = (ViewHolder) view.getTag();
 			if (holder.bound) {
 				holder.content.setLayoutParams(new LinearLayout.LayoutParams(
@@ -212,5 +216,13 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		public void onComplete(String url) {
 		}
 	};
+	
+	public void destroy(){
+		layoutInflater_ = null;
+		handler = null;
+		thread = null;
+		mInterpolator = null;
+
+	}
 
 }

@@ -35,9 +35,11 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTitleStrip;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Toast;
 
 /**
  * メインのActivity
@@ -46,8 +48,7 @@ import android.view.Window;
  * 
  */
 public class ItemListActivity extends Activity implements
-		ItemListFragment.Callbacks, 
-		LoaderCallbacks<ArrayList<RssItem>> {
+		ItemListFragment.Callbacks, LoaderCallbacks<ArrayList<RssItem>> {
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -69,8 +70,7 @@ public class ItemListActivity extends Activity implements
 
 	private EfectViewPager efectViewPager;
 
-	PagerTitleStrip mTitleStrip;
-
+	private int set = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -125,8 +125,6 @@ public class ItemListActivity extends Activity implements
 			effect = 9;
 
 		setupJazziness(effect);
-
-		mTitleStrip = (PagerTitleStrip) findViewById(R.id.pager_title_strip);
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
@@ -241,7 +239,9 @@ public class ItemListActivity extends Activity implements
 			oos.close();
 		} catch (Exception e1) {
 		}
+		set = 3;
 		mSectionsPagerAdapter.notifyDataSetChanged();
+		
 
 	}
 
@@ -371,7 +371,11 @@ public class ItemListActivity extends Activity implements
 
 		@Override
 		public int getItemPosition(Object object) {
-			return POSITION_NONE;
+			if (set>0) {
+				set--;
+				return POSITION_NONE;
+			}
+			return POSITION_UNCHANGED;
 		}
 
 	}
@@ -391,6 +395,9 @@ public class ItemListActivity extends Activity implements
 	@Override
 	public void onLoadFinished(Loader<ArrayList<RssItem>> arg0,
 			ArrayList<RssItem> arg1) {
+		if (arg1 == null) {// 失敗時(意味ないかも)
+			return;
+		}
 		hp.put(url, arg1);
 		i++;
 		if (i < items.size()) {
@@ -408,6 +415,7 @@ public class ItemListActivity extends Activity implements
 			editor.putInt("save_version", 1);
 			editor.commit();
 
+			set = items.size();
 			mSectionsPagerAdapter.notifyDataSetChanged();
 			setProgressBarIndeterminateVisibility(false);
 		}
@@ -420,5 +428,17 @@ public class ItemListActivity extends Activity implements
 
 	}
 
+	@Override
+	public void onDestroy() {
+		getLoaderManager().destroyLoader(0);
+		efectViewPager.setAdapter(null);
+		efectViewPager = null;
+		mSectionsPagerAdapter = null;
+		sharedPreferences = null;
+		items = null;
+		hp = null;
+		super.onDestroy();
+
+	}
 
 }

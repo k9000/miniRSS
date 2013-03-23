@@ -16,7 +16,6 @@
 
 package com.tlulybluemonochrome.minimarurss;
 
-import java.util.EventListener;
 import java.util.List;
 
 import android.content.Context;
@@ -36,20 +35,7 @@ import android.widget.TextView;
 public class CustomAdapter extends ArrayAdapter<RssFeed> {
 	private LayoutInflater layoutInflater_;
 	
-	SortableListView list;
-
-	CheckedChangedListenerInterface listener = null;
-
-	//private Switch s;
-
-	public interface CheckedChangedListenerInterface extends
-	EventListener {
-
-		public void onCheckedChanged(int position, boolean isChecked);
-
-		public void onClick(int position);
-
-	}
+	
 
 	/**
 	 * コンストラクタ
@@ -68,13 +54,6 @@ public class CustomAdapter extends ArrayAdapter<RssFeed> {
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		
-		list = null;
-		try{
-		      list = (SortableListView)parent;
-		    }catch(Exception e){
-		      e.printStackTrace();
-		    }
-		list.requestDisallowInterceptTouchEvent(true);
 		
 		// 特定の行(position)のデータを得る
 		RssFeed item = (RssFeed) getItem(position);
@@ -101,68 +80,11 @@ public class CustomAdapter extends ArrayAdapter<RssFeed> {
 		TextView textView;
 		textView = (TextView) convertView.findViewById(R.id.text);
 		textView.setText(item.getTitle());
-		/*
-		convertView.setOnTouchListener(new OnTouchListener(){
 
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				// TODO 自動生成されたメソッド・スタブ
-				return false;
-			}
-			
-		});*/
-		
-		/*
-
-		s = (Switch) convertView.findViewById(R.id.switch1);
-
-		s.setOnCheckedChangeListener(null);
-
-		s.setChecked(item.getNoti());
-
-		s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
-				if (listener != null) {
-					listener.onCheckedChanged(position, isChecked);
-				}
-
-			}
-		});
-		s.setChecked(item.getNoti());*/
-
-		/*
-		convertView.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				//list.performItemClick(v, position, (long)v.getId());
-			}
-		});*/
-		
-		//convertView.setTag(position);
-		//convertView.setOnLongClickListener(list);
-		//convertView.setOnTouchListener(list);
 
 		return convertView;
 	}
 
-	/**
-	 * リスナーを追加する
-	 * 
-	 * @param listener
-	 */
-	public void setListener(CheckedChangedListenerInterface listener) {
-		this.listener = listener;
-	}
 
-	/**
-	 * リスナーを削除する
-	 */
-	public void removeListener() {
-		this.listener = null;
-	}
 
 }

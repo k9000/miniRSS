@@ -19,14 +19,17 @@ package com.tlulybluemonochrome.minimarurss;
 import java.util.List;
 
 import jp.sharakova.android.urlimageview.UrlImageView;
+import jp.sharakova.android.urlimageview.UrlImageView.OnImageLoadListener;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -42,7 +45,14 @@ import android.widget.TextView;
 public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 	private LayoutInflater layoutInflater_;
 
-	private boolean[] _first;
+	private Handler handler;
+	private float height;
+	private float current = 0.0f;
+	private float rotation = -90.0f;
+	private Thread thread;
+	private int startTime;
+	private DecelerateInterpolator mInterpolator = new DecelerateInterpolator();
+	private int easeTime = 400;
 
 	static class ViewHolder {
 		ImageView imageView;
@@ -51,26 +61,20 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		ImageButton btn;
 		LinearLayout content;
 		UrlImageView urlImageView;
+		boolean bound;
 	}
 
 	public CustomDetailAdapter(Context context, int textViewResourceId,
-			List<RssItem> objects, boolean first) {
+			List<RssItem> objects) {
 		super(context, textViewResourceId, objects);
 		layoutInflater_ = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		_first = new boolean[getCount()];
-		for (int i = 0; i < getCount(); i++) {
-			_first[i] = first;
-		}
-		// Log.d("test", "const");
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		// accordionSet.deleteAccordion();
-		// accordionSet = null;
 
-		ViewHolder holder;
+		final ViewHolder holder;
 
 		// ビューを受け取る
 		View view = convertView;
@@ -91,8 +95,6 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 					.findViewById(R.id.content1);
 			UrlImageView urlImageView = (UrlImageView) view
 					.findViewById(R.id.urlImageView);
-			
-			
 
 			holder = new ViewHolder();
 			holder.imageView = imageView;
@@ -101,13 +103,21 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 			holder.btn = btn;
 			holder.content = content;
 			holder.urlImageView = urlImageView;
+			holder.bound = false;
 
 			view.setTag(holder);
 		} else {
 			holder = (ViewHolder) view.getTag();
+			if (holder.bound) {
+				holder.content.setLayoutParams(new LinearLayout.LayoutParams(
+						LinearLayout.LayoutParams.MATCH_PARENT, 0));
+				holder.btn.setRotation(-90);
+				holder.bound = false;
+			}
+
 		}
 
-		holder.content.setVisibility(View.GONE);//convertView使い回しを誤魔化す
+		holder.content.setVisibility(View.GONE);
 
 		// クリックしてブラウザ起動
 		view.setOnClickListener(new OnClickListener() {
@@ -127,12 +137,87 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		if (item.getImage() == null) {
 			holder.urlImageView.setVisibility(View.GONE);
 		}
-		
-		new AccordionSet(holder.btn, holder.content, holder.urlImageView,
-				item.getImage(), (getContext().getResources()
-						.getDisplayMetrics().density) * 100);
+
+		height = (getContext().getResources().getDisplayMetrics().density) * 100;
+		handler = new Handler();
+		mInterpolator = new DecelerateInterpolator();
+		holder.btn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startTime = (int) System.currentTimeMillis();
+				if (holder.bound) {
+					holder.bound = false;
+				} else {
+					holder.content.setVisibility(View.VISIBLE);
+					if (item.getImage() != null) {
+
+						holder.urlImageView.setImageUrl(item.getImage(),
+								imageLoadListener);
+					}
+					holder.bound = true;
+				}
+
+				if (thread == null || !thread.isAlive()) {
+					thread = null;
+					makeThread(holder.bound, holder.btn, holder.content);
+					thread.start();
+				}
+
+			}
+		});
 
 		return view;
 	}
+
+	private void makeThread(final boolean bound, final ImageButton btn,
+			final LinearLayout content) {
+		thread = new Thread(new Runnable() {
+			public void run() {
+				while (easeTime > (int) System.currentTimeMillis() - startTime) {
+					int diff = (int) System.currentTimeMillis() - startTime;
+					if (bound) {
+						current = height
+								* mInterpolator.getInterpolation((float) diff
+										/ (float) easeTime);
+						rotation = 90 * mInterpolator
+								.getInterpolation((float) diff
+										/ (float) easeTime) - 90;
+					} else {
+						current = height
+								- height
+								* mInterpolator.getInterpolation((float) diff
+										/ (float) easeTime);
+						rotation = 0 - 90 * mInterpolator
+								.getInterpolation((float) diff
+										/ (float) easeTime);
+					}
+					threadFunc(btn, content);
+				}
+			}
+		});
+	}
+
+	private void threadFunc(final ImageButton btn, final LinearLayout content) {
+		handler.post(new Runnable() {
+
+			public void run() {
+				content.setLayoutParams(new LinearLayout.LayoutParams(
+						LinearLayout.LayoutParams.MATCH_PARENT, (int) current));
+				btn.setRotation(rotation);
+			}
+		});
+		try {
+			Thread.sleep(1);
+		} catch (InterruptedException e) {
+		}
+	}
+
+	final private OnImageLoadListener imageLoadListener = new OnImageLoadListener() {
+		public void onStart(String url) {
+		}
+
+		public void onComplete(String url) {
+		}
+	};
 
 }

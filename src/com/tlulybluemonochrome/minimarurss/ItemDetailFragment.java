@@ -51,8 +51,6 @@ public class ItemDetailFragment extends Fragment implements
 
 	private RefreshableListView mListView;
 
-	private boolean _first = true;
-
 	/**
 	 * The fragment argument representing the item ID that this fragment
 	 * represents.
@@ -82,9 +80,8 @@ public class ItemDetailFragment extends Fragment implements
 			item = (ArrayList<RssItem>) getArguments().getSerializable("LIST");
 		}
 
-		adapter = new CustomDetailAdapter(getActivity(), 0, item, _first);
+		adapter = new CustomDetailAdapter(getActivity(), 0, item);
 
-		_first = false;
 
 		mListView.setAdapter(adapter);
 
@@ -126,7 +123,7 @@ public class ItemDetailFragment extends Fragment implements
 		}
 		// リスト更新
 		item = arg1;
-		adapter = new CustomDetailAdapter(getActivity(), 0, item, true);
+		adapter = new CustomDetailAdapter(getActivity(), 0, item);
 		mListView.setAdapter(adapter);
 		if (mFlag) {// 引っ張って更新したとき
 			mListView.completeRefreshing();

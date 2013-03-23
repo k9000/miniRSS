@@ -20,8 +20,6 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
-import com.tlulybluemonochrome.minimarurss.CustomAdapter.CheckedChangedListenerInterface;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -147,28 +145,6 @@ public class ItemListFragment extends Fragment {
 		}
 
 		CustomAdapter adapter = new CustomAdapter(getActivity(), 0, items);
-		
-		adapter.setListener(new CheckedChangedListenerInterface() {
-
-			@Override
-			public void onCheckedChanged(int position, boolean isChecked) {
-				items.get(position).setNoti(isChecked);
-				mCallbacks.onSetItems(items);// リスナーでPagerViewer更新
-
-			}
-
-			// リストクリック(コールバックに飛ばす)
-			@Override
-			public void onClick(int position) {
-				// TODO 自動生成されたメソッド・スタブ
-				// Notify the active callbacks interface (the activity, if the
-				// fragment is attached to one) that an item has been selected.
-				mCallbacks.onItemSelected(items.get(position).getTag(), items
-						.get(position).getUrl(), position);
-			}
-
-		});
-
 		
 		
 		mListView.setAdapter(adapter);

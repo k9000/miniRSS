@@ -57,23 +57,23 @@ public class RssItem implements Serializable {
 		return title;
 	}
 
-	public String getTitle() {
+	public final String getTitle() {
 		return title;
 	}
 
-	public String getUrl() {
+	public final String getUrl() {
 		return url;
 	}
 
-	public String getText() {
+	public final String getText() {
 		return text;
 	}
 
-	public int getTag() {
+	public final int getTag() {
 		return tag;
 	}
 
-	public String getPage() {
+	public final String getPage() {
 		return page;
 	}
 
@@ -81,31 +81,31 @@ public class RssItem implements Serializable {
 		return image;
 	}
 
-	public void setTitle(String title) {
+	public final void setTitle(String title) {
 		this.title = title;
 	}
 
-	public void setUrl(String url) {
+	public final void setUrl(String url) {
 		this.url = url;
 	}
 
-	public void setText(String text) {
+	public final void setText(String text) {
 		this.text = text;
 	}
 
-	public void setTag(int tag) {
+	public final void setTag(int tag) {
 		this.tag = tag;
 	}
 
-	public void setPage(String page) {
+	public final void setPage(String page) {
 		this.page = page;
 	}
 
-	public void setImage(String stripImageTags) {
+	public final void setImage(String stripImageTags) {
 		this.image = stripImageTags;
 	}
 
-	public Bitmap getImageData() {
+	public final Bitmap getImageData() {
 		Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
 		bmp.eraseColor(tag);
 		return bmp;

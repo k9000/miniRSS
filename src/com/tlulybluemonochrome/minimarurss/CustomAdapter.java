@@ -34,8 +34,11 @@ import android.widget.TextView;
  */
 public class CustomAdapter extends ArrayAdapter<RssFeed> {
 	private LayoutInflater layoutInflater_;
-	
-	
+
+	static class ViewHolder {
+		ImageView image;
+		TextView text;
+	}
 
 	/**
 	 * コンストラクタ
@@ -53,38 +56,39 @@ public class CustomAdapter extends ArrayAdapter<RssFeed> {
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
-		
-		
+		ViewHolder holder;
+
+		// ビューを受け取る
+		View view = convertView;
+
+		// convertViewは使い回しされている可能性があるのでnullの時だけ新しく作る
+		if (view == null) {
+			view = layoutInflater_.inflate(R.layout.custom_layout, null);
+
+			holder = new ViewHolder();
+			holder.image = (ImageView) view.findViewById(R.id.image);
+			holder.text = (TextView) view.findViewById(R.id.text);
+
+			view.setTag(holder);
+
+		} else {
+			holder = (ViewHolder) view.getTag();
+
+		}
+
 		// 特定の行(position)のデータを得る
 		RssFeed item = (RssFeed) getItem(position);
 
-		// convertViewは使い回しされている可能性があるのでnullの時だけ新しく作る
-		if (null == convertView) {
-			convertView = layoutInflater_.inflate(R.layout.custom_layout, null);
-		} else {
-			// s = (Switch) convertView.findViewById(R.id.switch1);
-			//Log.d("test", String.valueOf(position));
-		}
-		
-		//
-
 		// CustomDataのデータをViewの各Widgetにセットする
-		ImageView imageView;
-		imageView = (ImageView) convertView.findViewById(R.id.image);
 		if (item.getNoti()) {
-			imageView.setImageBitmap(item.getImageData());
+			holder.image.setImageBitmap(item.getImageData());
 		} else {
-			imageView.setImageBitmap(null);
+			holder.image.setImageBitmap(null);
 		}
 
-		TextView textView;
-		textView = (TextView) convertView.findViewById(R.id.text);
-		textView.setText(item.getTitle());
+		holder.text.setText(item.getTitle());
 
-
-		return convertView;
+		return view;
 	}
-
-
 
 }

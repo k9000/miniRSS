@@ -45,14 +45,14 @@ import android.widget.TextView;
 public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 	private LayoutInflater layoutInflater_;
 
-	private Handler handler;
-	private float height;
-	private float current = 0.0f;
-	private float rotation = -90.0f;
-	private Thread thread;
-	private int startTime;
-	private DecelerateInterpolator mInterpolator = new DecelerateInterpolator();
-	private int easeTime = 400;
+	private static Handler handler;
+	private static float height;
+	private static float current = 0.0f;
+	private static float rotation = -90.0f;
+	private static Thread thread;
+	private static int startTime;
+	private static DecelerateInterpolator mInterpolator;
+	private static final int easeTime = 400;
 
 	static class ViewHolder {
 		ImageView imageView;
@@ -64,15 +64,16 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		boolean bound;
 	}
 
-	public CustomDetailAdapter(Context context, int textViewResourceId,
-			List<RssItem> objects) {
+	public CustomDetailAdapter(final Context context,
+			final int textViewResourceId, final List<RssItem> objects) {
 		super(context, textViewResourceId, objects);
 		layoutInflater_ = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, final View convertView,
+			final ViewGroup parent) {
 
 		final ViewHolder holder;
 
@@ -83,26 +84,17 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		final RssItem item = (RssItem) getItem(position);
 
 		// convertViewは使い回しされている可能性があるのでnullの時だけ新しく作る
-		if (null == view) {
-
+		if (view == null) {
 			view = layoutInflater_.inflate(R.layout.custom_detail_layout, null);
 
-			ImageView imageView = (ImageView) view.findViewById(R.id.image);
-			TextView textView = (TextView) view.findViewById(R.id.text);
-			TextView textView2 = (TextView) view.findViewById(R.id.text2);
-			ImageButton btn = (ImageButton) view.findViewById(R.id.btn1);
-			LinearLayout content = (LinearLayout) view
-					.findViewById(R.id.content1);
-			UrlImageView urlImageView = (UrlImageView) view
-					.findViewById(R.id.urlImageView);
-
 			holder = new ViewHolder();
-			holder.imageView = imageView;
-			holder.textView = textView;
-			holder.textView2 = textView2;
-			holder.btn = btn;
-			holder.content = content;
-			holder.urlImageView = urlImageView;
+			holder.imageView = (ImageView) view.findViewById(R.id.image);
+			holder.textView = (TextView) view.findViewById(R.id.text);
+			holder.textView2 = (TextView) view.findViewById(R.id.text2);
+			holder.btn = (ImageButton) view.findViewById(R.id.btn1);
+			holder.content = (LinearLayout) view.findViewById(R.id.content1);
+			holder.urlImageView = (UrlImageView) view
+					.findViewById(R.id.urlImageView);
 			holder.bound = false;
 
 			view.setTag(holder);
@@ -169,7 +161,7 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		return view;
 	}
 
-	private void makeThread(final boolean bound, final ImageButton btn,
+	private static void makeThread(final boolean bound, final ImageButton btn,
 			final LinearLayout content) {
 		thread = new Thread(new Runnable() {
 			public void run() {
@@ -197,7 +189,8 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		});
 	}
 
-	private void threadFunc(final ImageButton btn, final LinearLayout content) {
+	private static void threadFunc(final ImageButton btn,
+			final LinearLayout content) {
 		handler.post(new Runnable() {
 
 			public void run() {

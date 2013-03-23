@@ -231,7 +231,7 @@ public class RefreshableListView extends ListView {
 		// Extends refresh bar
 		LayoutParams lp = (LayoutParams) mHeaderContainer.getLayoutParams();
 		if (lp == null) {
-			lp = new LayoutParams(LayoutParams.FILL_PARENT,
+			lp = new LayoutParams(LayoutParams.MATCH_PARENT,
 					LayoutParams.WRAP_CONTENT);
 		}
 		lp.height = height;
@@ -241,7 +241,7 @@ public class RefreshableListView extends ListView {
 		LinearLayout.LayoutParams headerLp = (LinearLayout.LayoutParams) mHeaderView
 				.getLayoutParams();
 		if (headerLp == null) {
-			headerLp = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+			headerLp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
 					LayoutParams.WRAP_CONTENT);
 		}
 		headerLp.topMargin = -mHeaderHeight + height;

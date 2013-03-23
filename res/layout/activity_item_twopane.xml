@@ -22,7 +22,7 @@
         android:layout_height="match_parent"
         android:layout_weight="3" >
 
-        <com.jfeinstein.jazzyviewpager.JazzyViewPager
+        <com.tlulybluemonochrome.minimarurss.EfectViewPager
             android:id="@+id/jazzy_pager"
             android:name="com.tlulybluemonochrome.minimarurss.ItemListFragment"
             android:layout_width="match_parent"
@@ -36,7 +36,7 @@
                 android:layout_gravity="top"
                 android:background="?android:colorForeground"
                 android:textColor="#fff" />
-        </com.jfeinstein.jazzyviewpager.JazzyViewPager>
+        </com.tlulybluemonochrome.minimarurss.EfectViewPager>
     </FrameLayout>
 
 </LinearLayout>

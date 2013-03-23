@@ -23,8 +23,6 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.jfeinstein.jazzyviewpager.JazzyViewPager;
-import com.jfeinstein.jazzyviewpager.JazzyViewPager.TransitionEffect;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -69,7 +67,7 @@ public class ItemListActivity extends Activity implements
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
-	private JazzyViewPager mJazzy;
+	private EfectViewPager efectViewPager;
 
 	PagerTitleStrip mTitleStrip;
 
@@ -114,17 +112,17 @@ public class ItemListActivity extends Activity implements
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
 
 		String animation = sharedPreferences.getString("animation", "Cube");
-		TransitionEffect effect = TransitionEffect.CubeOut;
+		int effect = 3;
 		if (animation.equals("Tablet"))
-			effect = TransitionEffect.Tablet;
+			effect = 1;
 		else if (animation.equals("Cube"))
-			effect = TransitionEffect.CubeOut;
+			effect = 3;
 		else if (animation.equals("Flip"))
-			effect = TransitionEffect.FlipHorizontal;
+			effect = 5;
 		else if (animation.equals("Zoom"))
-			effect = TransitionEffect.ZoomIn;
+			effect = 7;
 		else if (animation.equals("Rotate"))
-			effect = TransitionEffect.RotateUp;
+			effect = 9;
 
 		setupJazziness(effect);
 
@@ -134,7 +132,7 @@ public class ItemListActivity extends Activity implements
 		// primary sections of the app.
 		// View
 
-		mJazzy.setCurrentItem(getIntent().getIntExtra(
+		efectViewPager.setCurrentItem(getIntent().getIntExtra(
 				ItemDetailFragment.ARG_ITEM_ID, 1));
 
 		// セーブデータオープン
@@ -212,10 +210,10 @@ public class ItemListActivity extends Activity implements
 		setProgressBarIndeterminateVisibility(true);
 	}
 
-	private void setupJazziness(TransitionEffect effect) {
-		mJazzy = (JazzyViewPager) findViewById(R.id.jazzy_pager);
-		mJazzy.setTransitionEffect(effect);
-		mJazzy.setAdapter(mSectionsPagerAdapter);
+	private void setupJazziness(int effect) {
+		efectViewPager = (EfectViewPager) findViewById(R.id.jazzy_pager);
+		EfectViewPager.setTransitionEffect(effect);
+		efectViewPager.setAdapter(mSectionsPagerAdapter);
 		// mJazzy.setPageMargin(30);
 
 	}
@@ -227,7 +225,7 @@ public class ItemListActivity extends Activity implements
 	// ItemLsitFragmentのリスナー
 	@Override
 	public void onItemSelected(int tag, String url, int position) {
-		mJazzy.setCurrentItem(position + 2);
+		efectViewPager.setCurrentItem(position + 2);
 
 	}
 
@@ -290,8 +288,8 @@ public class ItemListActivity extends Activity implements
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if (mTwoPane == false && mJazzy.getCurrentItem() != 1)
-				mJazzy.setCurrentItem(1);
+			if (mTwoPane == false && efectViewPager.getCurrentItem() != 1)
+				efectViewPager.setCurrentItem(1);
 			else
 				this.finish();
 			return true;
@@ -314,7 +312,7 @@ public class ItemListActivity extends Activity implements
 		@Override
 		public Object instantiateItem(ViewGroup container, int position) {
 			Object obj = super.instantiateItem(container, position);
-			mJazzy.setObjectForPosition(obj, position);
+			EfectViewPager.setObjectForPosition(obj, position);
 			return obj;
 		}
 

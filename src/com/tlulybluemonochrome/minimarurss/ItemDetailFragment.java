@@ -82,7 +82,6 @@ public class ItemDetailFragment extends Fragment implements
 
 		adapter = new CustomDetailAdapter(getActivity(), 0, item);
 
-
 		mListView.setAdapter(adapter);
 
 		// getLoaderManager().initLoader(0, getArguments(), this);
@@ -105,11 +104,9 @@ public class ItemDetailFragment extends Fragment implements
 	// ASyncTaskLoader始動
 	@Override
 	public Loader<ArrayList<RssItem>> onCreateLoader(int wait, Bundle args) {
-		String url = args.getString(ItemDetailFragment.ARG_ITEM_ID);
-		int color = args.getInt("COLOR");
 		RssParserTaskLoader appLoader = new RssParserTaskLoader(getActivity(),
-				url, wait, color, getActivity());
-
+				args.getString(ItemDetailFragment.ARG_ITEM_ID), wait,
+				args.getInt("COLOR"), getActivity());
 		appLoader.forceLoad();
 		return appLoader;
 	}
@@ -123,7 +120,7 @@ public class ItemDetailFragment extends Fragment implements
 		}
 		// リスト更新
 		item = arg1;
-		adapter = new CustomDetailAdapter(getActivity(), 0, item);
+		adapter = new CustomDetailAdapter(getActivity(), 0, arg1);
 		mListView.setAdapter(adapter);
 		if (mFlag) {// 引っ張って更新したとき
 			mListView.completeRefreshing();
@@ -139,7 +136,7 @@ public class ItemDetailFragment extends Fragment implements
 
 	}
 
-	private LayoutAnimationController getListCascadeAnimation() {
+	private static LayoutAnimationController getListCascadeAnimation() {
 		AnimationSet set = new AnimationSet(true);
 
 		Animation animation = new AlphaAnimation(0.0f, 1.0f);

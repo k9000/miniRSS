@@ -52,39 +52,39 @@ public class RssFeed implements Serializable {
 		return title;
 	}
 
-	public String getTitle() {
+	public final String getTitle() {
 		return title;
 	}
 
-	public String getUrl() {
+	public final String getUrl() {
 		return url;
 	}
 
-	public int getTag() {
+	public final int getTag() {
 		return tag;
 	}
 
-	public boolean getNoti() {
+	public final boolean getNoti() {
 		return noti;
 	}
 
-	public void setTitle(String title) {
+	public final void setTitle(String title) {
 		this.title = title;
 	}
 
-	public void setUrl(String url) {
+	public final void setUrl(String url) {
 		this.url = url;
 	}
 
-	public void setTag(int tag) {
+	public final void setTag(int tag) {
 		this.tag = tag;
 	}
 
-	public void setNoti(boolean noti) {
+	public final void setNoti(boolean noti) {
 		this.noti = noti;
 	}
 
-	public Bitmap getImageData() {
+	public final Bitmap getImageData() {
 		Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
 		bmp.eraseColor(tag);
 		return bmp;

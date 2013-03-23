@@ -1,4 +1,4 @@
-<com.jfeinstein.jazzyviewpager.JazzyViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tlulybluemonochrome.minimarurss.EfectViewPager xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/jazzy_pager"
     android:layout_width="match_parent"
@@ -17,4 +17,4 @@
         android:gravity="center"
         android:textColor="#fff" />
 
-</com.jfeinstein.jazzyviewpager.JazzyViewPager>
+</com.tlulybluemonochrome.minimarurss.EfectViewPager>

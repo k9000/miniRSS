@@ -34,8 +34,10 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Xml;
@@ -51,11 +53,9 @@ public class NotificationService extends IntentService {
 
 	ArrayList<RssItem> oldlist;
 
-	int mColor;
-
-	Bitmap mBmp;
-
 	int count;
+
+	static final int maxSize = 10 * 1024 * 1024;
 
 	public NotificationService(String name) {
 		super(name);
@@ -122,12 +122,16 @@ public class NotificationService extends IntentService {
 		// 未読記事通知
 		for (int i = 0; i < arraylist.size(); i++) {
 			if (arraylist.get(i).getTag() != 0) {
-				RssMessageNotification.notify(getApplicationContext(),
+				RssMessageNotification.notify(
+						getApplicationContext(),
 						arraylist.get(i).getTitle(),
 						arraylist.get(i).getTitle() + "\n"
-								+ arraylist.get(i).getText(), arraylist.get(i)
-								.getUrl(), count++, Picuture(arraylist.get(i)
-								.getTag()), arraylist.get(i).getPage(), false);
+								+ arraylist.get(i).getText(),
+						arraylist.get(i).getUrl(),
+						count++,
+						makeImage(arraylist.get(i).getImage(),
+								Picuture(arraylist.get(i).getTag(),R.drawable.ic_launcher)), arraylist
+								.get(i).getPage(), false);
 				try {// 通知の間を置く
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -176,8 +180,11 @@ public class NotificationService extends IntentService {
 						} else if (tag.equals("description")) {
 							String buf = parser.nextText();
 							currentItem.setImage(StripImageTags(buf));
-							currentItem.setText(buf.replaceAll(
-									"(<.+?>|\r\n|\n\r|\n|\r|&nbsp;|&amp;|&#160;|&#38;)", ""));// タグと改行除去
+							currentItem
+									.setText(buf
+											.replaceAll(
+													"(<.+?>|\r\n|\n\r|\n|\r|&nbsp;|&amp;|&#160;|&#38;)",
+													""));// タグと改行除去
 						}
 					}
 					break;
@@ -201,18 +208,18 @@ public class NotificationService extends IntentService {
 		return list;
 
 	}
-	
+
 	private static String StripImageTags(String str) {
 		Pattern o = Pattern.compile("<img.*jpg.*?>");
 		Pattern p = Pattern.compile("//.*jpg");
 		String matchstr = null;
 		Matcher n = o.matcher(str);
-		if (n.find()){
-			  str = n.group();
-			}
+		if (n.find()) {
+			str = n.group();
+		}
 		Matcher m = p.matcher(str);
-		if (m.find()){
-		  matchstr = "http:"+m.group();
+		if (m.find()) {
+			matchstr = "http:" + m.group();
 		}
 		return matchstr;
 	}
@@ -241,15 +248,11 @@ public class NotificationService extends IntentService {
 	}
 
 	// アイコン生成
-	public Bitmap Picuture(int color) {
-		if (color == mColor) {
-			return mBmp;
-		}
-		mColor = color;
+	public Bitmap Picuture(int color, int resource) {
 
 		final Bitmap picture = BitmapFactory.decodeResource(getResources(),
-				R.drawable.ic_launcher);
-		mBmp = picture.copy(picture.getConfig(), true);
+				resource);
+		Bitmap mBmp = picture.copy(picture.getConfig(), true);
 
 		int width = mBmp.getWidth();
 		int height = mBmp.getHeight();
@@ -276,6 +279,30 @@ public class NotificationService extends IntentService {
 		}
 		mBmp.setPixels(pixels, 0, width, 0, 0, width, height);
 		return mBmp;
+	}
+
+	private Bitmap makeImage(String image, Bitmap base) {
+		try {
+			URL image_url = new URL(image);
+			InputStream is = (InputStream) image_url.getContent();
+			Bitmap bitmap = BitmapFactory.decodeStream(is);
+			is.close();
+			Resources res = getBaseContext().getResources();
+			int w1 = (int) res.getDimension(android.R.dimen.notification_large_icon_width);
+			int h1 = (int) res.getDimension(android.R.dimen.notification_large_icon_height);
+			int w2 = bitmap.getWidth();
+			int h2 = bitmap.getHeight();
+			float scale = Math.min((float) w1 / w2, (float) h1 / h2);
+			Matrix matrix = new Matrix();
+			matrix.postScale(scale, scale);
+			base = Bitmap.createBitmap(bitmap, 0, 0, w2, h2, matrix, true);
+			bitmap.recycle();
+			bitmap = null;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return base;
+
 	}
 
 	// Service終了

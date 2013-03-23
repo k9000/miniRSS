@@ -19,8 +19,6 @@ package com.tlulybluemonochrome.minimarurss;
 import java.util.List;
 
 import jp.sharakova.android.urlimageview.UrlImageView;
-import jp.sharakova.android.urlimageview.UrlImageView.OnImageLoadListener;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -45,13 +43,13 @@ import android.widget.TextView;
 public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 	private LayoutInflater layoutInflater_;
 
-	private static Handler handler;
+	private static final Handler handler = new Handler();
 	private static float height;
 	private static float current = 0.0f;
 	private static float rotation = -90.0f;
 	private static Thread thread;
 	private static int startTime;
-	private static DecelerateInterpolator mInterpolator;
+	private static final DecelerateInterpolator mInterpolator = new DecelerateInterpolator();
 	private static final int easeTime = 400;
 
 	static class ViewHolder {
@@ -69,6 +67,7 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		super(context, textViewResourceId, objects);
 		layoutInflater_ = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		height = (getContext().getResources().getDisplayMetrics().density) * 100;
 	}
 
 	@Override
@@ -79,7 +78,6 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 
 		// ビューを受け取る
 		View view = convertView;
-		
 
 		// 特定の行(position)のデータを得る
 		final RssItem item = (RssItem) getItem(position);
@@ -102,7 +100,7 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		} else {
 			convertView.setOnClickListener(null);
 			convertView = null;
-			
+
 			holder = (ViewHolder) view.getTag();
 			if (holder.bound) {
 				holder.content.setLayoutParams(new LinearLayout.LayoutParams(
@@ -134,9 +132,6 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 			holder.urlImageView.setVisibility(View.GONE);
 		}
 
-		height = (getContext().getResources().getDisplayMetrics().density) * 100;
-		handler = new Handler();
-		mInterpolator = new DecelerateInterpolator();
 		holder.btn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -147,8 +142,7 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 					holder.content.setVisibility(View.VISIBLE);
 					if (item.getImage() != null) {
 
-						holder.urlImageView.setImageUrl(item.getImage(),
-								imageLoadListener);
+						holder.urlImageView.setImageUrl(item.getImage());
 					}
 					holder.bound = true;
 				}
@@ -207,22 +201,6 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 			Thread.sleep(1);
 		} catch (InterruptedException e) {
 		}
-	}
-
-	final private OnImageLoadListener imageLoadListener = new OnImageLoadListener() {
-		public void onStart(String url) {
-		}
-
-		public void onComplete(String url) {
-		}
-	};
-	
-	public void destroy(){
-		layoutInflater_ = null;
-		handler = null;
-		thread = null;
-		mInterpolator = null;
-
 	}
 
 }

@@ -22,6 +22,7 @@
         <item name="android:colorForeground">@color/glass_bar</item>
         <item name="android:colorBackground">#00000000</item>
         <item name="android:activatedBackgroundIndicator">@color/clear_panel</item>
+        <item name="android:textColorPrimary">@color/blue_text</item>
     </style>
  
     <style name="DarkGlass" parent="@android:style/Theme.Holo">

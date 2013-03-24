@@ -3,9 +3,9 @@
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/activatedBackgroundIndicator"
     android:gravity="center_vertical|center_horizontal"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="?android:attr/activatedBackgroundIndicator" >
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -32,7 +32,8 @@
             android:maxLines="2"
             android:paddingLeft="24dp"
             android:paddingRight="32dp"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:attr/textColorPrimary" />
 
         <ImageButton
             android:id="@+id/btn1"
@@ -47,9 +48,11 @@
     <LinearLayout
         android:id="@+id/content1"
         android:layout_width="match_parent"
-        android:layout_height="0dip" >
+        android:layout_height="0dip"
+        android:visibility="gone"
+         >
 
-        <jp.sharakova.android.urlimageview.UrlImageView
+        <ImageView
             android:id="@+id/urlImageView"
             android:layout_width="80dp"
             android:layout_height="80dp"
@@ -66,7 +69,8 @@
             android:paddingBottom="8dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:paddingTop="4dp" 
+            android:paddingTop="4dp"
+            android:textColor="?android:attr/textColorPrimary" 
              />
 
 

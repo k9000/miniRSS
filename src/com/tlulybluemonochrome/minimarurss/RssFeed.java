@@ -30,7 +30,7 @@ public class RssFeed implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2265423572274338985L;
+	private static final long serialVersionUID = -2407226097890754936L;
 	private String title;
 	private String url;
 	private int tag;
@@ -85,7 +85,7 @@ public class RssFeed implements Serializable {
 	}
 
 	public final Bitmap getImageData() {
-		Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+		final Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
 		bmp.eraseColor(tag);
 		return bmp;
 	}

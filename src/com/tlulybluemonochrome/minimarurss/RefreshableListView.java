@@ -55,7 +55,6 @@ public class RefreshableListView extends ListView {
 	private static final int REFRESH = 0;
 	private static final int NORMAL = 1;
 	private static final int HEADER_HEIGHT_DP = 62;
-	private static final String TAG = RefreshableListView.class.getSimpleName();
 
 	public RefreshableListView(final Context context) {
 		super(context);
@@ -266,10 +265,10 @@ public class RefreshableListView extends ListView {
 	}
 
 	private void rotateArrow() {
-		Drawable drawable = mArrow.getDrawable();
-		Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+		final Drawable drawable = mArrow.getDrawable();
+		final Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
 				drawable.getIntrinsicHeight(), Config.ARGB_8888);
-		Canvas canvas = new Canvas(bitmap);
+		final Canvas canvas = new Canvas(bitmap);
 		canvas.save();
 		canvas.rotate(180.0f, canvas.getWidth() / 2.0f,
 				canvas.getHeight() / 2.0f);

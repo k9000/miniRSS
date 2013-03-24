@@ -44,11 +44,11 @@ public class EfectViewPager extends ViewPager {
 		Accordion11
 	}*/
 	
-	public EfectViewPager(Context context) {
+	public EfectViewPager(final Context context) {
 		this(context, null);
 	}
 
-	public EfectViewPager(Context context, AttributeSet attrs) {
+	public EfectViewPager(final Context context,final AttributeSet attrs) {
 		super(context, attrs);
 		setClipChildren(false);
 		//TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.JazzyViewPager);
@@ -60,32 +60,32 @@ public class EfectViewPager extends ViewPager {
 //		reset();
 	}
 
-	private View wrapChild(View child) {
+	private View wrapChild(final View child) {
 		return child;
 	}
 
-	public void addView(View child) {
+	public void addView(final View child) {
 		super.addView(wrapChild(child));
 	}
 
-	public void addView(View child, int index) {
+	public void addView(final View child,final int index) {
 		super.addView(wrapChild(child), index);
 	}
 
-	public void addView(View child, LayoutParams params) {
+	public void addView(final View child,final LayoutParams params) {
 		super.addView(wrapChild(child), params);
 	}
 
-	public void addView(View child, int width, int height) {
+	public void addView(final View child,final int width,final int height) {
 		super.addView(wrapChild(child), width, height);
 	}
 
-	public void addView(View child, int index, LayoutParams params) {
+	public void addView(final View child,final int index,final LayoutParams params) {
 		super.addView(wrapChild(child), index, params);
 	}
 
 	@Override
-	public boolean onInterceptTouchEvent(MotionEvent arg0) {
+	public boolean onInterceptTouchEvent(final MotionEvent arg0) {
 		return mEnabled ? super.onInterceptTouchEvent(arg0) : false;
 	}
 
@@ -104,7 +104,7 @@ public class EfectViewPager extends ViewPager {
 		GOING_RIGHT2
 	}*/
 
-	protected static void animateTablet(View left, View right, float positionOffset) {		
+	protected static void animateTablet(final View left,final View right,final float positionOffset) {
 		if (mState != 0) {
 			if (left != null) {
 				manageLayer(left, true);
@@ -131,7 +131,7 @@ public class EfectViewPager extends ViewPager {
 		}
 	}
 
-	private static void animateCube(View left, View right, float positionOffset, boolean in) {
+	private static void animateCube(final View left,final View right,final float positionOffset,final boolean in) {
 		if (mState != 0) {
 			if (left != null) {
 				manageLayer(left, true);
@@ -150,7 +150,7 @@ public class EfectViewPager extends ViewPager {
 		}
 	}
 
-	private static void animateAccordion(View left, View right, float positionOffset) {
+	private static void animateAccordion(final View left,final View right,final float positionOffset) {
 		if (mState != 0) {
 			if (left != null) {
 				manageLayer(left, true);
@@ -167,7 +167,7 @@ public class EfectViewPager extends ViewPager {
 		}
 	}
 
-	private static void animateZoom(View left, View right, float positionOffset, boolean in) {
+	private static void animateZoom(final View left,final View right,final float positionOffset,final boolean in) {
 		if (mState != 0) {
 			if (left != null) {
 				manageLayer(left, true);
@@ -190,7 +190,7 @@ public class EfectViewPager extends ViewPager {
 		}
 	}
 
-	private void animateRotate(View left, View right, float positionOffset, boolean up) {
+	private void animateRotate(final View left,final View right,final float positionOffset,final boolean up) {
 		if (mState != 0) {
 			if (left != null) {
 				manageLayer(left, true);
@@ -213,7 +213,7 @@ public class EfectViewPager extends ViewPager {
 		}
 	}
 
-	private void animateFlipHorizontal(View left, View right, float positionOffset, int positionOffsetPixels) {
+	private void animateFlipHorizontal(final View left,final View right,final float positionOffset,final int positionOffsetPixels) {
 		if (mState != 0) {
 			if (left != null) {
 				manageLayer(left, true);
@@ -248,7 +248,7 @@ public class EfectViewPager extends ViewPager {
 		}
 	}
 	
-	private void animateFlipVertical(View left, View right, float positionOffset, int positionOffsetPixels) {
+	private void animateFlipVertical(final View left,final View right,final float positionOffset,final int positionOffsetPixels) {
 		if(mState != 0) {
 			if (left != null) {
 				manageLayer(left, true);
@@ -283,7 +283,7 @@ public class EfectViewPager extends ViewPager {
 		}
 	}
 
-	protected void animateStack(View left, View right, float positionOffset, int positionOffsetPixels) {		
+	protected void animateStack(final View left,final View right,final float positionOffset,final int positionOffsetPixels) {		
 		if (mState != 0) {
 			if (right != null) {
 				manageLayer(right, true);
@@ -297,7 +297,7 @@ public class EfectViewPager extends ViewPager {
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	private static void manageLayer(View v, boolean enableHardware) {
+	private static void manageLayer(final View v,final boolean enableHardware) {
 		//if (!API_11) return;
 		int layerType = enableHardware ? View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_NONE;
 		if (layerType != v.getLayerType())
@@ -315,11 +315,11 @@ public class EfectViewPager extends ViewPager {
 		}
 	}
 
-	private static Matrix mMatrix = new Matrix();
-	private static Camera mCamera = new Camera();
-	private static float[] mTempFloat2 = new float[2];
+	private static final Matrix mMatrix = new Matrix();
+	private static final Camera mCamera = new Camera();
+	private static final float[] mTempFloat2 = new float[2];
 
-	protected static float getOffsetXForRotation(float degrees, int width, int height) {
+	protected static float getOffsetXForRotation(final float degrees,final int width,final int height) {
 		mMatrix.reset();
 		mCamera.save();
 		mCamera.rotateY(Math.abs(degrees));
@@ -334,7 +334,7 @@ public class EfectViewPager extends ViewPager {
 		return (width - mTempFloat2[0]) * (degrees > 0.0f ? 1.0f : -1.0f);
 	}
 
-	protected static void animateFade(View left, View right, float positionOffset) {
+	protected static void animateFade(final View left,final View right,final float positionOffset) {
 		if (left != null) {
 			left.setAlpha(1-positionOffset);
 		}
@@ -344,18 +344,18 @@ public class EfectViewPager extends ViewPager {
 	}
 
 	@Override
-	public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+	public void onPageScrolled(final int position,final float positionOffset,final int positionOffsetPixels) {
 		if (mState == 0 && positionOffset > 0) {
 			oldPage = getCurrentItem();
 			mState = position == oldPage ? 2 : 1;
 		}
-		boolean goingRight = position == oldPage;				
+		final boolean goingRight = position == oldPage;				
 		if (mState == 2 && !goingRight)
 			mState = 1;
 		else if (mState == 1 && goingRight)
 			mState = 2;
 
-		float effectOffset =  isSmall(positionOffset) ? 0 : positionOffset;
+		final float effectOffset =  isSmall(positionOffset) ? 0 : positionOffset;
 		
 //		mLeft = getChildAt(position);
 //		mRight = getChildAt(position+1);
@@ -411,17 +411,17 @@ public class EfectViewPager extends ViewPager {
 
 	}
 
-	private static boolean isSmall(float positionOffset) {
+	private static boolean isSmall(final float positionOffset) {
 		return false; //Math.abs(positionOffset) < 0.0001;
 	}
 	
-	public static void setObjectForPosition(Object obj, int position) {
+	public static void setObjectForPosition(final Object obj,final int position) {
 		mObjs.put(Integer.valueOf(position), obj);
 	}
 	
-	private View findViewFromObject(int position) {
-		Object o = mObjs.get(Integer.valueOf(position));
-		FragmentStatePagerAdapter a = (FragmentStatePagerAdapter) getAdapter();
+	private View findViewFromObject(final int position) {
+		final Object o = mObjs.get(Integer.valueOf(position));
+		final FragmentStatePagerAdapter a = (FragmentStatePagerAdapter) getAdapter();
 		View v;
 		for (int i = 0; i < getChildCount(); i++) {
 			v = getChildAt(i);

@@ -129,8 +129,10 @@ public class NotificationService extends IntentService {
 								+ arraylist.get(i).getText(),
 						arraylist.get(i).getUrl(),
 						count++,
-						makeImage(arraylist.get(i).getImage(),
-								Picuture(arraylist.get(i).getTag(),R.drawable.ic_launcher)), arraylist
+						makeImage(
+								arraylist.get(i).getImage(),
+								Picuture(arraylist.get(i).getTag(),
+										R.drawable.ic_launcher)), arraylist
 								.get(i).getPage(), false);
 				try {// 通知の間を置く
 					Thread.sleep(1000);
@@ -283,23 +285,25 @@ public class NotificationService extends IntentService {
 
 	private Bitmap makeImage(String image, Bitmap base) {
 		try {
-			URL image_url = new URL(image);
-			InputStream is = (InputStream) image_url.getContent();
+			final URL image_url = new URL(image);
+			final InputStream is = (InputStream) image_url.getContent();
 			Bitmap bitmap = BitmapFactory.decodeStream(is);
 			is.close();
-			Resources res = getBaseContext().getResources();
-			int w1 = (int) res.getDimension(android.R.dimen.notification_large_icon_width);
-			int h1 = (int) res.getDimension(android.R.dimen.notification_large_icon_height);
-			int w2 = bitmap.getWidth();
-			int h2 = bitmap.getHeight();
-			float scale = Math.min((float) w1 / w2, (float) h1 / h2);
+			final Resources res = getBaseContext().getResources();
+			final float scale = Math.min(
+					(float) res.getDimension(android.R.dimen.notification_large_icon_width)/ bitmap.getWidth(),
+							(float) res.getDimension(android.R.dimen.notification_large_icon_height)/ bitmap.getHeight());
 			Matrix matrix = new Matrix();
 			matrix.postScale(scale, scale);
-			base = Bitmap.createBitmap(bitmap, 0, 0, w2, h2, matrix, true);
+			base = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 			bitmap.recycle();
 			bitmap = null;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return null;
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return null;
 		}
 		return base;
 

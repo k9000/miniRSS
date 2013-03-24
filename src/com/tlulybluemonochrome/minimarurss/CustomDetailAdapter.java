@@ -16,11 +16,15 @@
 
 package com.tlulybluemonochrome.minimarurss;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 
-import jp.sharakova.android.urlimageview.UrlImageView;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -44,13 +48,9 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 	private LayoutInflater layoutInflater_;
 
 	private static final Handler handler = new Handler();
-	private static float height;
-	private static float current = 0.0f;
-	private static float rotation = -90.0f;
-	private static Thread thread;
-	private static int startTime;
-	private static final DecelerateInterpolator mInterpolator = new DecelerateInterpolator();
-	private static final int easeTime = 400;
+	private static int height;
+	private static int current = 0;
+	private static int rotation = -90;
 
 	static class ViewHolder {
 		ImageView imageView;
@@ -58,20 +58,23 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		TextView textView2;
 		ImageButton btn;
 		LinearLayout content;
-		UrlImageView urlImageView;
+		ImageView urlImageView;
 		boolean bound;
 	}
+
+	final Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
 
 	public CustomDetailAdapter(final Context context,
 			final int textViewResourceId, final List<RssItem> objects) {
 		super(context, textViewResourceId, objects);
 		layoutInflater_ = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		height = (getContext().getResources().getDisplayMetrics().density) * 100;
+		height = (int) ((getContext().getResources().getDisplayMetrics().density) * 100);
+		bmp.eraseColor(getItem(0).getTag());
 	}
 
 	@Override
-	public View getView(final int position, View convertView,
+	public View getView(final int position, final View convertView,
 			final ViewGroup parent) {
 
 		final ViewHolder holder;
@@ -92,14 +95,16 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 			holder.textView2 = (TextView) view.findViewById(R.id.text2);
 			holder.btn = (ImageButton) view.findViewById(R.id.btn1);
 			holder.content = (LinearLayout) view.findViewById(R.id.content1);
-			holder.urlImageView = (UrlImageView) view
+			holder.urlImageView = (ImageView) view
 					.findViewById(R.id.urlImageView);
 			holder.bound = false;
 
+			holder.imageView.setImageBitmap(bmp);// 高速化のため
+
 			view.setTag(holder);
 		} else {
-			convertView.setOnClickListener(null);
-			convertView = null;
+			// convertView.setOnClickListener(null);
+			// convertView = null;
 
 			holder = (ViewHolder) view.getTag();
 			if (holder.bound) {
@@ -107,11 +112,10 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 						LinearLayout.LayoutParams.MATCH_PARENT, 0));
 				holder.btn.setRotation(-90);
 				holder.bound = false;
+				holder.content.setVisibility(View.GONE);
 			}
 
 		}
-
-		holder.content.setVisibility(View.GONE);
 
 		// クリックしてブラウザ起動
 		view.setOnClickListener(new OnClickListener() {
@@ -124,7 +128,7 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		});
 
 		// CustomDataのデータをViewの各Widgetにセットする
-		holder.imageView.setImageBitmap(item.getImageData());
+
 		holder.textView.setText(item.getTitle());
 		holder.textView2.setText(item.getText());
 
@@ -135,24 +139,19 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		holder.btn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startTime = (int) System.currentTimeMillis();
+
 				if (holder.bound) {
 					holder.bound = false;
 				} else {
 					holder.content.setVisibility(View.VISIBLE);
 					if (item.getImage() != null) {
 
-						holder.urlImageView.setImageUrl(item.getImage());
+						// holder.urlImageView.setImageUrl(item.getImage());
 					}
 					holder.bound = true;
 				}
-
-				if (thread == null || !thread.isAlive()) {
-					thread = null;
-					makeThread(holder.bound, holder.btn, holder.content);
-					thread.start();
-				}
-
+				makeThread(holder.bound, holder.btn, holder.content);
+				makeImage(item.getImage(), holder.urlImageView);
 			}
 		});
 
@@ -161,30 +160,33 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 
 	private static void makeThread(final boolean bound, final ImageButton btn,
 			final LinearLayout content) {
-		thread = new Thread(new Runnable() {
+		new Thread(new Runnable() {
 			public void run() {
+				final int startTime = (int) System.currentTimeMillis();
+				final int easeTime = 400;
 				while (easeTime > (int) System.currentTimeMillis() - startTime) {
-					int diff = (int) System.currentTimeMillis() - startTime;
+					final int diff = (int) System.currentTimeMillis()
+							- startTime;
+					final DecelerateInterpolator mInterpolator = new DecelerateInterpolator();
 					if (bound) {
-						current = height
-								* mInterpolator.getInterpolation((float) diff
-										/ (float) easeTime);
-						rotation = 90 * mInterpolator
+						current = (int) (height * mInterpolator
 								.getInterpolation((float) diff
-										/ (float) easeTime) - 90;
+										/ (float) easeTime));
+						rotation = (int) (90 * mInterpolator
+								.getInterpolation((float) diff
+										/ (float) easeTime) - 90);
 					} else {
-						current = height
-								- height
+						current = (int) (height - height
 								* mInterpolator.getInterpolation((float) diff
-										/ (float) easeTime);
-						rotation = 0 - 90 * mInterpolator
+										/ (float) easeTime));
+						rotation = (int) (0 - 90 * mInterpolator
 								.getInterpolation((float) diff
-										/ (float) easeTime);
+										/ (float) easeTime));
 					}
 					threadFunc(btn, content);
 				}
 			}
-		});
+		}).start();
 	}
 
 	private static void threadFunc(final ImageButton btn,
@@ -193,7 +195,7 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 
 			public void run() {
 				content.setLayoutParams(new LinearLayout.LayoutParams(
-						LinearLayout.LayoutParams.MATCH_PARENT, (int) current));
+						LinearLayout.LayoutParams.MATCH_PARENT, current));
 				btn.setRotation(rotation);
 			}
 		});
@@ -201,6 +203,34 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 			Thread.sleep(1);
 		} catch (InterruptedException e) {
 		}
+	}
+
+	private static void makeImage(final String image,
+			final ImageView urlImageView) {
+		new Thread(new Runnable() {
+
+			public void run() {
+				try {
+					final URL image_url = new URL(image);
+					final InputStream is = (InputStream) image_url.getContent();
+					imageFunc(BitmapFactory.decodeStream(is), urlImageView);
+					is.close();
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+			}
+		}).start();
+	}
+
+	private static void imageFunc(final Bitmap bitmap,
+			final ImageView urlImageView) {
+		handler.post(new Runnable() {
+			public void run() {
+				urlImageView.setImageBitmap(bitmap);
+			}
+		});
 	}
 
 }

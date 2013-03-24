@@ -59,42 +59,46 @@ public class ItemDetailFragment extends Fragment implements
 	 */
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.main, container, false);
+	public View onCreateView(final LayoutInflater inflater,final ViewGroup container,
+			final Bundle savedInstanceState) {
+		final View rootView = inflater.inflate(R.layout.main, container, false);
 
 		mListView = (RefreshableListView) rootView.findViewById(R.id.listview);
 
-		if (getArguments().getSerializable("LIST") != null) {
-			mListView.setAdapter(new CustomDetailAdapter(getActivity(), 0, (ArrayList<RssItem>) getArguments().getSerializable("LIST")));
-		}
-		
-		// getLoaderManager().initLoader(0, getArguments(), this);
+		mListView.setAdapter(null);
 
-		// 引っ張って更新
-		mListView.setOnRefreshListener(new OnRefreshListener() {
-			@Override
-			public void onRefresh(RefreshableListView listView) {
-				// TODO 自動生成されたメソッド・スタブ
-				mFlag = true;
-				getLoaderManager().restartLoader(500,
-						ItemDetailFragment.this.getArguments(),
-						ItemDetailFragment.this);
-			}
-		});
+		if (getArguments().getSerializable("LIST") != null) {
+			mListView
+					.setAdapter(new CustomDetailAdapter(getActivity(), 0,
+							(ArrayList<RssItem>) getArguments()
+									.getSerializable("LIST")));
+
+			// 引っ張って更新
+			mListView.setOnRefreshListener(new OnRefreshListener() {
+				@Override
+				public void onRefresh(final RefreshableListView listView) {
+					mFlag = true;
+					getLoaderManager().restartLoader(500,
+							ItemDetailFragment.this.getArguments(),
+							ItemDetailFragment.this);
+				}
+			});
+		}
+
+		// getLoaderManager().initLoader(0, getArguments(), this);
 
 		return rootView;
 	}
 
 	// ASyncTaskLoader始動
 	@Override
-	public Loader<ArrayList<RssItem>> onCreateLoader(int wait, Bundle args) {
-		RssParserTaskLoader appLoader = new RssParserTaskLoader(getActivity(),
+	public Loader<ArrayList<RssItem>> onCreateLoader(final int wait,final Bundle args) {
+		final RssParserTaskLoader appLoader = new RssParserTaskLoader(getActivity(),
 				args.getString(ItemDetailFragment.ARG_ITEM_ID), wait,
 				args.getInt("COLOR"), getActivity());
 		appLoader.forceLoad();
@@ -102,8 +106,8 @@ public class ItemDetailFragment extends Fragment implements
 	}
 
 	@Override
-	public void onLoadFinished(Loader<ArrayList<RssItem>> arg0,
-			ArrayList<RssItem> arg1) {
+	public void onLoadFinished(final Loader<ArrayList<RssItem>> arg0,
+			final ArrayList<RssItem> arg1) {
 		if (arg1 == null) {// 失敗時(意味ないかも)
 			Toast.makeText(getActivity(), "null", Toast.LENGTH_SHORT).show();
 			return;
@@ -120,12 +124,12 @@ public class ItemDetailFragment extends Fragment implements
 	}
 
 	@Override
-	public void onLoaderReset(Loader<ArrayList<RssItem>> arg0) {
+	public void onLoaderReset(final Loader<ArrayList<RssItem>> arg0) {
 
 	}
 
 	private static LayoutAnimationController getListCascadeAnimation() {
-		AnimationSet set = new AnimationSet(true);
+		final AnimationSet set = new AnimationSet(true);
 
 		Animation animation = new AlphaAnimation(0.0f, 1.0f);
 		animation.setDuration(50);
@@ -137,13 +141,13 @@ public class ItemDetailFragment extends Fragment implements
 		animation.setDuration(100);
 		set.addAnimation(animation);
 
-		LayoutAnimationController controller = new LayoutAnimationController(
+		final LayoutAnimationController controller = new LayoutAnimationController(
 				set, 0.5f);
 		return controller;
 	}
-	
+
 	@Override
-	public void onDestroyView(){
+	public void onDestroyView() {
 		getLoaderManager().destroyLoader(0);
 		mListView.setAdapter(null);
 		mListView.setOnRefreshListener(null);

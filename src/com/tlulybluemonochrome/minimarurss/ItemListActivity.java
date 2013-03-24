@@ -69,11 +69,11 @@ public class ItemListActivity extends Activity implements
 	private int set = 0;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 
 		/* Preferencesからテーマ設定 */
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-		String thme_preference = sharedPreferences.getString(
+		final String thme_preference = sharedPreferences.getString(
 				"theme_preference", "Light");
 		int theme = R.style.LightMetal;
 		if (thme_preference.equals("Light"))
@@ -87,8 +87,6 @@ public class ItemListActivity extends Activity implements
 		else if (thme_preference.equals("Gray"))
 			theme = R.style.NoiseGray;
 		setTheme(theme);
-
-		items = new ArrayList<RssFeed>();
 
 		// タイトルバーにプログレスアイコンを表示可能にする
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -109,41 +107,18 @@ public class ItemListActivity extends Activity implements
 					R.id.item_list)).setActivateOnItemClick(true);
 		}
 
-		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
-
-		String animation = sharedPreferences.getString("animation", "Cube");
-		int effect = 3;
-		if (animation.equals("Tablet"))
-			effect = 1;
-		else if (animation.equals("Cube"))
-			effect = 3;
-		else if (animation.equals("Flip"))
-			effect = 5;
-		else if (animation.equals("Zoom"))
-			effect = 7;
-		else if (animation.equals("Rotate"))
-			effect = 9;
-
-		setupJazziness(effect);
-
-		// Create the adapter that will return a fragment for each of the three
-		// primary sections of the app.
-		// View
-
-		efectViewPager.setCurrentItem(getIntent().getIntExtra(
-				ItemDetailFragment.ARG_ITEM_ID, 1));
-
 		// セーブデータオープン
 		try {
 			FileInputStream fis = openFileInput("SaveData.txt");
 			ObjectInputStream ois = new ObjectInputStream(fis);
-			items.addAll((ArrayList<RssFeed>) ois.readObject());
+			items = ((ArrayList<RssFeed>) ois.readObject());
 			ois.close();
 		} catch (Exception e) {
+			items = new ArrayList<RssFeed>();
 		}
 
 		if (items.isEmpty() || sharedPreferences.getInt("save_version", 0) != 1) {// セーブ空のとき
-			// items = new ArrayList<RssFeed>();
+			items = new ArrayList<RssFeed>();
 			items.add(new RssFeed(
 					"Googleニュース",
 					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss",
@@ -188,7 +163,7 @@ public class ItemListActivity extends Activity implements
 				oos.close();
 			} catch (Exception e1) {
 			}
-			Editor editor = sharedPreferences.edit();
+			final Editor editor = sharedPreferences.edit();
 			editor.putInt("save_version", 1);
 			editor.commit();
 		}
@@ -201,6 +176,30 @@ public class ItemListActivity extends Activity implements
 			ois.close();
 		} catch (Exception e) {
 		}
+		
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
+
+		final String animation = sharedPreferences.getString("animation", "Cube");
+		int effect = 3;
+		if (animation.equals("Tablet"))
+			effect = 1;
+		else if (animation.equals("Cube"))
+			effect = 3;
+		else if (animation.equals("Flip"))
+			effect = 5;
+		else if (animation.equals("Zoom"))
+			effect = 7;
+		else if (animation.equals("Rotate"))
+			effect = 9;
+
+		setupJazziness(effect);
+
+		// Create the adapter that will return a fragment for each of the three
+		// primary sections of the app.
+		// View
+
+		efectViewPager.setCurrentItem(getIntent().getIntExtra(
+				ItemDetailFragment.ARG_ITEM_ID, 1));
 
 		//getLoaderManager().initLoader(0, null, this);
 
@@ -208,7 +207,7 @@ public class ItemListActivity extends Activity implements
 		setProgressBarIndeterminateVisibility(true);
 	}
 
-	private void setupJazziness(int effect) {
+	private void setupJazziness(final int effect) {
 		efectViewPager = (EfectViewPager) findViewById(R.id.jazzy_pager);
 		EfectViewPager.setTransitionEffect(effect);
 		efectViewPager.setAdapter(mSectionsPagerAdapter);
@@ -222,14 +221,14 @@ public class ItemListActivity extends Activity implements
 	 */
 	// ItemLsitFragmentのリスナー
 	@Override
-	public void onItemSelected(int tag, String url, int position) {
+	public void onItemSelected(final int tag,final String url,final int position) {
 		efectViewPager.setCurrentItem(position + 2);
 
 	}
 
 	// 並べ替え用
 	@Override
-	public void onSetItems(ArrayList<RssFeed> items) {
+	public void onSetItems(final ArrayList<RssFeed> items) {
 		this.items = items;
 		try {
 			FileOutputStream fos = this.openFileOutput("SaveData.txt",
@@ -291,21 +290,21 @@ public class ItemListActivity extends Activity implements
 
 	public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
-		public SectionsPagerAdapter(FragmentManager fm) {
+		public SectionsPagerAdapter(final FragmentManager fm) {
 			super(fm);
 
 		}
 
 		@Override
-		public Object instantiateItem(ViewGroup container, int position) {
-			Object obj = super.instantiateItem(container, position);
+		public Object instantiateItem(final ViewGroup container, int position) {
+			final Object obj = super.instantiateItem(container, position);
 			EfectViewPager.setObjectForPosition(obj, position);
 			return obj;
 		}
 
 		// ページ生成
 		@Override
-		public Fragment getItem(int position) {
+		public Fragment getItem(final int position) {
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
@@ -320,7 +319,7 @@ public class ItemListActivity extends Activity implements
 			else if (position == 1)// フィードリスト
 				fragment = new ItemListFragment();
 			else {// 記事一覧
-				Bundle arguments = new Bundle();
+				final Bundle arguments = new Bundle();
 				arguments.putString(ItemDetailFragment.ARG_ITEM_ID,
 						items.get(position - 2).getUrl());
 				arguments.putInt("COLOR", items.get(position - 2).getTag());
@@ -338,13 +337,13 @@ public class ItemListActivity extends Activity implements
 		// 全ページ数
 		@Override
 		public int getCount() {
-			int count = items.size() + 2;
+			final int count = items.size() + 2;
 			return count;
 		}
 
 		// ページタイトル
 		@Override
-		public CharSequence getPageTitle(int position) {
+		public CharSequence getPageTitle(final int position) {
 			if (position == 0)
 				return "Setting";
 			else if (position == 1 && mTwoPane)
@@ -357,7 +356,7 @@ public class ItemListActivity extends Activity implements
 		}
 
 		@Override
-		public int getItemPosition(Object object) {
+		public int getItemPosition(final Object object) {
 			if (set>0) {
 				set--;
 				return POSITION_NONE;
@@ -368,11 +367,11 @@ public class ItemListActivity extends Activity implements
 	}
 
 	@Override
-	public Loader<ArrayList<RssItem>> onCreateLoader(int id, Bundle args) {
+	public Loader<ArrayList<RssItem>> onCreateLoader(final int id,final Bundle args) {
 		// ArrayList<RssItem> rsslist = args.get;
 		url = items.get(i).getUrl();
-		int color = items.get(i).getTag();
-		RssParserTaskLoader appLoader = new RssParserTaskLoader(this, url, 0,
+		final int color = items.get(i).getTag();
+		final RssParserTaskLoader appLoader = new RssParserTaskLoader(this, url, 0,
 				color, this);
 
 		appLoader.forceLoad();
@@ -380,8 +379,8 @@ public class ItemListActivity extends Activity implements
 	}
 
 	@Override
-	public void onLoadFinished(Loader<ArrayList<RssItem>> arg0,
-			ArrayList<RssItem> arg1) {
+	public void onLoadFinished(final Loader<ArrayList<RssItem>> arg0,
+			final ArrayList<RssItem> arg1) {
 		if (arg1 == null) {// 失敗時(意味ないかも)
 			return;
 		}
@@ -398,7 +397,7 @@ public class ItemListActivity extends Activity implements
 				oos.close();
 			} catch (Exception e1) {
 			}
-			Editor editor = sharedPreferences.edit();
+			final Editor editor = sharedPreferences.edit();
 			editor.putInt("save_version", 1);
 			editor.commit();
 
@@ -410,7 +409,7 @@ public class ItemListActivity extends Activity implements
 	}
 
 	@Override
-	public void onLoaderReset(Loader<ArrayList<RssItem>> arg0) {
+	public void onLoaderReset(final Loader<ArrayList<RssItem>> arg0) {
 		// TODO 自動生成されたメソッド・スタブ
 
 	}

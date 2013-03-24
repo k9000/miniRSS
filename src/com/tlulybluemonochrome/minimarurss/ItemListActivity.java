@@ -34,7 +34,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
-import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.view.Window;
 
@@ -79,10 +78,14 @@ public class ItemListActivity extends Activity implements
 		int theme = R.style.LightMetal;
 		if (thme_preference.equals("Light"))
 			theme = R.style.LightMetal;
+		else if (thme_preference.equals("White"))
+			theme = R.style.WhiteGlass;
 		else if (thme_preference.equals("Dark"))
 			theme = R.style.DarkGlass;
 		else if (thme_preference.equals("Transparent"))
 			theme = R.style.Glass;
+		else if (thme_preference.equals("Gray"))
+			theme = R.style.NoiseGray;
 		setTheme(theme);
 
 		items = new ArrayList<RssFeed>();
@@ -199,7 +202,7 @@ public class ItemListActivity extends Activity implements
 		} catch (Exception e) {
 		}
 
-		getLoaderManager().initLoader(0, null, this);
+		//getLoaderManager().initLoader(0, null, this);
 
 		// タイトルバーのプログレスアイコンを表示する
 		setProgressBarIndeterminateVisibility(true);
@@ -280,19 +283,6 @@ public class ItemListActivity extends Activity implements
 	 * 
 	 * return ret; }
 	 */
-
-	// 戻るボタン
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if (mTwoPane == false && efectViewPager.getCurrentItem() != 1)
-				efectViewPager.setCurrentItem(1);
-			else
-				this.finish();
-			return true;
-		}
-		return false;
-	}
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -412,7 +402,7 @@ public class ItemListActivity extends Activity implements
 			editor.putInt("save_version", 1);
 			editor.commit();
 
-			set = items.size();
+			set = 3;
 			mSectionsPagerAdapter.notifyDataSetChanged();
 			setProgressBarIndeterminateVisibility(false);
 		}

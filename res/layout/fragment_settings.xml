@@ -2,12 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="?android:attr/activatedBackgroundIndicator"
-    android:paddingTop="8dp"
+    android:orientation="vertical"
     android:paddingBottom="8dp"
-    android:paddingRight="12dp"
     android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+    android:paddingTop="8dp"
     tools:context=".SettingsFragment" >
 
     <!-- TODO: Update blank fragment layout -->
@@ -93,15 +93,28 @@
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="Light" />
-
+                
                 <RadioButton
                     android:id="@+id/radio1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="White" />
+
+                <RadioButton
+                    android:id="@+id/radio2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gray" />
+
+                <RadioButton
+                    android:id="@+id/radio3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Dark" />
 
                 <RadioButton
-                    android:id="@+id/radio2"
+                    android:id="@+id/radio4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Transparent" />
@@ -116,7 +129,7 @@
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="16dp" />
-            
+
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
@@ -149,19 +162,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Flip" />
-                
+
                 <RadioButton
                     android:id="@+id/radio13"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Zoom" />
-                
+
                 <RadioButton
                     android:id="@+id/radio14"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Rotate" />
-                
             </RadioGroup>
 
             <TextView

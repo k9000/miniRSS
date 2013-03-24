@@ -156,10 +156,15 @@ public class SettingsFragment extends Fragment {
 				"theme_preference", "Light");
 		if (theme_preference.equals("Light"))
 			mRadioGroupOs.check(R.id.radio0);
-		else if (theme_preference.equals("Dark"))
+		else if (theme_preference.equals("White"))
 			mRadioGroupOs.check(R.id.radio1);
-		else if (theme_preference.equals("Transparent"))
+		else if (theme_preference.equals("Gray"))
 			mRadioGroupOs.check(R.id.radio2);
+		else if (theme_preference.equals("Dark"))
+			mRadioGroupOs.check(R.id.radio3);
+		else if (theme_preference.equals("Transparent"))
+			mRadioGroupOs.check(R.id.radio4);
+		
 
 		// ラジオボタンのリスナー
 		mRadioGroupOs.setOnCheckedChangeListener(new OnCheckedChangeListener() {

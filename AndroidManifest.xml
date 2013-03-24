@@ -87,10 +87,6 @@
         <service android:name="com.tlulybluemonochrome.minimarurss.NotificationChangeService" >
         </service>
 
-        <activity
-            android:name="com.tlulybluemonochrome.minimarurss.MainActivity"
-            android:label="@string/title_activity_main" >
-        </activity>
     </application>
 
 </manifest>

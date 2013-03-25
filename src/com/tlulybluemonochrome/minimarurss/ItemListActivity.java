@@ -34,6 +34,10 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.Window;
 
@@ -176,10 +180,11 @@ public class ItemListActivity extends Activity implements
 			ois.close();
 		} catch (Exception e) {
 		}
-		
+
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
 
-		final String animation = sharedPreferences.getString("animation", "Cube");
+		final String animation = sharedPreferences.getString("animation",
+				"Cube");
 		int effect = 3;
 		if (animation.equals("Tablet"))
 			effect = 1;
@@ -201,10 +206,12 @@ public class ItemListActivity extends Activity implements
 		efectViewPager.setCurrentItem(getIntent().getIntExtra(
 				ItemDetailFragment.ARG_ITEM_ID, 1));
 
-		getLoaderManager().initLoader(0, null, this);
+		if (sharedPreferences.getBoolean("ref_switch", true)) {
+			getLoaderManager().initLoader(0, null, this);
+			// タイトルバーのプログレスアイコンを表示する
+			setProgressBarIndeterminateVisibility(true);
+		}
 
-		// タイトルバーのプログレスアイコンを表示する
-		setProgressBarIndeterminateVisibility(true);
 	}
 
 	private void setupJazziness(final int effect) {
@@ -221,7 +228,8 @@ public class ItemListActivity extends Activity implements
 	 */
 	// ItemLsitFragmentのリスナー
 	@Override
-	public void onItemSelected(final int tag,final String url,final int position) {
+	public void onItemSelected(final int tag, final String url,
+			final int position) {
 		efectViewPager.setCurrentItem(position + 2);
 
 	}
@@ -240,48 +248,34 @@ public class ItemListActivity extends Activity implements
 		}
 		set = 3;
 		mSectionsPagerAdapter.notifyDataSetChanged();
-		
 
 	}
 
-	/*
-	 * // 右上のメニュー作成
-	 * 
-	 * @Override public boolean onCreateOptionsMenu(Menu menu) {
-	 * super.onCreateOptionsMenu(menu);
-	 * 
-	 * MenuInflater inflater = getMenuInflater();
-	 * inflater.inflate(R.menu.my_menu, menu); // ON/OFFボタンのリスナー s = (Switch)
-	 * menu.findItem(R.id.item_switch).getActionView();
-	 * s.setOnCheckedChangeListener(null);
-	 * s.setChecked(sharedPreferences.getBoolean("notification_switch", false));
-	 * s.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-	 * 
-	 * @Override public void onCheckedChanged(CompoundButton buttonView, boolean
-	 * isChecked) { if (!mChecked) {
-	 * 
-	 * SharedPreferences sharedPreferences = PreferenceManager
-	 * .getDefaultSharedPreferences(ItemListActivity.this); Editor editor =
-	 * sharedPreferences.edit(); editor.putBoolean("notification_switch",
-	 * isChecked); editor.commit();
-	 * //mSectionsPagerAdapter.notifyDataSetChanged();
-	 * 
-	 * } mChecked = false;
-	 * 
-	 * } }); s.setChecked(sharedPreferences.getBoolean("notification_switch",
-	 * false)); return true; }
-	 */
+	// 右上のメニュー作成
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.my_menu, menu);
+		return true;
+	}
 
 	// メニューボタンクリック
-	/*
-	 * @Override public boolean onOptionsItemSelected(MenuItem item) { boolean
-	 * ret = true; switch (item.getItemId()) { case R.id.item_setting:
-	 * mJazzy.setCurrentItem(0); break; case R.id.item_list:
-	 * mJazzy.setCurrentItem(1); break; default: ret =
-	 * super.onOptionsItemSelected(item); }
-	 * 
-	 * return ret; }
-	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		boolean ret = true;
+		switch (item.getItemId()) {
+		case R.id.item_list:
+			efectViewPager.setCurrentItem(1);
+			break;
+		default:
+			ret = super.onOptionsItemSelected(item);
+			break;
+		}
+		return ret;
+	}
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -357,7 +351,7 @@ public class ItemListActivity extends Activity implements
 
 		@Override
 		public int getItemPosition(final Object object) {
-			if (set>0) {
+			if (set > 0) {
 				set--;
 				return POSITION_NONE;
 			}
@@ -367,12 +361,13 @@ public class ItemListActivity extends Activity implements
 	}
 
 	@Override
-	public Loader<ArrayList<RssItem>> onCreateLoader(final int id,final Bundle args) {
+	public Loader<ArrayList<RssItem>> onCreateLoader(final int id,
+			final Bundle args) {
 		// ArrayList<RssItem> rsslist = args.get;
 		url = items.get(i).getUrl();
 		final int color = items.get(i).getTag();
-		final RssParserTaskLoader appLoader = new RssParserTaskLoader(this, url, 0,
-				color, this);
+		final RssParserTaskLoader appLoader = new RssParserTaskLoader(this,
+				url, 0, color, this);
 
 		appLoader.forceLoad();
 		return appLoader;
@@ -414,11 +409,25 @@ public class ItemListActivity extends Activity implements
 
 	}
 
+	// 戻るボタン
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if (mTwoPane == false && efectViewPager.getCurrentItem() != 1
+					&& sharedPreferences.getBoolean("back_switch", false))
+				efectViewPager.setCurrentItem(1);
+			else
+				this.finish();
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public void onDestroy() {
-		//ImageCache.deleteAll(getCacheDir());
+		// ImageCache.deleteAll(getCacheDir());
 		getLoaderManager().destroyLoader(0);
-		//efectViewPager.setAdapter(null);
+		// efectViewPager.setAdapter(null);
 		efectViewPager = null;
 		mSectionsPagerAdapter = null;
 		sharedPreferences = null;

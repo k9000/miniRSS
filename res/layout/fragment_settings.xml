@@ -21,6 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical" >
+            
+            
 
             <TextView
                 android:id="@+id/textView1"
@@ -36,6 +38,17 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:text="@+string/notification_switch" />
+            
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="8dp" />
+            
+            <Switch
+                android:id="@+id/switch2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="画像表示" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -48,7 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingRight="8dp" >
+                android:paddingRight="20dp" >
 
                 <SeekBar
                     android:id="@+id/seekBar1"
@@ -61,7 +74,7 @@
                     android:id="@+id/editText1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:ems="3"
+                    android:ems="4"
                     android:focusable="false"
                     android:gravity="center"
                     android:maxLines="1"
@@ -69,6 +82,36 @@
                 </EditText>
             </LinearLayout>
 
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="8dp" />
+            
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="アプリ設定"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <Switch
+                android:id="@+id/switch3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="アプリ起動時に自動更新" />
+            
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="8dp" />
+            
+            <Switch
+                android:id="@+id/switch4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="戻るボタンでリストに戻る" />
+            
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="8dp" />

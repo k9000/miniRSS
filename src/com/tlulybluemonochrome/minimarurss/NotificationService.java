@@ -80,6 +80,8 @@ public class NotificationService extends IntentService {
 		final SharedPreferences sharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		count = sharedPreferences.getInt("COUNT", 0);
+		final boolean picChecked = sharedPreferences.getBoolean("pic_switch",
+				true);
 
 		final ArrayList<RssItem> arraylist = new ArrayList<RssItem>();
 
@@ -133,8 +135,8 @@ public class NotificationService extends IntentService {
 						makeImage(
 								arraylist.get(i).getImage(),
 								Picuture(arraylist.get(i).getTag(),
-										R.drawable.ic_launcher)), arraylist
-								.get(i).getPage(), false);
+										R.drawable.ic_launcher), picChecked),
+						arraylist.get(i).getPage(), false);
 				try {// 通知の間を置く
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -288,33 +290,37 @@ public class NotificationService extends IntentService {
 		return mBmp;
 	}
 
-	private Bitmap makeImage(final String image, final Bitmap base) {
-		Bitmap bitmap;
-		try {
-			final URL image_url = new URL(image);
-			final InputStream is = (InputStream) image_url.getContent();
-			bitmap = BitmapFactory.decodeStream(is);
-			is.close();
-			final Resources res = getBaseContext().getResources();
-			final float scale = Math
-					.min((float) res
-							.getDimension(android.R.dimen.notification_large_icon_width)
-							/ bitmap.getWidth(),
-							(float) res
-									.getDimension(android.R.dimen.notification_large_icon_height)
-									/ bitmap.getHeight());
-			Matrix matrix = new Matrix();
-			matrix.postScale(scale, scale);
-			bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
-					bitmap.getHeight(), matrix, true);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return base;
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			return base;
+	private Bitmap makeImage(final String image, final Bitmap base,
+			boolean picChecked) {
+		if (picChecked) {
+			Bitmap bitmap;
+			try {
+				final URL image_url = new URL(image);
+				final InputStream is = (InputStream) image_url.getContent();
+				bitmap = BitmapFactory.decodeStream(is);
+				is.close();
+				final Resources res = getBaseContext().getResources();
+				final float scale = Math
+						.min((float) res
+								.getDimension(android.R.dimen.notification_large_icon_width)
+								/ bitmap.getWidth(),
+								(float) res
+										.getDimension(android.R.dimen.notification_large_icon_height)
+										/ bitmap.getHeight());
+				Matrix matrix = new Matrix();
+				matrix.postScale(scale, scale);
+				bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
+						bitmap.getHeight(), matrix, true);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return base;
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+				return base;
+			}
+			return bitmap;
 		}
-		return bitmap;
+		return base;
 
 	}
 

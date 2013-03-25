@@ -235,6 +235,18 @@ public class ItemListFragment extends Fragment {
 			popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 				public boolean onMenuItemClick(final MenuItem item) {
 					switch (item.getItemId()) {
+					case R.id.menu_color:// colorクリック
+						// 色選択ダイアログ
+						ColorPickerDialog mColorPickerDialog = new ColorPickerDialog(getActivity(),
+								new ColorPickerDialog.OnColorChangedListener() {
+									@Override
+									public void colorChanged(int color) {
+										items.get(position).setTag(color);
+										mCallbacks.onSetItems(items);// リスナーでPagerViewer更新
+									}
+								}, items.get(position).getTag());
+						mColorPickerDialog.show();
+						break;
 					case R.id.menu_edit:// 編集クリック
 						Intent intent = new Intent(getActivity(),
 								(Class<?>) EntryActivity.class);

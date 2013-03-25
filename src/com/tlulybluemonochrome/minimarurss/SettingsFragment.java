@@ -99,6 +99,21 @@ public class SettingsFragment extends Fragment {
 		});
 		s.setChecked(mChecked);
 
+		// ON/OFFボタンのリスナー
+		final boolean picChecked = sharedPreferences.getBoolean("pic_switch",
+				true);
+		final Switch s2 = (Switch) rootView.findViewById(R.id.switch2);
+		s2.setOnCheckedChangeListener(null);
+		s2.setChecked(picChecked);
+		s2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(final CompoundButton buttonView,
+					final boolean isChecked) {
+				editor.putBoolean("pic_switch", isChecked);
+				editor.commit();
+			}
+		});
+
 		SeekBar seekBar = (SeekBar) rootView.findViewById(R.id.seekBar1);
 		seekBar.setMax(4);
 		seekBar.setProgress(sharedPreferences
@@ -136,6 +151,36 @@ public class SettingsFragment extends Fragment {
 				}
 
 				editor.putInt("notification_freqescy", seekBar.getProgress());
+				editor.commit();
+			}
+		});
+
+		// ON/OFFボタンのリスナー
+		final boolean refChecked = sharedPreferences.getBoolean("ref_switch",
+				true);
+		final Switch s3 = (Switch) rootView.findViewById(R.id.switch3);
+		s3.setOnCheckedChangeListener(null);
+		s3.setChecked(refChecked);
+		s3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(final CompoundButton buttonView,
+					final boolean isChecked) {
+				editor.putBoolean("ref_switch", isChecked);
+				editor.commit();
+			}
+		});
+
+		// ON/OFFボタンのリスナー
+		final boolean backChecked = sharedPreferences.getBoolean("back_switch",
+				false);
+		final Switch s4 = (Switch) rootView.findViewById(R.id.switch4);
+		s4.setOnCheckedChangeListener(null);
+		s4.setChecked(backChecked);
+		s4.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(final CompoundButton buttonView,
+					final boolean isChecked) {
+				editor.putBoolean("back_switch", isChecked);
 				editor.commit();
 			}
 		});

@@ -120,7 +120,7 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		// クリックしてブラウザ起動
 		view.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item
 						.getUrl()));
 				v.getContext().startActivity(intent);
@@ -138,7 +138,7 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 
 		holder.btn.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 
 				if (holder.bound) {
 					holder.bound = false;

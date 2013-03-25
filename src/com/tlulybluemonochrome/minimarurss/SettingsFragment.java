@@ -50,41 +50,36 @@ import android.widget.Switch;
  */
 public class SettingsFragment extends Fragment {
 
-	Switch s;
-	SeekBar seekBar;
-	EditText editText;
-	RadioGroup mRadioGroupOs;
-	RadioGroup mRadioGroupOs2;
-	boolean mChecked;
-	int mMinute = 2;
-	Button button;
+	private boolean mChecked;
+	private int mMinute;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// setHasOptionsMenu(true);
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater,
+			final ViewGroup container, final Bundle savedInstanceState) {
 
-		SharedPreferences sharedPreferences = PreferenceManager
+		final SharedPreferences sharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(getActivity());
+		final Editor editor = sharedPreferences.edit();
 
 		final View rootView = inflater.inflate(R.layout.fragment_settings,
 				container, false);
 
 		// ON/OFFボタンのリスナー
 		mChecked = sharedPreferences.getBoolean("notification_switch", false);
-		s = (Switch) rootView.findViewById(R.id.switch1);
+		final Switch s = (Switch) rootView.findViewById(R.id.switch1);
 		s.setOnCheckedChangeListener(null);
 		s.setChecked(mChecked);
 		s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
 			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
+			public void onCheckedChanged(final CompoundButton buttonView,
+					final boolean isChecked) {
 				// s2.setChecked(isChecked);
 
 				mChecked = isChecked;
@@ -97,9 +92,6 @@ public class SettingsFragment extends Fragment {
 					NotificationServiceStop();
 				}
 
-				SharedPreferences sharedPreferences = PreferenceManager
-						.getDefaultSharedPreferences(getActivity());
-				Editor editor = sharedPreferences.edit();
 				editor.putBoolean("notification_switch", isChecked);
 				editor.commit();
 
@@ -107,30 +99,32 @@ public class SettingsFragment extends Fragment {
 		});
 		s.setChecked(mChecked);
 
-		seekBar = (SeekBar) rootView.findViewById(R.id.seekBar1);
+		SeekBar seekBar = (SeekBar) rootView.findViewById(R.id.seekBar1);
 		seekBar.setMax(4);
 		seekBar.setProgress(sharedPreferences
 				.getInt("notification_freqescy", 2));
 
-		editText = (EditText) rootView.findViewById(R.id.editText1);
+		final EditText editText = (EditText) rootView
+				.findViewById(R.id.editText1);
 
 		// シークバーの初期値をTextViewに表示
-		frequencySet(seekBar.getProgress());
+		frequencySet(seekBar.getProgress(), editText);
 
 		// シークバーのリスナー
 		seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			public void onProgressChanged(SeekBar seekBar, int progress,
-					boolean fromUser) {
+
+			public void onProgressChanged(final SeekBar seekBar,
+					final int progress, final boolean fromUser) {
 				// ツマミをドラッグしたときに呼ばれる
-				frequencySet(progress);
+				frequencySet(progress, editText);
 
 			}
 
-			public void onStartTrackingTouch(SeekBar seekBar) {
+			public void onStartTrackingTouch(final SeekBar seekBar) {
 				// ツマミに触れたときに呼ばれる
 			}
 
-			public void onStopTrackingTouch(SeekBar seekBar) {
+			public void onStopTrackingTouch(final SeekBar seekBar) {
 				// ツマミを離したときに呼ばれる
 
 				if (mChecked) {
@@ -141,15 +135,13 @@ public class SettingsFragment extends Fragment {
 					NotificationServiceStart();
 				}
 
-				SharedPreferences sharedPreferences = PreferenceManager
-						.getDefaultSharedPreferences(getActivity());
-				Editor editor = sharedPreferences.edit();
 				editor.putInt("notification_freqescy", seekBar.getProgress());
 				editor.commit();
 			}
 		});
 
-		mRadioGroupOs = (RadioGroup) rootView.findViewById(R.id.radioGroup1);
+		final RadioGroup mRadioGroupOs = (RadioGroup) rootView
+				.findViewById(R.id.radioGroup1);
 
 		// ラジオボタンの初期値
 		String theme_preference = sharedPreferences.getString(
@@ -164,15 +156,11 @@ public class SettingsFragment extends Fragment {
 			mRadioGroupOs.check(R.id.radio3);
 		else if (theme_preference.equals("Transparent"))
 			mRadioGroupOs.check(R.id.radio4);
-		
 
 		// ラジオボタンのリスナー
 		mRadioGroupOs.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
-			public void onCheckedChanged(RadioGroup group, int id) {
-				SharedPreferences sharedPreferences = PreferenceManager
-						.getDefaultSharedPreferences(getActivity());
-				Editor editor = sharedPreferences.edit();
+			public void onCheckedChanged(final RadioGroup group, final int id) {
 				editor.putString("theme_preference",
 						(String) ((RadioButton) rootView.findViewById(id))
 								.getText());
@@ -182,7 +170,8 @@ public class SettingsFragment extends Fragment {
 
 		});
 
-		mRadioGroupOs2 = (RadioGroup) rootView.findViewById(R.id.radioGroup2);
+		final RadioGroup mRadioGroupOs2 = (RadioGroup) rootView
+				.findViewById(R.id.radioGroup2);
 
 		// ラジオボタンの初期値
 		String animation_preference = sharedPreferences.getString("animation",
@@ -202,10 +191,8 @@ public class SettingsFragment extends Fragment {
 		mRadioGroupOs2
 				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 					@Override
-					public void onCheckedChanged(RadioGroup group, int id) {
-						SharedPreferences sharedPreferences = PreferenceManager
-								.getDefaultSharedPreferences(getActivity());
-						Editor editor = sharedPreferences.edit();
+					public void onCheckedChanged(final RadioGroup group,
+							final int id) {
 						editor.putString("animation",
 								(String) ((RadioButton) rootView
 										.findViewById(id)).getText());
@@ -216,10 +203,10 @@ public class SettingsFragment extends Fragment {
 				});
 
 		// Add RSS Feedボタンのリスナー
-		button = (Button) rootView.findViewById(R.id.button1);
+		final Button button = (Button) rootView.findViewById(R.id.button1);
 		button.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(final View v) {
 				if (v.getId() == R.id.button1) {
 					Intent intent = new Intent(getActivity(),
 							(Class<?>) EntryActivity.class);
@@ -231,9 +218,8 @@ public class SettingsFragment extends Fragment {
 		});
 
 		// SharedPreferenceの設定
-		SharedPreferences.Editor editor = sharedPreferences.edit();
-		int vCode = sharedPreferences.getInt("VersionCode", 1);
-		String vName = sharedPreferences.getString("VersionName", "1.0");
+		final int vCode = sharedPreferences.getInt("VersionCode", 1);
+		final String vName = sharedPreferences.getString("VersionName", "1.0");
 
 		// 最新のバージョン情報を取得する
 		PackageInfo pi = null;
@@ -269,7 +255,7 @@ public class SettingsFragment extends Fragment {
 		return rootView;
 	}
 
-	public void frequencySet(int position) {
+	public void frequencySet(final int position, final EditText editText) {
 		switch (position) {
 		case 0:
 			editText.setText(R.string.fifteen_min);
@@ -316,10 +302,11 @@ public class SettingsFragment extends Fragment {
 			break;
 		}
 
-		Intent intent = new Intent(getActivity(), NotificationService.class);
-		PendingIntent pendingIntent = PendingIntent.getService(getActivity(),
-				-1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		AlarmManager alarmManager = (AlarmManager) getActivity()
+		final Intent intent = new Intent(getActivity(),
+				NotificationService.class);
+		final PendingIntent pendingIntent = PendingIntent.getService(
+				getActivity(), -1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		final AlarmManager alarmManager = (AlarmManager) getActivity()
 				.getSystemService(Context.ALARM_SERVICE);
 		alarmManager.setInexactRepeating(AlarmManager.RTC,
 				System.currentTimeMillis(), time, pendingIntent);
@@ -329,31 +316,15 @@ public class SettingsFragment extends Fragment {
 	protected void NotificationServiceStop() {
 		getActivity().stopService(
 				new Intent(getActivity(), NotificationService.class));
-		Intent intent = new Intent(getActivity(), NotificationService.class);
-		PendingIntent pendingIntent = PendingIntent.getService(getActivity(),
-				-1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		AlarmManager alarmManager = (AlarmManager) getActivity()
+		final Intent intent = new Intent(getActivity(),
+				NotificationService.class);
+		final PendingIntent pendingIntent = PendingIntent.getService(
+				getActivity(), -1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		final AlarmManager alarmManager = (AlarmManager) getActivity()
 				.getSystemService(Context.ALARM_SERVICE);
 		alarmManager.cancel(pendingIntent);
 
 		RssMessageNotification.cancel(getActivity(), 100);
-	}
-
-	@Override
-	public void onDestroyView() {
-		s.setOnCheckedChangeListener(null);
-		s = null;
-		seekBar.setOnSeekBarChangeListener(null);
-		seekBar = null;
-		editText = null;
-		mRadioGroupOs.setOnCheckedChangeListener(null);
-		mRadioGroupOs = null;
-		mRadioGroupOs2.setOnCheckedChangeListener(null);
-		mRadioGroupOs2 = null;
-		button.setOnClickListener(null);
-		button = null;
-
-		super.onDestroyView();
 	}
 
 }

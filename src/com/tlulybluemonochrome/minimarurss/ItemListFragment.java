@@ -49,10 +49,6 @@ public class ItemListFragment extends Fragment {
 
 	SortableListView mListView;
 
-	int mDraggingPosition = -1;
-
-	PopupMenu popup;
-
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
 	 * activated item position. Only used on tablets.
@@ -81,9 +77,9 @@ public class ItemListFragment extends Fragment {
 		 * 
 		 * @param position
 		 */
-		public void onItemSelected(int tag, String url, int position);
+		public void onItemSelected(final int tag,final String url,final int position);
 
-		public void onSetItems(ArrayList<RssFeed> items);
+		public void onSetItems(final ArrayList<RssFeed> items);
 	}
 
 	/**
@@ -92,11 +88,11 @@ public class ItemListFragment extends Fragment {
 	 */
 	private static Callbacks sDummyCallbacks = new Callbacks() {
 		@Override
-		public void onItemSelected(int tag, String url, int position) {
+		public void onItemSelected(final int tag,final String url,final int position) {
 		}
 
 		@Override
-		public void onSetItems(ArrayList<RssFeed> items) {
+		public void onSetItems(final ArrayList<RssFeed> items) {
 			// TODO 自動生成されたメソッド・スタブ
 
 		}
@@ -110,15 +106,15 @@ public class ItemListFragment extends Fragment {
 	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//setHasOptionsMenu(true);
 
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater,final ViewGroup container,
+			final Bundle savedInstanceState) {
 
 		// Restore the previously serialized activated item position.
 		if (savedInstanceState != null
@@ -151,8 +147,8 @@ public class ItemListFragment extends Fragment {
 		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
-					long arg3) {
+			public void onItemClick(final AdapterView<?> arg0,final View arg1,final int position,
+					final long arg3) {
 				// TODO 自動生成されたメソッド・スタブ
 				mCallbacks.onItemSelected(items.get(position).getTag(), items
 						.get(position).getUrl(), position);
@@ -164,7 +160,7 @@ public class ItemListFragment extends Fragment {
 	}
 
 	@Override
-	public void onAttach(Activity activity) {
+	public void onAttach(final Activity activity) {
 		super.onAttach(activity);
 
 		// Activities containing this fragment must implement its callbacks.
@@ -186,7 +182,7 @@ public class ItemListFragment extends Fragment {
 
 	// タブレット用
 	@Override
-	public void onSaveInstanceState(Bundle outState) {
+	public void onSaveInstanceState(final Bundle outState) {
 		super.onSaveInstanceState(outState);
 		if (mActivatedPosition != ListView.INVALID_POSITION) {
 			// Serialize and persist the activated item position.
@@ -198,7 +194,7 @@ public class ItemListFragment extends Fragment {
 	 * Turns on activate-on-click mode. When this mode is on, list items will be
 	 * given the 'activated' state when touched.
 	 */
-	public void setActivateOnItemClick(boolean activateOnItemClick) {
+	public void setActivateOnItemClick(final boolean activateOnItemClick) {
 		// When setting CHOICE_MODE_SINGLE, ListView will automatically
 		// give items the 'activated' state when touched.
 		mListView
@@ -206,7 +202,7 @@ public class ItemListFragment extends Fragment {
 						: ListView.CHOICE_MODE_NONE);
 	}
 
-	public void setActivatedPosition(int position) {
+	public void setActivatedPosition(final int position) {
 		if (position == ListView.INVALID_POSITION) {
 			mListView.setItemChecked(mActivatedPosition, false);
 		} else {
@@ -218,11 +214,13 @@ public class ItemListFragment extends Fragment {
 
 	class DragListener extends SortableListView.SimpleDragListener {
 		private boolean mDrag;
+		//private int mDraggingPosition = -1;
+		private PopupMenu popup;
 
 		// リスト長押し
 		@Override
-		public void onItemLongClick(AdapterView<?> parent, View view,
-				final int position, long id) {
+		public void onItemLongClick(final AdapterView<?> parent,final View view,
+				final int position,final long id) {
 
 			// PopupMenuのインスタンスを作成
 			popup = new PopupMenu(getActivity(), view);
@@ -235,12 +233,11 @@ public class ItemListFragment extends Fragment {
 
 			// ポップアップメニューのメニュー項目のクリック処理
 			popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-				public boolean onMenuItemClick(MenuItem item) {
+				public boolean onMenuItemClick(final MenuItem item) {
 					switch (item.getItemId()) {
 					case R.id.menu_edit:// 編集クリック
 						Intent intent = new Intent(getActivity(),
 								(Class<?>) EntryActivity.class);
-						// intent.putExtra("Parcelable", (Parcelable)items);
 						intent.putExtra("EDIT", true);
 						intent.putExtra("POSITION", position);
 						startActivity(intent);
@@ -259,8 +256,8 @@ public class ItemListFragment extends Fragment {
 						alertDialogBuilder.setPositiveButton("OK",
 								new DialogInterface.OnClickListener() {
 									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
+									public void onClick(final DialogInterface dialog,
+											final int which) {
 										Toast.makeText(
 												getActivity(),
 												items.get(position).getTitle()
@@ -275,8 +272,8 @@ public class ItemListFragment extends Fragment {
 						alertDialogBuilder.setNegativeButton(R.string.cancel,
 								new DialogInterface.OnClickListener() {
 									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
+									public void onClick(final DialogInterface dialog,
+											final int which) {
 									}
 								});
 						// アラートダイアログのキャンセルが可能かどうかを設定します
@@ -297,18 +294,18 @@ public class ItemListFragment extends Fragment {
 
 		// ドラッグ開始
 		@Override
-		public int onStartDrag(int position) {
+		public int onStartDrag(final int position) {
 			Vibrator vibrator = (Vibrator) getActivity().getSystemService(
 					Context.VIBRATOR_SERVICE);
 			vibrator.vibrate(10);
-			mDraggingPosition = position;
+			//mDraggingPosition  = position;
 			mListView.invalidateViews();
 			return position;
 		}
 
 		// ドラッグ中
 		@Override
-		public int onDuringDrag(int positionFrom, int positionTo) {
+		public int onDuringDrag(final int positionFrom,final int positionTo) {
 			if (positionFrom < 0 || positionTo < 0
 					|| positionFrom == positionTo) {
 				return positionFrom;
@@ -335,7 +332,7 @@ public class ItemListFragment extends Fragment {
 				}
 				items.set(min, data);
 			}
-			mDraggingPosition = positionTo;
+			//mDraggingPosition = positionTo;
 			mListView.invalidateViews();
 			mDrag = true;
 			return positionTo;
@@ -343,8 +340,8 @@ public class ItemListFragment extends Fragment {
 
 		// ドラッグ終了
 		@Override
-		public boolean onStopDrag(int positionFrom, int positionTo) {
-			mDraggingPosition = -1;
+		public boolean onStopDrag(final int positionFrom,final int positionTo) {
+			//mDraggingPosition = -1;
 			mListView.invalidateViews();
 			if (mDrag) {
 				mCallbacks.onSetItems(items);
@@ -355,7 +352,6 @@ public class ItemListFragment extends Fragment {
 	
 	@Override
 	public void onDestroyView(){
-		popup = null;
 		mListView.setDragListener(null);
 		mListView.setAdapter(null);
 		mListView.setOnItemClickListener(null);

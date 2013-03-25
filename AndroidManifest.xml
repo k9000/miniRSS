@@ -19,8 +19,8 @@
         android:label="@string/app_name" >
         <activity
             android:name="com.tlulybluemonochrome.minimarurss.ItemListActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,6 +50,7 @@
 
         <activity
             android:name="com.tlulybluemonochrome.minimarurss.EntryActivity"
+            android:launchMode="singleTask"
             android:label="@string/title_activity_entry"
             android:windowSoftInputMode="adjustResize|stateVisible" >
             <intent-filter>
@@ -86,7 +87,6 @@
 
         <service android:name="com.tlulybluemonochrome.minimarurss.NotificationChangeService" >
         </service>
-
     </application>
 
 </manifest>

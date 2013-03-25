@@ -51,13 +51,13 @@ import android.widget.Toast;
  */
 public class NotificationService extends IntentService {
 
-	ArrayList<RssItem> oldlist;
+	static ArrayList<RssItem> oldlist;
 
 	int count;
 
 	static final int maxSize = 10 * 1024 * 1024;
 
-	public NotificationService(String name) {
+	public NotificationService(final String name) {
 		super(name);
 		// TODO 自動生成されたコンストラクター・スタブ
 	}
@@ -70,18 +70,18 @@ public class NotificationService extends IntentService {
 	final static String TAG = "test";
 
 	@Override
-	protected void onHandleIntent(Intent intent) {
+	protected void onHandleIntent(final Intent intent) {
 		// TODO 自動生成されたメソッド・スタブ
 
 		RssMessageNotification.cancel(getApplicationContext(), -1);
 		RssMessageNotification.titlenotify(getApplicationContext(),
 				"minimaruRSS", "更新中", "更新中", -1);
 
-		SharedPreferences sharedPreferences = PreferenceManager
+		final SharedPreferences sharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		count = sharedPreferences.getInt("COUNT", 0);
 
-		ArrayList<RssItem> arraylist = new ArrayList<RssItem>();
+		final ArrayList<RssItem> arraylist = new ArrayList<RssItem>();
 
 		ArrayList<RssFeed> urilist = new ArrayList<RssFeed>();
 
@@ -108,8 +108,9 @@ public class NotificationService extends IntentService {
 
 			if (urilist.get(i).getNoti()) {// Notifications設定確認
 				try {// 記事取得
-					URL url = new URL(urilist.get(i).getUrl());
-					InputStream is = url.openConnection().getInputStream();
+					final URL url = new URL(urilist.get(i).getUrl());
+					final InputStream is = url.openConnection()
+							.getInputStream();
 					arraylist.addAll(parseXml(is, urilist.get(i).getTag(),
 							urilist.get(i).getTitle()));
 				} catch (Exception e) {
@@ -150,17 +151,18 @@ public class NotificationService extends IntentService {
 			Log.d(TAG, "Error");
 		}
 
-		Editor editor = sharedPreferences.edit();
+		final Editor editor = sharedPreferences.edit();
 		editor.putInt("COUNT", count);
 		editor.commit();
 
 	}
 
 	// XMLをパースする
-	public ArrayList<RssItem> parseXml(InputStream is, int color, String page)
-			throws IOException, XmlPullParserException {
-		XmlPullParser parser = Xml.newPullParser();
-		ArrayList<RssItem> list = new ArrayList<RssItem>();
+	public static ArrayList<RssItem> parseXml(final InputStream is,
+			final int color, final String page) throws IOException,
+			XmlPullParserException {
+		final XmlPullParser parser = Xml.newPullParser();
+		final ArrayList<RssItem> list = new ArrayList<RssItem>();
 		try {
 			parser.setInput(is, null);
 			int eventType = parser.getEventType();
@@ -187,6 +189,9 @@ public class NotificationService extends IntentService {
 											.replaceAll(
 													"(<.+?>|\r\n|\n\r|\n|\r|&nbsp;|&amp;|&#160;|&#38;)",
 													""));// タグと改行除去
+						} else if (tag.equals("encoded")) {
+							currentItem.setImage(StripImageTags(parser
+									.nextText()));
 						}
 					}
 					break;
@@ -212,14 +217,14 @@ public class NotificationService extends IntentService {
 	}
 
 	private static String StripImageTags(String str) {
-		Pattern o = Pattern.compile("<img.*jpg.*?>");
-		Pattern p = Pattern.compile("//.*jpg");
+		final Pattern o = Pattern.compile("<img.*jpg");
+		final Pattern p = Pattern.compile("//.*jpg");
 		String matchstr = null;
-		Matcher n = o.matcher(str);
+		final Matcher n = o.matcher(str);
 		if (n.find()) {
 			str = n.group();
 		}
-		Matcher m = p.matcher(str);
+		final Matcher m = p.matcher(str);
 		if (m.find()) {
 			matchstr = "http:" + m.group();
 		}
@@ -227,17 +232,17 @@ public class NotificationService extends IntentService {
 	}
 
 	// PR削除
-	private boolean removePR(RssItem currentItem) {
-		String title = currentItem.getTitle();
-		String regex = "^PR";
-		Pattern p = Pattern.compile(regex);
-		Matcher m = p.matcher(title);
+	private static boolean removePR(RssItem currentItem) {
+		final String title = currentItem.getTitle();
+		final String regex = "^PR";
+		final Pattern p = Pattern.compile(regex);
+		final Matcher m = p.matcher(title);
 
 		return !m.find();
 	}
 
 	// 未読チェック
-	public boolean Serch(RssItem item) {
+	public static boolean Serch(RssItem item) {
 		if (oldlist == null)
 			return false;
 
@@ -250,15 +255,15 @@ public class NotificationService extends IntentService {
 	}
 
 	// アイコン生成
-	public Bitmap Picuture(int color, int resource) {
+	public Bitmap Picuture(final int color, final int resource) {
 
 		final Bitmap picture = BitmapFactory.decodeResource(getResources(),
 				resource);
-		Bitmap mBmp = picture.copy(picture.getConfig(), true);
+		final Bitmap mBmp = picture.copy(picture.getConfig(), true);
 
-		int width = mBmp.getWidth();
-		int height = mBmp.getHeight();
-		int[] pixels = new int[width * height];
+		final int width = mBmp.getWidth();
+		final int height = mBmp.getHeight();
+		final int[] pixels = new int[width * height];
 		mBmp.getPixels(pixels, 0, width, 0, 0, width, height);
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
@@ -283,29 +288,33 @@ public class NotificationService extends IntentService {
 		return mBmp;
 	}
 
-	private Bitmap makeImage(String image, Bitmap base) {
+	private Bitmap makeImage(final String image, final Bitmap base) {
+		Bitmap bitmap;
 		try {
 			final URL image_url = new URL(image);
 			final InputStream is = (InputStream) image_url.getContent();
-			Bitmap bitmap = BitmapFactory.decodeStream(is);
+			bitmap = BitmapFactory.decodeStream(is);
 			is.close();
 			final Resources res = getBaseContext().getResources();
-			final float scale = Math.min(
-					(float) res.getDimension(android.R.dimen.notification_large_icon_width)/ bitmap.getWidth(),
-							(float) res.getDimension(android.R.dimen.notification_large_icon_height)/ bitmap.getHeight());
+			final float scale = Math
+					.min((float) res
+							.getDimension(android.R.dimen.notification_large_icon_width)
+							/ bitmap.getWidth(),
+							(float) res
+									.getDimension(android.R.dimen.notification_large_icon_height)
+									/ bitmap.getHeight());
 			Matrix matrix = new Matrix();
 			matrix.postScale(scale, scale);
-			base = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-			bitmap.recycle();
-			bitmap = null;
+			bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
+					bitmap.getHeight(), matrix, true);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
+			return base;
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-			return null;
+			return base;
 		}
-		return base;
+		return bitmap;
 
 	}
 

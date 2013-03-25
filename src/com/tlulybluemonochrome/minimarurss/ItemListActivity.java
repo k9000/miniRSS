@@ -201,7 +201,7 @@ public class ItemListActivity extends Activity implements
 		efectViewPager.setCurrentItem(getIntent().getIntExtra(
 				ItemDetailFragment.ARG_ITEM_ID, 1));
 
-		//getLoaderManager().initLoader(0, null, this);
+		getLoaderManager().initLoader(0, null, this);
 
 		// タイトルバーのプログレスアイコンを表示する
 		setProgressBarIndeterminateVisibility(true);

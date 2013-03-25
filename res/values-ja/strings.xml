@@ -24,5 +24,10 @@
     <string name="unpinned">ピンを外す</string>
     <string name="jazzy_effects">エフェクト</string>
     <string name="scroll_efect">スクロール効果</string>
-
+    <string name="color">色</string>
+    <string name="show_picture">画像表示</string>
+    <string name="application_settings">アプリ設定</string>
+    <string name="automatic_update_startup_app">アプリ起動時に自動更新</string>
+    <string name="back_button_to_return_to_the_list">戻るボタンでリストに戻る</string>
+    
 </resources>

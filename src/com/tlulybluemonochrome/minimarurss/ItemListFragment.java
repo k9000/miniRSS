@@ -227,6 +227,7 @@ public class ItemListFragment extends Fragment {
 
 			// popup.xmlで設定したメニュー項目をポップアップメニューに割り当てる
 			popup.getMenuInflater().inflate(R.menu.popup, popup.getMenu());
+			popup.getMenu().findItem(R.id.item1).setChecked(items.get(position).getNoti());
 
 			// ポップアップメニューを表示
 			popup.show();
@@ -235,6 +236,11 @@ public class ItemListFragment extends Fragment {
 			popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 				public boolean onMenuItemClick(final MenuItem item) {
 					switch (item.getItemId()) {
+					case R.id.item1:// Notificationクリック
+						item.setChecked(!item.isChecked());
+						items.get(position).setNoti(!items.get(position).getNoti());
+						mCallbacks.onSetItems(items);// リスナーでPagerViewer更新
+						break;
 					case R.id.menu_color:// colorクリック
 						// 色選択ダイアログ
 						ColorPickerDialog mColorPickerDialog = new ColorPickerDialog(getActivity(),

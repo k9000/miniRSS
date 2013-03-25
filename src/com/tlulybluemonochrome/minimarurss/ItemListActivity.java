@@ -72,6 +72,8 @@ public class ItemListActivity extends Activity implements
 
 	private int set = 0;
 
+	private MenuItem ref;
+
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 
@@ -208,6 +210,7 @@ public class ItemListActivity extends Activity implements
 
 		if (sharedPreferences.getBoolean("ref_switch", true)) {
 			getLoaderManager().initLoader(0, null, this);
+			//ref.setVisible(false);
 			// タイトルバーのプログレスアイコンを表示する
 			setProgressBarIndeterminateVisibility(true);
 		}
@@ -256,9 +259,12 @@ public class ItemListActivity extends Activity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.my_menu, menu);
+		ref = menu.findItem(R.id.reflesh);
+		if (sharedPreferences.getBoolean("ref_switch", true)) {
+			ref.setVisible(false);
+		}
 		return true;
 	}
 
@@ -269,6 +275,13 @@ public class ItemListActivity extends Activity implements
 		switch (item.getItemId()) {
 		case R.id.item_list:
 			efectViewPager.setCurrentItem(1);
+			break;
+		case R.id.reflesh:
+			i = 0;
+			getLoaderManager().initLoader(0, null, this);
+			ref.setVisible(false);
+			// タイトルバーのプログレスアイコンを表示する
+			setProgressBarIndeterminateVisibility(true);
 			break;
 		default:
 			ret = super.onOptionsItemSelected(item);
@@ -368,7 +381,6 @@ public class ItemListActivity extends Activity implements
 		final int color = items.get(i).getTag();
 		final RssParserTaskLoader appLoader = new RssParserTaskLoader(this,
 				url, 0, color, this);
-
 		appLoader.forceLoad();
 		return appLoader;
 	}
@@ -399,6 +411,7 @@ public class ItemListActivity extends Activity implements
 			set = 3;
 			mSectionsPagerAdapter.notifyDataSetChanged();
 			setProgressBarIndeterminateVisibility(false);
+			ref.setVisible(true);
 		}
 
 	}

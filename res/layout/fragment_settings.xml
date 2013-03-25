@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:text="画像表示" />
+                android:text="@+string/show_picture" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -91,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:text="アプリ設定"
+                android:text="@+string/application_settings"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <Switch
@@ -99,7 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:text="アプリ起動時に自動更新" />
+                android:text="@+string/automatic_update_startup_app" />
             
             <Space
                 android:layout_width="match_parent"
@@ -110,7 +110,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:text="戻るボタンでリストに戻る" />
+                android:text="@+string/back_button_to_return_to_the_list" />
             
             <Space
                 android:layout_width="match_parent"

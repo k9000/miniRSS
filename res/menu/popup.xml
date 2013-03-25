@@ -2,8 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
+        android:id="@+id/item1"
+        android:checkable="true"
+        android:title="@+string/notification">
+    </item>
+    <item
         android:id="@+id/menu_color"
-        android:title="color">
+        android:title="@+string/color">
     </item>
     <item
         android:id="@+id/menu_edit"
@@ -13,6 +18,5 @@
         android:id="@+id/menu_delete"
         android:title="@+string/delete">
     </item>
-
 
 </menu>

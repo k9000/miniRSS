@@ -205,16 +205,31 @@ public class ItemListActivity extends Activity implements
 		// primary sections of the app.
 		// View
 
-		efectViewPager.setCurrentItem(getIntent().getIntExtra(
-				ItemDetailFragment.ARG_ITEM_ID, 1));
+		efectViewPager.setCurrentItem(
+				getIntent().getIntExtra(ItemDetailFragment.ARG_ITEM_ID, 1),
+				false);
 
-		if (sharedPreferences.getBoolean("ref_switch", true)) {
+		if (sharedPreferences.getBoolean("ref_switch", true)
+				&& savedInstanceState == null) {
 			getLoaderManager().initLoader(0, null, this);
-			//ref.setVisible(false);
+			// ref.setVisible(false);
 			// タイトルバーのプログレスアイコンを表示する
 			setProgressBarIndeterminateVisibility(true);
 		}
 
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putInt("page", efectViewPager.getCurrentItem());
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		efectViewPager.setCurrentItem(savedInstanceState.getInt("page", 0),
+				false);
 	}
 
 	private void setupJazziness(final int effect) {
@@ -233,7 +248,7 @@ public class ItemListActivity extends Activity implements
 	@Override
 	public void onItemSelected(final int tag, final String url,
 			final int position) {
-		efectViewPager.setCurrentItem(position + 2);
+		efectViewPager.setCurrentItem(position + 2, true);
 
 	}
 
@@ -274,7 +289,7 @@ public class ItemListActivity extends Activity implements
 		boolean ret = true;
 		switch (item.getItemId()) {
 		case R.id.item_list:
-			efectViewPager.setCurrentItem(1);
+			efectViewPager.setCurrentItem(1, true);
 			break;
 		case R.id.reflesh:
 			i = 0;
@@ -428,7 +443,7 @@ public class ItemListActivity extends Activity implements
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if (mTwoPane == false && efectViewPager.getCurrentItem() != 1
 					&& sharedPreferences.getBoolean("back_switch", false))
-				efectViewPager.setCurrentItem(1);
+				efectViewPager.setCurrentItem(1, true);
 			else
 				this.finish();
 			return true;

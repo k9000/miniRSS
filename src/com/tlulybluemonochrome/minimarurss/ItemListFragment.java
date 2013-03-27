@@ -123,10 +123,11 @@ public class ItemListFragment extends Fragment {
 					.getInt(STATE_ACTIVATED_POSITION));
 		}
 
-		View rootView = inflater.inflate(R.layout.fragment_item_list,
+		final View rootView = inflater.inflate(R.layout.fragment_item_list,
 				container, false);
 
 		// 並べ替えListView登録
+		mListView = new SortableListView(getActivity());
 		mListView = (SortableListView) rootView.findViewById(R.id.list);
 		mListView.setDragListener(new DragListener());
 		mListView.setSortable(true);
@@ -137,13 +138,10 @@ public class ItemListFragment extends Fragment {
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			items = (ArrayList<RssFeed>) ois.readObject();
 			ois.close();
+			mListView.setAdapter(new CustomAdapter(getActivity(), 0, items));
 		} catch (Exception e) {
 		}
-
-		CustomAdapter adapter = new CustomAdapter(getActivity(), 0, items);
 		
-		
-		mListView.setAdapter(adapter);
 		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			@Override

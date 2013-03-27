@@ -5,6 +5,7 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
+    android:baselineAligned="false"
     tools:context=".ItemListActivity"
     android:background="?android:colorBackground" >
 

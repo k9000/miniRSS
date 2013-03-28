@@ -61,8 +61,8 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	 * @param activity
 	 *            多重起動防止用
 	 */
-	public RssParserTaskLoader(final Context context,final String url,final int wait,
-			final int color,final Activity activity) {
+	public RssParserTaskLoader(final Context context, final String url,
+			final int wait, final int color, final Activity activity) {
 		super(context);
 
 		this.colorTag = color;
@@ -92,8 +92,8 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	 * @param activity
 	 *            多重起動防止用
 	 */
-	public RssParserTaskLoader(final EntryActivity context,final int flag,final String url,
-			final Activity activity) {
+	public RssParserTaskLoader(final EntryActivity context, final int flag,
+			final String url, final Activity activity) {
 		super(context);
 
 		this.activity = activity;
@@ -183,8 +183,8 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	 * @throws IOException
 	 * @throws XmlPullParserException
 	 */
-	public static ArrayList<RssItem> parseXml(final InputStream is,final int color)
-			throws IOException, XmlPullParserException {
+	public static ArrayList<RssItem> parseXml(final InputStream is,
+			final int color) throws IOException, XmlPullParserException {
 		final ArrayList<RssItem> list = new ArrayList<RssItem>();
 		final XmlPullParser parser = Xml.newPullParser();
 		try {
@@ -196,7 +196,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 				switch (eventType) {
 				case XmlPullParser.START_TAG:
 					tag = parser.getName();
-					if (tag.equals("item")) {
+					if (tag.equals("item") || tag.equals("entry")) {
 						currentItem = new RssItem();
 						currentItem.setTag(color);
 						currentItem.setText("");
@@ -205,21 +205,37 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 
 							currentItem.setTitle(parser.nextText());
 						} else if (tag.equals("link")) {
-							currentItem.setUrl(parser.nextText());
-						
-						} else if (tag.equals("description")) {
+							final String link = parser.nextText();
+							if (link != "") {
+								currentItem.setUrl(link);
+							} else {
+								final String rel = parser.getAttributeValue(
+										null, "rel");
+								final String herf = parser.getAttributeValue(
+										null, "href");
+								if (rel.equals("alternate")) {
+									currentItem.setUrl(herf);
+								}
+							}
+						} else if (tag.equals("description")
+								|| tag.equals("summary")) {
 							String buf = parser.nextText();
 							currentItem.setImage(StripImageTags(buf));
-							currentItem.setText(buf.replaceAll(
-									"(<.+?>|\r\n|\n\r|\n|\r|&nbsp;|&amp;|&#160;|&#38;)", ""));// タグと改行除去
+							currentItem
+									.setText(buf
+											.replaceAll(
+													"(<.+?>|\r\n|\n\r|\n|\r|&#....;|&....;|&...;)",
+													""));// タグと改行除去
 						} else if (tag.equals("encoded")) {
-							currentItem.setImage(StripImageTags(parser.nextText()));
+							currentItem.setImage(StripImageTags(parser
+									.nextText()));
 						}
 					}
 					break;
 				case XmlPullParser.END_TAG:
 					tag = parser.getName();
-					if (tag.equals("item") && removePR(currentItem)) {
+					if ((tag.equals("item") || tag.equals("entry"))
+							&& removePR(currentItem)) {
 						list.add(currentItem);
 					}
 					break;
@@ -232,18 +248,18 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 		return list;
 
 	}
-	
+
 	private static String StripImageTags(String str) {
 		final Pattern o = Pattern.compile("<img.*jpg.*?>");
 		final Pattern p = Pattern.compile("//.*jpg");
 		String matchstr = null;
 		Matcher n = o.matcher(str);
-		if (n.find()){
-			  str = n.group();
-			}
+		if (n.find()) {
+			str = n.group();
+		}
 		Matcher m = p.matcher(str);
-		if (m.find()){
-		  matchstr = "http:"+m.group();
+		if (m.find()) {
+			matchstr = "http:" + m.group();
 		}
 		return matchstr;
 	}
@@ -272,8 +288,8 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	 * @throws IOException
 	 * @throws XmlPullParserException
 	 */
-	public static ArrayList<RssItem> parseHtml(final InputStream is) throws IOException,
-			XmlPullParserException {
+	public static ArrayList<RssItem> parseHtml(final InputStream is)
+			throws IOException, XmlPullParserException {
 
 		final XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 		factory.setValidating(false);
@@ -301,7 +317,8 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 							String herf = parser
 									.getAttributeValue(null, "href");
 							if (rel.equals("alternate")
-									&& type.equals("application/rss+xml")) {
+									&& (type.equals("application/rss+xml") || type
+											.equals("application/atom+xml"))) {
 								currentItem.setUrl(herf);
 								list.add(currentItem);
 								return list;
@@ -334,8 +351,8 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	 * @throws IOException
 	 * @throws XmlPullParserException
 	 */
-	public static ArrayList<RssItem> parseRSS(final InputStream is) throws IOException,
-			XmlPullParserException {
+	public static ArrayList<RssItem> parseRSS(final InputStream is)
+			throws IOException, XmlPullParserException {
 		final ArrayList<RssItem> list = new ArrayList<RssItem>();
 		final XmlPullParser parser = Xml.newPullParser();
 		try {
@@ -347,7 +364,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 				switch (eventType) {
 				case XmlPullParser.START_TAG:
 					tag = parser.getName();
-					if (tag.equals("channel")) {
+					if (tag.equals("channel") || tag.equals("feed")) {
 						currentItem = new RssItem();
 					} else if (currentItem != null) {
 						if (tag.equals("title")) {

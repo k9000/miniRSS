@@ -228,7 +228,7 @@ public class ItemListActivity extends Activity implements
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-		efectViewPager.setCurrentItem(savedInstanceState.getInt("page", 0),
+		efectViewPager.setCurrentItem(savedInstanceState.getInt("page", 1),
 				false);
 	}
 

@@ -175,21 +175,33 @@ public class NotificationService extends IntentService {
 				switch (eventType) {
 				case XmlPullParser.START_TAG:
 					tag = parser.getName();
-					if (tag.equals("item")) {
+					if (tag.equals("item") || tag.equals("entry")) {
 						currentItem = new RssItem();
 						currentItem.setTag(color);
 					} else if (currentItem != null) {
 						if (tag.equals("title")) {
 							currentItem.setTitle(parser.nextText());
 						} else if (tag.equals("link")) {
-							currentItem.setUrl(parser.nextText());
-						} else if (tag.equals("description")) {
+							final String link = parser.nextText();
+							if (link != "") {
+								currentItem.setUrl(link);
+							} else {
+								final String rel = parser.getAttributeValue(
+										null, "rel");
+								final String herf = parser.getAttributeValue(
+										null, "href");
+								if (rel.equals("alternate")) {
+									currentItem.setUrl(herf);
+								}
+							}
+						} else if (tag.equals("description")
+								|| tag.equals("summary")) {
 							String buf = parser.nextText();
 							currentItem.setImage(StripImageTags(buf));
 							currentItem
 									.setText(buf
 											.replaceAll(
-													"(<.+?>|\r\n|\n\r|\n|\r|&nbsp;|&amp;|&#160;|&#38;)",
+													"(<.+?>|\r\n|\n\r|\n|\r|&#....;|&....;|&...;)",
 													""));// タグと改行除去
 						} else if (tag.equals("encoded")) {
 							currentItem.setImage(StripImageTags(parser
@@ -199,7 +211,8 @@ public class NotificationService extends IntentService {
 					break;
 				case XmlPullParser.END_TAG:
 					tag = parser.getName();
-					if (tag.equals("item") && removePR(currentItem)) {
+					if ((tag.equals("item") || tag.equals("entry"))
+							&& removePR(currentItem)) {
 						if (Serch(currentItem)) {
 							currentItem.setTag(0);
 						}

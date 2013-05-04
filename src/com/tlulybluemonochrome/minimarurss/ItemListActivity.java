@@ -138,8 +138,6 @@ public class ItemListActivity extends Activity implements
 					0xffcc0000, true));
 			items.add(new RssFeed("ASCII.jp",
 					"http://rss.rssad.jp/rss/ascii/rss.xml", 0xfff9f903, true));
-			items.add(new RssFeed("ガジェット通信", "http://getnews.jp/feed/ext/orig",
-					0xfffcb414, true));
 			items.add(new RssFeed("Impress Watch",
 					"http://rss.rssad.jp/rss/headline/headline.rdf",
 					0xffda31e5, true));
@@ -160,6 +158,10 @@ public class ItemListActivity extends Activity implements
 					0xffadd8e6, true));
 			items.add(new RssFeed("オクトバ", "http://octoba.net/feed", 0xff9370db,
 					true));
+			items.add(new RssFeed("ドロイドバンク", "http://androidnavi.net/feed/",
+					0xfffcb414, true));
+			items.add(new RssFeed("アンドロイダー", "https://androider.jp/rss/home/",
+					0xff33b5e5, true));
 
 			try {// セーブ書き込み
 				FileOutputStream fos = this.openFileOutput("SaveData.txt",

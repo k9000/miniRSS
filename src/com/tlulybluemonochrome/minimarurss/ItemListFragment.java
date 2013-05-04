@@ -77,7 +77,8 @@ public class ItemListFragment extends Fragment {
 		 * 
 		 * @param position
 		 */
-		public void onItemSelected(final int tag,final String url,final int position);
+		public void onItemSelected(final int tag, final String url,
+				final int position);
 
 		public void onSetItems(final ArrayList<RssFeed> items);
 	}
@@ -88,7 +89,8 @@ public class ItemListFragment extends Fragment {
 	 */
 	private static Callbacks sDummyCallbacks = new Callbacks() {
 		@Override
-		public void onItemSelected(final int tag,final String url,final int position) {
+		public void onItemSelected(final int tag, final String url,
+				final int position) {
 		}
 
 		@Override
@@ -108,13 +110,13 @@ public class ItemListFragment extends Fragment {
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setHasOptionsMenu(true);
+		// setHasOptionsMenu(true);
 
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater,final ViewGroup container,
-			final Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater,
+			final ViewGroup container, final Bundle savedInstanceState) {
 
 		// Restore the previously serialized activated item position.
 		if (savedInstanceState != null
@@ -141,17 +143,17 @@ public class ItemListFragment extends Fragment {
 			mListView.setAdapter(new CustomAdapter(getActivity(), 0, items));
 		} catch (Exception e) {
 		}
-		
+
 		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			@Override
-			public void onItemClick(final AdapterView<?> arg0,final View arg1,final int position,
-					final long arg3) {
+			public void onItemClick(final AdapterView<?> arg0, final View arg1,
+					final int position, final long arg3) {
 				// TODO 自動生成されたメソッド・スタブ
 				mCallbacks.onItemSelected(items.get(position).getTag(), items
 						.get(position).getUrl(), position);
-			} 
-			
+			}
+
 		});
 
 		return rootView;
@@ -212,20 +214,21 @@ public class ItemListFragment extends Fragment {
 
 	class DragListener extends SortableListView.SimpleDragListener {
 		private boolean mDrag;
-		//private int mDraggingPosition = -1;
+		// private int mDraggingPosition = -1;
 		private PopupMenu popup;
 
 		// リスト長押し
 		@Override
-		public void onItemLongClick(final AdapterView<?> parent,final View view,
-				final int position,final long id) {
+		public void onItemLongClick(final AdapterView<?> parent,
+				final View view, final int position, final long id) {
 
 			// PopupMenuのインスタンスを作成
 			popup = new PopupMenu(getActivity(), view);
 
 			// popup.xmlで設定したメニュー項目をポップアップメニューに割り当てる
 			popup.getMenuInflater().inflate(R.menu.popup, popup.getMenu());
-			popup.getMenu().findItem(R.id.item1).setChecked(items.get(position).getNoti());
+			popup.getMenu().findItem(R.id.item1)
+					.setChecked(items.get(position).getNoti());
 
 			// ポップアップメニューを表示
 			popup.show();
@@ -236,12 +239,14 @@ public class ItemListFragment extends Fragment {
 					switch (item.getItemId()) {
 					case R.id.item1:// Notificationクリック
 						item.setChecked(!item.isChecked());
-						items.get(position).setNoti(!items.get(position).getNoti());
+						items.get(position).setNoti(
+								!items.get(position).getNoti());
 						mCallbacks.onSetItems(items);// リスナーでPagerViewer更新
 						break;
 					case R.id.menu_color:// colorクリック
 						// 色選択ダイアログ
-						ColorPickerDialog mColorPickerDialog = new ColorPickerDialog(getActivity(),
+						ColorPickerDialog mColorPickerDialog = new ColorPickerDialog(
+								getActivity(),
 								new ColorPickerDialog.OnColorChangedListener() {
 									@Override
 									public void colorChanged(int color) {
@@ -272,7 +277,8 @@ public class ItemListFragment extends Fragment {
 						alertDialogBuilder.setPositiveButton("OK",
 								new DialogInterface.OnClickListener() {
 									@Override
-									public void onClick(final DialogInterface dialog,
+									public void onClick(
+											final DialogInterface dialog,
 											final int which) {
 										Toast.makeText(
 												getActivity(),
@@ -288,7 +294,8 @@ public class ItemListFragment extends Fragment {
 						alertDialogBuilder.setNegativeButton(R.string.cancel,
 								new DialogInterface.OnClickListener() {
 									@Override
-									public void onClick(final DialogInterface dialog,
+									public void onClick(
+											final DialogInterface dialog,
 											final int which) {
 									}
 								});
@@ -314,14 +321,14 @@ public class ItemListFragment extends Fragment {
 			Vibrator vibrator = (Vibrator) getActivity().getSystemService(
 					Context.VIBRATOR_SERVICE);
 			vibrator.vibrate(10);
-			//mDraggingPosition  = position;
+			// mDraggingPosition = position;
 			mListView.invalidateViews();
 			return position;
 		}
 
 		// ドラッグ中
 		@Override
-		public int onDuringDrag(final int positionFrom,final int positionTo) {
+		public int onDuringDrag(final int positionFrom, final int positionTo) {
 			if (positionFrom < 0 || positionTo < 0
 					|| positionFrom == positionTo) {
 				return positionFrom;
@@ -348,7 +355,7 @@ public class ItemListFragment extends Fragment {
 				}
 				items.set(min, data);
 			}
-			//mDraggingPosition = positionTo;
+			// mDraggingPosition = positionTo;
 			mListView.invalidateViews();
 			mDrag = true;
 			return positionTo;
@@ -356,8 +363,8 @@ public class ItemListFragment extends Fragment {
 
 		// ドラッグ終了
 		@Override
-		public boolean onStopDrag(final int positionFrom,final int positionTo) {
-			//mDraggingPosition = -1;
+		public boolean onStopDrag(final int positionFrom, final int positionTo) {
+			// mDraggingPosition = -1;
 			mListView.invalidateViews();
 			if (mDrag) {
 				mCallbacks.onSetItems(items);
@@ -365,16 +372,16 @@ public class ItemListFragment extends Fragment {
 			return super.onStopDrag(positionFrom, positionTo);
 		}
 	}
-	
+
 	@Override
-	public void onDestroyView(){
+	public void onDestroyView() {
 		mListView.setDragListener(null);
 		mListView.setAdapter(null);
 		mListView.setOnItemClickListener(null);
 		mListView = null;
 		items = null;
 		super.onDestroyView();
- 
+
 	}
 
 }

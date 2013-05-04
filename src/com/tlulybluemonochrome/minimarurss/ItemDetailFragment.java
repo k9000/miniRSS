@@ -64,8 +64,8 @@ public class ItemDetailFragment extends Fragment implements
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater,final ViewGroup container,
-			final Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater,
+			final ViewGroup container, final Bundle savedInstanceState) {
 		final View rootView = inflater.inflate(R.layout.main, container, false);
 
 		mListView = (RefreshableListView) rootView.findViewById(R.id.listview);
@@ -97,10 +97,11 @@ public class ItemDetailFragment extends Fragment implements
 
 	// ASyncTaskLoader始動
 	@Override
-	public Loader<ArrayList<RssItem>> onCreateLoader(final int wait,final Bundle args) {
-		final RssParserTaskLoader appLoader = new RssParserTaskLoader(getActivity(),
-				args.getString(ItemDetailFragment.ARG_ITEM_ID), wait,
-				args.getInt("COLOR"), getActivity());
+	public Loader<ArrayList<RssItem>> onCreateLoader(final int wait,
+			final Bundle args) {
+		final RssParserTaskLoader appLoader = new RssParserTaskLoader(
+				getActivity(), args.getString(ItemDetailFragment.ARG_ITEM_ID),
+				wait, args.getInt("COLOR"));
 		appLoader.forceLoad();
 		return appLoader;
 	}

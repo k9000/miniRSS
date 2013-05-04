@@ -289,8 +289,7 @@ public class EntryActivity extends Activity implements
 	@Override
 	public Loader<ArrayList<RssItem>> onCreateLoader(int flag, Bundle args) {
 		String url = args.getString(ItemDetailFragment.ARG_ITEM_ID);
-		RssParserTaskLoader appLoader = new RssParserTaskLoader(this, flag,
-				url, this);
+		RssParserTaskLoader appLoader = new RssParserTaskLoader(this, flag, url);
 
 		appLoader.forceLoad();
 		return appLoader;

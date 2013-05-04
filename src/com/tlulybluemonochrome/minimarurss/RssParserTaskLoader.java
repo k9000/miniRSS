@@ -18,7 +18,6 @@ package com.tlulybluemonochrome.minimarurss;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
@@ -31,7 +30,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import android.app.Activity;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.util.Xml;
@@ -47,7 +45,6 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	private URL url;
 	private int wait;
 	private int flag;
-	private Activity activity;
 	private int colorTag = 0x33b5e5;
 
 	/**
@@ -65,12 +62,10 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	 *            多重起動防止用
 	 */
 	public RssParserTaskLoader(final Context context, final String url,
-			final int wait, final int color, final Activity activity) {
+			final int wait, final int color) {
 		super(context);
 
 		this.colorTag = color;
-
-		this.activity = activity;
 
 		this.wait = wait;// 引っ張って更新の機嫌取り
 
@@ -96,10 +91,8 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	 *            多重起動防止用
 	 */
 	public RssParserTaskLoader(final EntryActivity context, final int flag,
-			final String url, final Activity activity) {
+			final String url) {
 		super(context);
-
-		this.activity = activity;
 
 		wait = 100;// 雰囲気用
 
@@ -114,84 +107,104 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 
 	@Override
 	synchronized public ArrayList<RssItem> loadInBackground() {
-		synchronized (activity) {
 
-			ArrayList<RssItem> result = new ArrayList<RssItem>();
+		ArrayList<RssItem> result = new ArrayList<RssItem>();
 
-			switch (flag) {
-			case 1:// RSSのURI獲得を目指す
-				try {
-					HttpURLConnection conn = (HttpURLConnection) url
-							.openConnection();
-					conn.addRequestProperty("User-Agent", "desktop");
-					conn.setDoInput(true);
-					conn.setRequestMethod("GET");
+		switch (flag) {
+		case 1:// RSSのURI獲得を目指す
+			try {
+				final HttpURLConnection conn = (HttpURLConnection) url
+						.openConnection();
+				conn.addRequestProperty("User-Agent", "desktop");
+				conn.setDoInput(true);
+				conn.setRequestMethod("GET");
 
-					// URL接続
-					BufferedReader urlIn = new BufferedReader(
-							new InputStreamReader(conn.getInputStream()));
+				// URL接続
+				final BufferedReader urlIn = new BufferedReader(
+						new InputStreamReader(conn.getInputStream()));
 
-					// HTMLソースの取得
-					String str = (urlIn.readLine()).replaceAll("doctype",
-							"DOCTYPE");
-					String buf = null;
-					while ((buf = urlIn.readLine()) != null) {
-						str += buf;
-					}
-					urlIn.close();
-					conn.disconnect();
-					result = parseHtml(str);
-				} catch (Exception e) {
-					e.printStackTrace();
-					return null;
+				// HTMLソースの取得
+				final StringBuilder strb = new StringBuilder();
+				strb.append((urlIn.readLine()).replaceAll("doctype", "DOCTYPE"));
+				while (urlIn.ready()) {
+					strb.append(urlIn.readLine());
 				}
-				break;
-
-			case 2:// RSSのタイトル獲得を目指す
-				try {
-					HttpURLConnection conn = (HttpURLConnection) url
-							.openConnection();
-					conn.addRequestProperty("User-Agent", "desktop");
-					conn.setDoInput(true);
-					conn.connect();
-					InputStream is = conn.getInputStream();
-					result = parseRSS(is);
-				} catch (Exception e) {
-					e.printStackTrace();
-					return null;
-				}
-				break;
-
-			case 3:// RSSの記事一覧の獲得を目指す
-				try {
-					HttpURLConnection conn = (HttpURLConnection) url
-							.openConnection();
-					conn.addRequestProperty("User-Agent", "desktop");
-					conn.setDoInput(true);
-					conn.connect();
-					InputStream is = conn.getInputStream();
-					result = parseXml(is, colorTag);
-				} catch (Exception e) {
-					e.printStackTrace();
-					return null;
-				}
-				break;
-			default:
+				urlIn.close();
+				conn.disconnect();
+				result = parseHtml(strb.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
 				return null;
 			}
+			break;
 
+		case 2:// RSSのタイトル獲得を目指す
 			try {
-				Thread.sleep(wait);
-			} catch (InterruptedException e) {
+				final HttpURLConnection conn = (HttpURLConnection) url
+						.openConnection();
+				conn.addRequestProperty("User-Agent", "desktop");
+				conn.setDoInput(true);
+				conn.setRequestMethod("GET");
+
+				// URL接続
+				final BufferedReader urlIn = new BufferedReader(
+						new InputStreamReader(conn.getInputStream()));
+
+				// HTMLソースの取得
+				final StringBuilder strb = new StringBuilder();
+				while (urlIn.ready()) {
+					strb.append(urlIn.readLine());
+				}
+				urlIn.close();
+				conn.disconnect();
+				result = parseRSS(strb.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
 			}
-			return result;
+			break;
+
+		case 3:// RSSの記事一覧の獲得を目指す
+			try {
+				final HttpURLConnection conn = (HttpURLConnection) url
+						.openConnection();
+				conn.addRequestProperty("User-Agent", "desktop");
+				conn.setDoInput(true);
+				conn.setRequestMethod("GET");
+
+				// URL接続
+				final BufferedReader urlIn = new BufferedReader(
+						new InputStreamReader(conn.getInputStream()));
+
+				// HTMLソースの取得
+				final StringBuilder strb = new StringBuilder(65536);
+				strb.append(urlIn.readLine());
+				while (urlIn.ready()) {
+					strb.append(urlIn.readLine());
+				}
+				urlIn.close();
+				conn.disconnect();
+				result = parseXml(strb.toString(), colorTag);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+			break;
+		default:
+			return null;
 		}
+
+		try {
+			Thread.sleep(wait);
+		} catch (InterruptedException e) {
+		}
+		return result;
 	}
 
 	/**
 	 * XMLをパースする
 	 * 
-	 * @param is
+	 * @param str
 	 *            InputStream
 	 * @param color
 	 *            色
@@ -199,12 +212,12 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	 * @throws IOException
 	 * @throws XmlPullParserException
 	 */
-	public static ArrayList<RssItem> parseXml(final InputStream is,
-			final int color) throws IOException, XmlPullParserException {
+	public static ArrayList<RssItem> parseXml(final String str, final int color)
+			throws IOException, XmlPullParserException {
 		final ArrayList<RssItem> list = new ArrayList<RssItem>();
 		final XmlPullParser parser = Xml.newPullParser();
 		try {
-			parser.setInput(is, null);
+			parser.setInput(new StringReader(str));
 			int eventType = parser.getEventType();
 			RssItem currentItem = null;
 			while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -215,10 +228,8 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 					if (tag.equals("item") || tag.equals("entry")) {
 						currentItem = new RssItem();
 						currentItem.setTag(color);
-						currentItem.setText("");
 					} else if (currentItem != null) {
 						if (tag.equals("title")) {
-
 							currentItem.setTitle(parser.nextText().replaceAll(
 									"(&#....;|&....;|&...;)", ""));// タグ除去;
 						} else if (tag.equals("link")) {
@@ -364,18 +375,18 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	/**
 	 * RSSをパースする
 	 * 
-	 * @param is
+	 * @param str
 	 *            InputStream
 	 * @return ページタイトル
 	 * @throws IOException
 	 * @throws XmlPullParserException
 	 */
-	public static ArrayList<RssItem> parseRSS(final InputStream is)
+	public static ArrayList<RssItem> parseRSS(final String str)
 			throws IOException, XmlPullParserException {
 		final ArrayList<RssItem> list = new ArrayList<RssItem>();
 		final XmlPullParser parser = Xml.newPullParser();
 		try {
-			parser.setInput(is, null);
+			parser.setInput(new StringReader(str));
 			int eventType = parser.getEventType();
 			RssItem currentItem = null;
 			while (eventType != XmlPullParser.END_DOCUMENT) {

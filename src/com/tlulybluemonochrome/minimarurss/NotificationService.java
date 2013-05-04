@@ -16,12 +16,16 @@
 
 package com.tlulybluemonochrome.minimarurss;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -109,12 +113,27 @@ public class NotificationService extends IntentService {
 		for (int i = 0; i < urilist.size(); i++) {
 
 			if (urilist.get(i).getNoti()) {// Notifications設定確認
-				try {// 記事取得
-					final URL url = new URL(urilist.get(i).getUrl());
-					final InputStream is = url.openConnection()
-							.getInputStream();
-					arraylist.addAll(parseXml(is, urilist.get(i).getTag(),
-							urilist.get(i).getTitle()));
+				try {
+					final HttpURLConnection conn = (HttpURLConnection) new URL(
+							urilist.get(i).getUrl()).openConnection();
+					conn.addRequestProperty("User-Agent", "desktop");
+					conn.setDoInput(true);
+					conn.setRequestMethod("GET");
+
+					// URL接続
+					final BufferedReader urlIn = new BufferedReader(
+							new InputStreamReader(conn.getInputStream()));
+
+					// HTMLソースの取得
+					final StringBuilder strb = new StringBuilder(65536);
+					strb.append(urlIn.readLine());
+					while (urlIn.ready()) {
+						strb.append(urlIn.readLine());
+					}
+					urlIn.close();
+					conn.disconnect();
+					arraylist.addAll(parseXml(strb.toString(), urilist.get(i)
+							.getTag(), urilist.get(i).getTitle()));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -163,13 +182,13 @@ public class NotificationService extends IntentService {
 	}
 
 	// XMLをパースする
-	public static ArrayList<RssItem> parseXml(final InputStream is,
+	public static ArrayList<RssItem> parseXml(final String str,
 			final int color, final String page) throws IOException,
 			XmlPullParserException {
 		final XmlPullParser parser = Xml.newPullParser();
 		final ArrayList<RssItem> list = new ArrayList<RssItem>();
 		try {
-			parser.setInput(is, null);
+			parser.setInput(new StringReader(str));
 			int eventType = parser.getEventType();
 			RssItem currentItem = null;
 			int i = 0;

@@ -397,7 +397,7 @@ public class ItemListActivity extends Activity implements
 		url = items.get(i).getUrl();
 		final int color = items.get(i).getTag();
 		final RssParserTaskLoader appLoader = new RssParserTaskLoader(this,
-				url, 0, color, this);
+				url, 0, color);
 		appLoader.forceLoad();
 		return appLoader;
 	}

@@ -144,13 +144,16 @@ public class NotificationService extends IntentService {
 			}
 		}
 
-		try {// 既読判定書き込み
-			FileOutputStream fos = openFileOutput("SaveData.dat", MODE_PRIVATE);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(arraylist);
-			oos.close();
-		} catch (Exception e) {
-			Log.d(TAG, "Error");
+		if (!arraylist.isEmpty()) {
+			try {// 既読判定書き込み
+				FileOutputStream fos = openFileOutput("SaveData.dat",
+						MODE_PRIVATE);
+				ObjectOutputStream oos = new ObjectOutputStream(fos);
+				oos.writeObject(arraylist);
+				oos.close();
+			} catch (Exception e) {
+				Log.d(TAG, "Error");
+			}
 		}
 
 		final Editor editor = sharedPreferences.edit();

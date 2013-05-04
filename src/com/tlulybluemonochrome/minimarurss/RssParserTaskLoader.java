@@ -16,8 +16,11 @@
 
 package com.tlulybluemonochrome.minimarurss;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -122,9 +125,22 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 							.openConnection();
 					conn.addRequestProperty("User-Agent", "desktop");
 					conn.setDoInput(true);
-					conn.connect();
-					InputStream is = conn.getInputStream();
-					result = parseHtml(is);
+					conn.setRequestMethod("GET");
+
+					// URL接続
+					BufferedReader urlIn = new BufferedReader(
+							new InputStreamReader(conn.getInputStream()));
+
+					// HTMLソースの取得
+					String str = (urlIn.readLine()).replaceAll("doctype",
+							"DOCTYPE");
+					String buf = null;
+					while ((buf = urlIn.readLine()) != null) {
+						str += buf;
+					}
+					urlIn.close();
+					conn.disconnect();
+					result = parseHtml(str);
 				} catch (Exception e) {
 					e.printStackTrace();
 					return null;
@@ -283,13 +299,13 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	/**
 	 * HTMLをパースする
 	 * 
-	 * @param is
+	 * @param str
 	 *            InputStream
 	 * @return RSS用URI
 	 * @throws IOException
 	 * @throws XmlPullParserException
 	 */
-	public static ArrayList<RssItem> parseHtml(final InputStream is)
+	public static ArrayList<RssItem> parseHtml(final String str)
 			throws IOException, XmlPullParserException {
 
 		final XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -300,7 +316,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 
 		final ArrayList<RssItem> list = new ArrayList<RssItem>();
 		try {
-			parser.setInput(is, "UTF-8");
+			parser.setInput(new StringReader(str));
 			int eventType = parser.getEventType();
 			RssItem currentItem = null;
 			while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -332,6 +348,8 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 					if (tag.equals("head")) {
 						return null;
 					}
+					break;
+				default:
 					break;
 				}
 				eventType = parser.next();

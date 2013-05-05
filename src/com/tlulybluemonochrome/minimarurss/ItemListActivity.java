@@ -32,12 +32,14 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
@@ -309,6 +311,8 @@ public class ItemListActivity extends Activity implements
 
 	public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
+		
+
 		public SectionsPagerAdapter(final FragmentManager fm) {
 			super(fm);
 
@@ -329,28 +333,28 @@ public class ItemListActivity extends Activity implements
 			// below) with the page number as its lone argument.
 
 			// getIntent().getStringExtra(ItemDetailFragment.ARG_ITEM_ID));
-			Fragment fragment;
+			//Fragment fragment;
 
 			if (position == 0)// 設定画面
-				fragment = new SettingsFragment();
+				return new SettingsFragment();
 			else if (position == 1 && mTwoPane)// トップページ(タブレット用)
-				fragment = new TopPageFragment();
+				return new TopPageFragment();
 			else if (position == 1)// フィードリスト
-				fragment = new ItemListFragment();
+				return new ItemListFragment();
 			else {// 記事一覧
 				final Bundle arguments = new Bundle();
 				arguments.putString(ItemDetailFragment.ARG_ITEM_ID,
 						items.get(position - 2).getUrl());
 				arguments.putInt("COLOR", items.get(position - 2).getTag());
-				arguments.putSerializable("LIST",
-						hp.get(items.get(position - 2).getUrl()));
-				fragment = new ItemDetailFragment();
+				arguments.putSerializable("LIST",hp.get(items.get(position - 2).getUrl()));
+				final ItemDetailFragment fragment = new ItemDetailFragment();
 				fragment.setArguments(arguments);
+				return fragment;
 			}
 			// fragment.getView();
 			// mJazzy.setFragmentForPosition(getItemId(position), position);
 
-			return fragment;
+			
 		}
 
 		// 全ページ数

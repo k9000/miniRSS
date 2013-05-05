@@ -20,6 +20,8 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
+import net.margaritov.preference.colorpicker.ColorPickerDialog;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -245,16 +247,17 @@ public class ItemListFragment extends Fragment {
 						break;
 					case R.id.menu_color:// colorクリック
 						// 色選択ダイアログ
-						ColorPickerDialog mColorPickerDialog = new ColorPickerDialog(
-								getActivity(),
-								new ColorPickerDialog.OnColorChangedListener() {
+						ColorPickerDialog colorPickerDialog = new ColorPickerDialog(
+								getActivity(), items.get(position).getTag());
+						colorPickerDialog
+								.setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
 									@Override
-									public void colorChanged(int color) {
+									public void onColorChanged(int color) {
 										items.get(position).setTag(color);
 										mCallbacks.onSetItems(items);// リスナーでPagerViewer更新
 									}
-								}, items.get(position).getTag());
-						mColorPickerDialog.show();
+								});
+						colorPickerDialog.show();
 						break;
 					case R.id.menu_edit:// 編集クリック
 						Intent intent = new Intent(getActivity(),

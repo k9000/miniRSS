@@ -22,6 +22,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import net.margaritov.preference.colorpicker.ColorPickerDialog;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -270,19 +272,21 @@ public class EntryActivity extends Activity implements
 	 */
 	public void clickButton_Color(View v) {
 
-		ColorPickerDialog mColorPickerDialog;
+		ColorPickerDialog colorPickerDialog;
 
 		// 色選択ダイアログ
-		mColorPickerDialog = new ColorPickerDialog(this,
-				new ColorPickerDialog.OnColorChangedListener() {
+		colorPickerDialog = new ColorPickerDialog(this, selectColor);
+		colorPickerDialog
+				.setOnColorChangedListener(new ColorPickerDialog.OnColorChangedListener() {
 					@Override
-					public void colorChanged(int color) {
+					public void onColorChanged(int color) {
 						selectColor = color;
 						imageButton.setBackgroundColor(color);
-					}
-				}, selectColor);
 
-		mColorPickerDialog.show();
+					}
+				});
+
+		colorPickerDialog.show();
 	}
 
 	// ASyncTaskLoader始動

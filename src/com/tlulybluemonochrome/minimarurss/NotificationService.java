@@ -41,7 +41,6 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.Xml;
@@ -224,7 +223,7 @@ public class NotificationService extends IntentService {
 							currentItem
 									.setText(buf
 											.replaceAll(
-													"(<.+?>|\r\n|\n\r|\n|\r|&#....;|&....;|&...;)",
+													"(<.+?>|\r\n|\n\r|\n|\r|&#....;|&....;|&...;|&..;)",
 													""));// タグと改行除去
 						} else if (tag.equals("encoded")) {
 							currentItem.setImage(StripImageTags(parser
@@ -255,18 +254,31 @@ public class NotificationService extends IntentService {
 	}
 
 	private static String StripImageTags(String str) {
-		final Pattern o = Pattern.compile("<img.*jpg");
-		final Pattern p = Pattern.compile("//.*jpg");
+		final Pattern o = Pattern.compile("<img.*?(jpg|png).*?>");
+		final Pattern p = Pattern.compile("http.*?(jpg|png)");
+		final Pattern q = Pattern.compile("//.*?(jpg|png)");
+
 		String matchstr = null;
-		final Matcher n = o.matcher(str);
-		if (n.find()) {
-			str = n.group();
+
+		Matcher x = o.matcher(str);
+		if (x.find()) {
+			str = x.group();
+
+			x = p.matcher(str);
+			Matcher y = q.matcher(str);
+
+			if (x.find()) {
+				matchstr = x.group();
+			} else if (y.find()) {
+				matchstr = "http:" + y.group();
+			} else {
+				matchstr = null;
+			}
+			return matchstr;
 		}
-		final Matcher m = p.matcher(str);
-		if (m.find()) {
-			matchstr = "http:" + m.group();
-		}
-		return matchstr;
+
+		return null;
+
 	}
 
 	// PR削除
@@ -336,17 +348,14 @@ public class NotificationService extends IntentService {
 				bitmap = BitmapFactory.decodeStream(is);
 				is.close();
 				final Resources res = getBaseContext().getResources();
-				final float scale = Math
-						.min((float) res
-								.getDimension(android.R.dimen.notification_large_icon_width)
-								/ bitmap.getWidth(),
-								(float) res
-										.getDimension(android.R.dimen.notification_large_icon_height)
-										/ bitmap.getHeight());
-				Matrix matrix = new Matrix();
-				matrix.postScale(scale, scale);
-				bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
-						bitmap.getHeight(), matrix, true);
+				bitmap = Bitmap
+						.createScaledBitmap(
+								bitmap,
+								(int) res
+										.getDimension(android.R.dimen.notification_large_icon_width),
+								(int) res
+										.getDimension(android.R.dimen.notification_large_icon_height),
+								false);
 			} catch (IOException e) {
 				e.printStackTrace();
 				return base;

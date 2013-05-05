@@ -62,15 +62,13 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		boolean bound;
 	}
 
-	final Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-
 	public CustomDetailAdapter(final Context context,
 			final int textViewResourceId, final List<RssItem> objects) {
 		super(context, textViewResourceId, objects);
 		layoutInflater_ = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		height = (int) ((getContext().getResources().getDisplayMetrics().density) * 100);
-		bmp.eraseColor(getItem(0).getTag());
+
 	}
 
 	@Override
@@ -99,6 +97,9 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 					.findViewById(R.id.urlImageView);
 			holder.bound = false;
 
+			final Bitmap bmp = Bitmap.createBitmap(1, 1,
+					Bitmap.Config.ARGB_8888);
+			bmp.eraseColor(getItem(0).getTag());
 			holder.imageView.setImageBitmap(bmp);// 高速化のため
 
 			view.setTag(holder);
@@ -151,7 +152,9 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 					holder.bound = true;
 				}
 				makeThread(holder.bound, holder.btn, holder.content);
-				makeImage(item.getImage(), holder.urlImageView);
+				if(item.getImage()!=null){
+					makeImage(item.getImage(), holder.urlImageView);
+				}
 			}
 		});
 

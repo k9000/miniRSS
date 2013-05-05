@@ -140,8 +140,8 @@ public class ItemListActivity extends Activity implements
 					0xffcc0000, true));
 			items.add(new RssFeed("ASCII.jp",
 					"http://rss.rssad.jp/rss/ascii/rss.xml", 0xfff9f903, true));
-			items.add(new RssFeed("Impress Watch",
-					"http://rss.rssad.jp/rss/headline/headline.rdf",
+			items.add(new RssFeed("ガジェット速報",
+					"http://ggsoku.com/feed/",
 					0xffda31e5, true));
 			items.add(new RssFeed("Engadget",
 					"http://feed.rssad.jp/rss/engadget/rss", 0xff0000cd, true));

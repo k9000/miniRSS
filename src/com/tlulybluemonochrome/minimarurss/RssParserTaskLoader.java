@@ -171,6 +171,8 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 				conn.addRequestProperty("User-Agent", "desktop");
 				conn.setDoInput(true);
 				conn.setRequestMethod("GET");
+				conn.setConnectTimeout(100000);
+				conn.setReadTimeout(100000);
 
 				// URL接続
 				final BufferedReader urlIn = new BufferedReader(
@@ -252,7 +254,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 							currentItem
 									.setText(buf
 											.replaceAll(
-													"(<.+?>|\r\n|\n\r|\n|\r|&#....;|&....;|&...;)",
+													"(<.+?>|\r\n|\n\r|\n|\r|&#....;|&....;|&...;|&..;)",
 													""));// タグと改行除去
 						} else if (tag.equals("encoded")) {
 							currentItem.setImage(StripImageTags(parser
@@ -278,18 +280,31 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	}
 
 	private static String StripImageTags(String str) {
-		final Pattern o = Pattern.compile("<img.*jpg.*?>");
-		final Pattern p = Pattern.compile("//.*jpg");
+		final Pattern o = Pattern.compile("<img.*?(jpg|png).*?>");
+		final Pattern p = Pattern.compile("http.*?(jpg|png)");
+		final Pattern q = Pattern.compile("//.*?(jpg|png)");
+
 		String matchstr = null;
-		Matcher n = o.matcher(str);
-		if (n.find()) {
-			str = n.group();
+
+		Matcher x = o.matcher(str);
+		if (x.find()) {
+			str = x.group();
+
+			x = p.matcher(str);
+			Matcher y = q.matcher(str);
+
+			if (x.find()) {
+				matchstr = x.group();
+			} else if (y.find()) {
+				matchstr = "http:" + y.group();
+			} else {
+				matchstr = null;
+			}
+			return matchstr;
 		}
-		Matcher m = p.matcher(str);
-		if (m.find()) {
-			matchstr = "http:" + m.group();
-		}
-		return matchstr;
+
+		return null;
+
 	}
 
 	/**

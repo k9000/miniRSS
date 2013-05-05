@@ -9,7 +9,7 @@ import android.graphics.Camera;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Build;
-import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -84,11 +84,11 @@ public class EfectViewPager extends ViewPager {
 	private static int mState;// 0 IDLE,1 LEFT,2 RIGTH
 	private int oldPage;
 
-	private View mLeft;
-	private View mRight;
-	private static float mRot;
-	private static float mTrans;
-	private static float mScale;
+	// private View mLeft;
+	// private View mRight;
+	// private static float mRot;
+	// private static float mTrans;
+	// private static float mScale;
 
 	/*
 	 * private static enum State { IDLE,0 GOING_LEFT,1 GOING_RIGHT2 }
@@ -99,9 +99,9 @@ public class EfectViewPager extends ViewPager {
 		if (mState != 0) {
 			if (left != null) {
 				manageLayer(left, true);
-				mRot = 30.0f * positionOffset;
-				mTrans = getOffsetXForRotation(mRot, left.getMeasuredWidth(),
-						left.getMeasuredHeight());
+				final float mRot = 30.0f * positionOffset;
+				final float mTrans = getOffsetXForRotation(mRot,
+						left.getMeasuredWidth(), left.getMeasuredHeight());
 				left.setPivotX(left.getMeasuredWidth() / 2);
 				left.setPivotY(left.getMeasuredHeight() / 2);
 				left.setTranslationX(mTrans);
@@ -110,9 +110,9 @@ public class EfectViewPager extends ViewPager {
 			}
 			if (right != null) {
 				manageLayer(right, true);
-				mRot = -30.0f * (1 - positionOffset);
-				mTrans = getOffsetXForRotation(mRot, right.getMeasuredWidth(),
-						right.getMeasuredHeight());
+				final float mRot = -30.0f * (1 - positionOffset);
+				final float mTrans = getOffsetXForRotation(mRot,
+						right.getMeasuredWidth(), right.getMeasuredHeight());
 				right.setPivotX(right.getMeasuredWidth() * 0.5f);
 				right.setPivotY(right.getMeasuredHeight() * 0.5f);
 				right.setTranslationX(mTrans);
@@ -127,14 +127,15 @@ public class EfectViewPager extends ViewPager {
 		if (mState != 0) {
 			if (left != null) {
 				manageLayer(left, true);
-				mRot = (in ? 90.0f : -90.0f) * positionOffset;
+				final float mRot = (in ? 90.0f : -90.0f) * positionOffset;
 				left.setPivotX(left.getMeasuredWidth());
 				left.setPivotY(left.getMeasuredHeight() * 0.5f);
 				left.setRotationY(mRot);
 			}
 			if (right != null) {
 				manageLayer(right, true);
-				mRot = -(in ? 90.0f : -90.0f) * (1 - positionOffset);
+				final float mRot = -(in ? 90.0f : -90.0f)
+						* (1 - positionOffset);
 				right.setPivotX(0);
 				right.setPivotY(right.getMeasuredHeight() * 0.5f);
 				right.setRotationY(mRot);
@@ -165,8 +166,9 @@ public class EfectViewPager extends ViewPager {
 		if (mState != 0) {
 			if (left != null) {
 				manageLayer(left, true);
-				mScale = in ? ZOOM_MAX + (1 - ZOOM_MAX) * (1 - positionOffset)
-						: 1 + ZOOM_MAX - ZOOM_MAX * (1 - positionOffset);
+				final float mScale = in ? ZOOM_MAX + (1 - ZOOM_MAX)
+						* (1 - positionOffset) : 1 + ZOOM_MAX - ZOOM_MAX
+						* (1 - positionOffset);
 				left.setPivotX(left.getMeasuredWidth() * 0.5f);
 				left.setPivotY(left.getMeasuredHeight() * 0.5f);
 				left.setScaleX(mScale);
@@ -174,8 +176,9 @@ public class EfectViewPager extends ViewPager {
 			}
 			if (right != null) {
 				manageLayer(right, true);
-				mScale = in ? ZOOM_MAX + (1 - ZOOM_MAX) * positionOffset : 1
-						+ ZOOM_MAX - ZOOM_MAX * positionOffset;
+				final float mScale = in ? ZOOM_MAX + (1 - ZOOM_MAX)
+						* positionOffset : 1 + ZOOM_MAX - ZOOM_MAX
+						* positionOffset;
 				right.setPivotX(right.getMeasuredWidth() * 0.5f);
 				right.setPivotY(right.getMeasuredHeight() * 0.5f);
 				right.setScaleX(mScale);
@@ -189,8 +192,8 @@ public class EfectViewPager extends ViewPager {
 		if (mState != 0) {
 			if (left != null) {
 				manageLayer(left, true);
-				mRot = (up ? 1 : -1) * (ROT_MAX * positionOffset);
-				mTrans = (up ? -1 : 1)
+				final float mRot = (up ? 1 : -1) * (ROT_MAX * positionOffset);
+				final float mTrans = (up ? -1 : 1)
 						* (float) (height - height
 								* Math.cos(mRot * Math.PI / 180.0f));
 				left.setPivotX(left.getMeasuredWidth() * 0.5f);
@@ -200,8 +203,9 @@ public class EfectViewPager extends ViewPager {
 			}
 			if (right != null) {
 				manageLayer(right, true);
-				mRot = (up ? 1 : -1) * (-ROT_MAX + ROT_MAX * positionOffset);
-				mTrans = (up ? -1 : 1)
+				final float mRot = (up ? 1 : -1)
+						* (-ROT_MAX + ROT_MAX * positionOffset);
+				final float mTrans = (up ? -1 : 1)
 						* (float) (height - height
 								* Math.cos(mRot * Math.PI / 180.0f));
 				right.setPivotX(right.getMeasuredWidth() * 0.5f);
@@ -218,13 +222,13 @@ public class EfectViewPager extends ViewPager {
 		if (mState != 0) {
 			if (left != null) {
 				manageLayer(left, true);
-				mRot = 180.0f * positionOffset;
+				final float mRot = 180.0f * positionOffset;
 				if (mRot > 90.0f) {
 					left.setVisibility(View.INVISIBLE);
 				} else {
 					if (left.getVisibility() == View.INVISIBLE)
 						left.setVisibility(View.VISIBLE);
-					mTrans = positionOffsetPixels;
+					final float mTrans = positionOffsetPixels;
 					left.setPivotX(left.getMeasuredWidth() * 0.5f);
 					left.setPivotY(left.getMeasuredHeight() * 0.5f);
 					left.setTranslationX(mTrans);
@@ -233,13 +237,13 @@ public class EfectViewPager extends ViewPager {
 			}
 			if (right != null) {
 				manageLayer(right, true);
-				mRot = -180.0f * (1 - positionOffset);
+				final float mRot = -180.0f * (1 - positionOffset);
 				if (mRot < -90.0f) {
 					right.setVisibility(View.INVISIBLE);
 				} else {
 					if (right.getVisibility() == View.INVISIBLE)
 						right.setVisibility(View.VISIBLE);
-					mTrans = -width - margin + positionOffsetPixels;
+					final float mTrans = -width - margin + positionOffsetPixels;
 					right.setPivotX(right.getMeasuredWidth() * 0.5f);
 					right.setPivotY(right.getMeasuredHeight() * 0.5f);
 					right.setTranslationX(mTrans);
@@ -255,13 +259,13 @@ public class EfectViewPager extends ViewPager {
 		if (mState != 0) {
 			if (left != null) {
 				manageLayer(left, true);
-				mRot = 180.0f * positionOffset;
+				final float mRot = 180.0f * positionOffset;
 				if (mRot > 90.0f) {
 					left.setVisibility(View.INVISIBLE);
 				} else {
 					if (left.getVisibility() == View.INVISIBLE)
 						left.setVisibility(View.VISIBLE);
-					mTrans = positionOffsetPixels;
+					final float mTrans = positionOffsetPixels;
 					left.setPivotX(left.getMeasuredWidth() * 0.5f);
 					left.setPivotY(left.getMeasuredHeight() * 0.5f);
 					left.setTranslationX(mTrans);
@@ -270,13 +274,13 @@ public class EfectViewPager extends ViewPager {
 			}
 			if (right != null) {
 				manageLayer(right, true);
-				mRot = -180.0f * (1 - positionOffset);
+				final float mRot = -180.0f * (1 - positionOffset);
 				if (mRot < -90.0f) {
 					right.setVisibility(View.INVISIBLE);
 				} else {
 					if (right.getVisibility() == View.INVISIBLE)
 						right.setVisibility(View.VISIBLE);
-					mTrans = -width - margin + positionOffsetPixels;
+					final float mTrans = -width - margin + positionOffsetPixels;
 					right.setPivotX(right.getMeasuredWidth() * 0.5f);
 					right.setPivotY(right.getMeasuredHeight() * 0.5f);
 					right.setTranslationX(mTrans);
@@ -292,8 +296,9 @@ public class EfectViewPager extends ViewPager {
 		if (mState != 0) {
 			if (right != null) {
 				manageLayer(right, true);
-				mScale = (1 - SCALE_MAX) * positionOffset + SCALE_MAX;
-				mTrans = -width - margin + positionOffsetPixels;
+				final float mScale = (1 - SCALE_MAX) * positionOffset
+						+ SCALE_MAX;
+				final float mTrans = -width - margin + positionOffsetPixels;
 				right.setScaleX(mScale);
 				right.setScaleY(mScale);
 				right.setTranslationX(mTrans);
@@ -368,8 +373,8 @@ public class EfectViewPager extends ViewPager {
 
 		// mLeft = getChildAt(position);
 		// mRight = getChildAt(position+1);
-		mLeft = findViewFromObject(position);
-		mRight = findViewFromObject(position + 1);
+		final View mLeft = findViewFromObject(position);
+		final View mRight = findViewFromObject(position + 1);
 
 		if (mFadeEnabled)
 			animateFade(mLeft, mRight, effectOffset);
@@ -430,18 +435,17 @@ public class EfectViewPager extends ViewPager {
 	}
 
 	public static void setObjectForPosition(final Object obj, final int position) {
-		mObjs.put(Integer.valueOf(position), obj);
+		mObjs.put(position, obj);
 	}
 
 	private View findViewFromObject(final int position) {
-		final Object o = mObjs.get(Integer.valueOf(position));
-		final FragmentStatePagerAdapter a = (FragmentStatePagerAdapter) getAdapter();
-		View v;
-		for (int i = 0; i < getChildCount(); i++) {
-			v = getChildAt(i);
-			if (o != null) {
-				if (a.isViewFromObject(v, o))
-					return v;
+		final Object o = mObjs.get(position);
+		if (o != null) {
+			final int j = getChildCount();
+			final PagerAdapter a = getAdapter();
+			for (int i = 0; i < j; i++) {
+				if (a.isViewFromObject(getChildAt(i), o))
+					return getChildAt(i);
 			}
 		}
 		return null;

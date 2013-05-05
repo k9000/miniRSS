@@ -90,7 +90,7 @@ public class ItemDetailFragment extends Fragment implements
 			});
 		}
 
-		// getLoaderManager().initLoader(0, getArguments(), this);
+		 //getLoaderManager().initLoader(0, getArguments(), this);
 
 		return rootView;
 	}

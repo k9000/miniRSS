@@ -201,7 +201,10 @@ public class ItemListActivity extends Activity implements
 		else if (animation.equals("Rotate"))
 			effect = 9;
 
-		setupJazziness(effect);
+		efectViewPager = (EfectViewPager) findViewById(R.id.jazzy_pager);
+		EfectViewPager.setTransitionEffect(effect);
+		efectViewPager.setAdapter(mSectionsPagerAdapter);
+		efectViewPager.setOffscreenPageLimit(3);
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
@@ -232,14 +235,6 @@ public class ItemListActivity extends Activity implements
 		super.onRestoreInstanceState(savedInstanceState);
 		efectViewPager.setCurrentItem(savedInstanceState.getInt("page", 1),
 				false);
-	}
-
-	private void setupJazziness(final int effect) {
-		efectViewPager = (EfectViewPager) findViewById(R.id.jazzy_pager);
-		EfectViewPager.setTransitionEffect(effect);
-		efectViewPager.setAdapter(mSectionsPagerAdapter);
-		// mJazzy.setPageMargin(30);
-
 	}
 
 	/**
@@ -320,7 +315,7 @@ public class ItemListActivity extends Activity implements
 		}
 
 		@Override
-		public Object instantiateItem(final ViewGroup container, int position) {
+		public Object instantiateItem(final ViewGroup container,final int position) {
 			final Object obj = super.instantiateItem(container, position);
 			EfectViewPager.setObjectForPosition(obj, position);
 			return obj;

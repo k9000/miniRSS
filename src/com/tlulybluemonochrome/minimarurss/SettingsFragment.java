@@ -185,28 +185,37 @@ public class SettingsFragment extends Fragment {
 			}
 		});
 
+		// ON/OFFボタンのリスナー
+		final boolean slidingmenu = sharedPreferences.getBoolean(
+				"sliding_menu", true);
+		final Switch s5 = (Switch) rootView.findViewById(R.id.switch5);
+		s5.setOnCheckedChangeListener(null);
+		s5.setChecked(slidingmenu);
+		s5.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(final CompoundButton buttonView,
+					final boolean isChecked) {
+				editor.putBoolean("sliding_menu", isChecked);
+				editor.commit();
+			}
+		});
+
 		final RadioGroup mRadioGroupOs = (RadioGroup) rootView
-				.findViewById(R.id.radioGroup1);
+				.findViewById(R.id.radioGroup0);
 
 		// ラジオボタンの初期値
-		String theme_preference = sharedPreferences.getString(
-				"theme_preference", "Light");
-		if (theme_preference.equals("Light"))
-			mRadioGroupOs.check(R.id.radio0);
-		else if (theme_preference.equals("White"))
-			mRadioGroupOs.check(R.id.radio1);
-		else if (theme_preference.equals("Gray"))
-			mRadioGroupOs.check(R.id.radio2);
-		else if (theme_preference.equals("Dark"))
-			mRadioGroupOs.check(R.id.radio3);
-		else if (theme_preference.equals("Transparent"))
-			mRadioGroupOs.check(R.id.radio4);
+		final String sliding_side = sharedPreferences.getString("sliding_side",
+				"Right");
+		if (sliding_side.equals("Left"))
+			mRadioGroupOs.check(R.id.radio00);
+		else if (sliding_side.equals("Right"))
+			mRadioGroupOs.check(R.id.radio01);
 
 		// ラジオボタンのリスナー
 		mRadioGroupOs.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(final RadioGroup group, final int id) {
-				editor.putString("theme_preference",
+				editor.putString("sliding_side",
 						(String) ((RadioButton) rootView.findViewById(id))
 								.getText());
 				editor.commit();
@@ -215,11 +224,43 @@ public class SettingsFragment extends Fragment {
 
 		});
 
+		final RadioGroup mRadioGroupOs1 = (RadioGroup) rootView
+				.findViewById(R.id.radioGroup1);
+
+		// ラジオボタンの初期値
+		final String theme_preference = sharedPreferences.getString(
+				"theme_preference", "Light");
+		if (theme_preference.equals("Light"))
+			mRadioGroupOs1.check(R.id.radio0);
+		else if (theme_preference.equals("White"))
+			mRadioGroupOs1.check(R.id.radio1);
+		else if (theme_preference.equals("Gray"))
+			mRadioGroupOs1.check(R.id.radio2);
+		else if (theme_preference.equals("Dark"))
+			mRadioGroupOs1.check(R.id.radio3);
+		else if (theme_preference.equals("Transparent"))
+			mRadioGroupOs1.check(R.id.radio4);
+
+		// ラジオボタンのリスナー
+		mRadioGroupOs1
+				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					@Override
+					public void onCheckedChanged(final RadioGroup group,
+							final int id) {
+						editor.putString("theme_preference",
+								(String) ((RadioButton) rootView
+										.findViewById(id)).getText());
+						editor.commit();
+
+					}
+
+				});
+
 		final RadioGroup mRadioGroupOs2 = (RadioGroup) rootView
 				.findViewById(R.id.radioGroup2);
 
 		// ラジオボタンの初期値
-		String animation_preference = sharedPreferences.getString("animation",
+		final String animation_preference = sharedPreferences.getString("animation",
 				"Cube");
 		if (animation_preference.equals("Cube"))
 			mRadioGroupOs2.check(R.id.radio10);

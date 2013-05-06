@@ -36,6 +36,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -58,17 +59,18 @@ public class ItemListActivity extends Activity implements
 	 */
 	private boolean mTwoPane;
 
-	SharedPreferences sharedPreferences;
+	private SharedPreferences sharedPreferences;
 
-	ArrayList<RssFeed> items;
+	private ArrayList<RssFeed> items;
 
-	HashMap<String, ArrayList<RssItem>> hp;
+	private HashMap<String, ArrayList<RssItem>> hp;
 
-	String url;
+	private String url;
 
-	int i = 0;
+	private int i = 0;
 
-	SectionsPagerAdapter mSectionsPagerAdapter;
+	private final SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(
+			getFragmentManager());
 
 	private EfectViewPager efectViewPager;
 
@@ -80,9 +82,8 @@ public class ItemListActivity extends Activity implements
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
-
-		/* Preferencesからテーマ設定 */
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		/* Preferencesからテーマ設定 */
 		final String thme_preference = sharedPreferences.getString(
 				"theme_preference", "Light");
 		int theme = R.style.LightMetal;
@@ -115,18 +116,21 @@ public class ItemListActivity extends Activity implements
 			// 'activated' state when touched.
 			((ItemListFragment) getFragmentManager().findFragmentById(
 					R.id.item_list)).setActivateOnItemClick(true);
-		}else{
-			
+		} else if (sharedPreferences.getBoolean("sliding_menu", true)) {
+			final DisplayMetrics displayMetrics = new DisplayMetrics();
+			getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 			menu = new SlidingMenu(this);
-	        menu.setMode(SlidingMenu.RIGHT);
-	        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-	        //menu.setShadowWidthRes(R.dimen.shadow_width);
-	        //menu.setShadowDrawable(R.drawable.shadow);
-	        menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-	        menu.setFadeDegree(0.95f);
-	        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-	        menu.setMenu(R.layout.menu);
-			
+			if (sharedPreferences.getString("sliding_side", "Right").equals(
+					"Left")) {
+				menu.setMode(SlidingMenu.LEFT);
+			} else {
+				menu.setMode(SlidingMenu.RIGHT);
+			}
+			menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+			menu.setBehindWidth(displayMetrics.widthPixels / 2);
+			menu.setFadeDegree(0.95f);
+			menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+			menu.setMenu(R.layout.menu);
 		}
 
 		// セーブデータオープン
@@ -154,8 +158,7 @@ public class ItemListActivity extends Activity implements
 					0xffcc0000, true));
 			items.add(new RssFeed("ASCII.jp",
 					"http://rss.rssad.jp/rss/ascii/rss.xml", 0xfff9f903, true));
-			items.add(new RssFeed("ガジェット速報",
-					"http://ggsoku.com/feed/",
+			items.add(new RssFeed("ガジェット速報", "http://ggsoku.com/feed/",
 					0xffda31e5, true));
 			items.add(new RssFeed("Engadget",
 					"http://feed.rssad.jp/rss/engadget/rss", 0xff0000cd, true));
@@ -200,11 +203,6 @@ public class ItemListActivity extends Activity implements
 			ois.close();
 		} catch (Exception e) {
 		}
-		
-		
-
-
-		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
 
 		final String animation = sharedPreferences.getString("animation",
 				"Cube");
@@ -305,8 +303,10 @@ public class ItemListActivity extends Activity implements
 		boolean ret = true;
 		switch (item.getItemId()) {
 		case R.id.item_list:
-			if (findViewById(R.id.item_detail_container) == null){
+			if (menu != null) {
 				menu.showMenu();
+			} else {
+				efectViewPager.setCurrentItem(1, true);
 			}
 			break;
 		case R.id.reflesh:
@@ -330,15 +330,14 @@ public class ItemListActivity extends Activity implements
 
 	public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
-		
-
 		public SectionsPagerAdapter(final FragmentManager fm) {
 			super(fm);
 
 		}
 
 		@Override
-		public Object instantiateItem(final ViewGroup container,final int position) {
+		public Object instantiateItem(final ViewGroup container,
+				final int position) {
 			final Object obj = super.instantiateItem(container, position);
 			EfectViewPager.setObjectForPosition(obj, position);
 			return obj;
@@ -352,7 +351,7 @@ public class ItemListActivity extends Activity implements
 			// below) with the page number as its lone argument.
 
 			// getIntent().getStringExtra(ItemDetailFragment.ARG_ITEM_ID));
-			//Fragment fragment;
+			// Fragment fragment;
 
 			if (position == 0)// 設定画面
 				return new SettingsFragment();
@@ -365,7 +364,8 @@ public class ItemListActivity extends Activity implements
 				arguments.putString(ItemDetailFragment.ARG_ITEM_ID,
 						items.get(position - 2).getUrl());
 				arguments.putInt("COLOR", items.get(position - 2).getTag());
-				arguments.putSerializable("LIST",hp.get(items.get(position - 2).getUrl()));
+				arguments.putSerializable("LIST",
+						hp.get(items.get(position - 2).getUrl()));
 				final ItemDetailFragment fragment = new ItemDetailFragment();
 				fragment.setArguments(arguments);
 				return fragment;
@@ -373,7 +373,6 @@ public class ItemListActivity extends Activity implements
 			// fragment.getView();
 			// mJazzy.setFragmentForPosition(getItemId(position), position);
 
-			
 		}
 
 		// 全ページ数
@@ -477,8 +476,6 @@ public class ItemListActivity extends Activity implements
 		getLoaderManager().destroyLoader(0);
 		// efectViewPager.setAdapter(null);
 		efectViewPager = null;
-		mSectionsPagerAdapter = null;
-		sharedPreferences = null;
 		items = null;
 		hp = null;
 		super.onDestroy();

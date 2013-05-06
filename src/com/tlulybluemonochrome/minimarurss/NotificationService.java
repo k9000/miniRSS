@@ -16,16 +16,12 @@
 
 package com.tlulybluemonochrome.minimarurss;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.StringReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -113,26 +109,11 @@ public class NotificationService extends IntentService {
 
 			if (urilist.get(i).getNoti()) {// Notifications設定確認
 				try {
-					final HttpURLConnection conn = (HttpURLConnection) new URL(
-							urilist.get(i).getUrl()).openConnection();
-					conn.addRequestProperty("User-Agent", "desktop");
-					conn.setDoInput(true);
-					conn.setRequestMethod("GET");
+					final InputStream is = new URL(urilist.get(i).getUrl())
+							.openConnection().getInputStream();
+					arraylist.addAll(parseXml(is, urilist.get(i).getTag(),
+							urilist.get(i).getTitle()));
 
-					// URL接続
-					final BufferedReader urlIn = new BufferedReader(
-							new InputStreamReader(conn.getInputStream()));
-
-					// HTMLソースの取得
-					final StringBuilder strb = new StringBuilder(65536);
-					strb.append(urlIn.readLine());
-					while (urlIn.ready()) {
-						strb.append(urlIn.readLine());
-					}
-					urlIn.close();
-					conn.disconnect();
-					arraylist.addAll(parseXml(strb.toString(), urilist.get(i)
-							.getTag(), urilist.get(i).getTitle()));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -181,13 +162,13 @@ public class NotificationService extends IntentService {
 	}
 
 	// XMLをパースする
-	public static ArrayList<RssItem> parseXml(final String str,
+	public static ArrayList<RssItem> parseXml(final InputStream is,
 			final int color, final String page) throws IOException,
 			XmlPullParserException {
 		final XmlPullParser parser = Xml.newPullParser();
 		final ArrayList<RssItem> list = new ArrayList<RssItem>();
 		try {
-			parser.setInput(new StringReader(str));
+			parser.setInput(is, null);
 			int eventType = parser.getEventType();
 			RssItem currentItem = null;
 			int i = 0;

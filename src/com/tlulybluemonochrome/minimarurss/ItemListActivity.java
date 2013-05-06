@@ -166,34 +166,6 @@ public class ItemListActivity extends Activity implements
 			editor.putInt("save_version", 1);
 			editor.commit();
 		}
-		
-		if (findViewById(R.id.item_detail_container) != null) {// タブレット用
-			// The detail container view will be present only in the
-			// large-screen layouts (res/values-large and
-			// res/values-sw600dp). If this view is present, then the
-			// activity should be in two-pane mode.
-			mTwoPane = true;
-
-			// In two-pane mode, list items should be given the
-			// 'activated' state when touched.
-			((ItemListFragment) getFragmentManager().findFragmentById(
-					R.id.item_list)).setActivateOnItemClick(true);
-		} else if (sharedPreferences.getBoolean("sliding_menu", true)) {
-			final DisplayMetrics displayMetrics = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-			menu = new SlidingMenu(this);
-			if (sharedPreferences.getString("sliding_side", "Right").equals(
-					"Left")) {
-				menu.setMode(SlidingMenu.LEFT);
-			} else {
-				menu.setMode(SlidingMenu.RIGHT);
-			}
-			menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-			menu.setBehindWidth(displayMetrics.widthPixels / 2);
-			menu.setFadeDegree(0.95f);
-			menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-			menu.setMenu(R.layout.menu);
-		}
 
 		hp = new HashMap<String, ArrayList<RssItem>>();
 		try {// 既読セーブデータオープン
@@ -231,6 +203,35 @@ public class ItemListActivity extends Activity implements
 				getIntent().getIntExtra(ItemDetailFragment.ARG_ITEM_ID, 1),
 				false);
 
+		if (findViewById(R.id.item_detail_container) != null) {// タブレット用
+			// The detail container view will be present only in the
+			// large-screen layouts (res/values-large and
+			// res/values-sw600dp). If this view is present, then the
+			// activity should be in two-pane mode.
+			mTwoPane = true;
+
+			// In two-pane mode, list items should be given the
+			// 'activated' state when touched.
+			((ItemListFragment) getFragmentManager().findFragmentById(
+					R.id.item_list)).setActivateOnItemClick(true);
+		} else if (sharedPreferences.getBoolean("sliding_menu", true)) {
+			final DisplayMetrics displayMetrics = new DisplayMetrics();
+			getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+			menu = new SlidingMenu(this);
+			if (sharedPreferences.getString("sliding_side", "Right").equals(
+					"Left")) {
+				menu.setMode(SlidingMenu.LEFT);
+			} else {
+				menu.setMode(SlidingMenu.RIGHT);
+			}
+			menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+			menu.setBehindWidth(displayMetrics.widthPixels / 2);
+			menu.setFadeDegree(0.95f);
+			menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+			menu.setMenu(R.layout.menu);
+			menu.showMenu();
+		}
+
 		if (sharedPreferences.getBoolean("ref_switch", true)
 				&& savedInstanceState == null) {
 			getLoaderManager().initLoader(0, null, this);
@@ -263,6 +264,9 @@ public class ItemListActivity extends Activity implements
 	public void onItemSelected(final int tag, final String url,
 			final int position) {
 		efectViewPager.setCurrentItem(position + 2, true);
+		if (menu != null) {
+			menu.showContent();
+		}
 
 	}
 
@@ -355,7 +359,9 @@ public class ItemListActivity extends Activity implements
 
 			if (position == 0)// 設定画面
 				return new SettingsFragment();
-			else if (position == 1 && mTwoPane)// トップページ(タブレット用)
+			else if (position == 1
+					&& (mTwoPane || sharedPreferences.getBoolean(
+							"sliding_menu", true)))// トップページ(タブレット用)
 				return new TopPageFragment();
 			else if (position == 1)// フィードリスト
 				return new ItemListFragment();
@@ -387,7 +393,9 @@ public class ItemListActivity extends Activity implements
 		public CharSequence getPageTitle(final int position) {
 			if (position == 0)
 				return "Setting";
-			else if (position == 1 && mTwoPane)
+			else if (position == 1
+					&& (mTwoPane || sharedPreferences.getBoolean(
+							"sliding_menu", true)))
 				return "TopPage";
 			else if (position == 1)
 				return "LIST";

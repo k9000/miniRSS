@@ -38,9 +38,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.util.Xml;
-import android.widget.Toast;
 
 /**
  * 更新確認して通知するサービス
@@ -92,7 +90,6 @@ public class NotificationService extends IntentService {
 			urilist = (ArrayList<RssFeed>) ois.readObject();
 			ois.close();
 		} catch (Exception e) {
-			Toast.makeText(this, "error1", Toast.LENGTH_SHORT).show();
 		}
 
 		try {// 既読セーブデータオープン
@@ -151,7 +148,6 @@ public class NotificationService extends IntentService {
 				oos.writeObject(arraylist);
 				oos.close();
 			} catch (Exception e) {
-				Log.d(TAG, "Error");
 			}
 		}
 

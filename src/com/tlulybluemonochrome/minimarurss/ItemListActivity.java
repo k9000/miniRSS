@@ -23,6 +23,8 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.slidingmenu.lib.SlidingMenu;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -32,14 +34,12 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
@@ -75,6 +75,8 @@ public class ItemListActivity extends Activity implements
 	private int set = 0;
 
 	private MenuItem ref;
+
+	private SlidingMenu menu;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -113,6 +115,18 @@ public class ItemListActivity extends Activity implements
 			// 'activated' state when touched.
 			((ItemListFragment) getFragmentManager().findFragmentById(
 					R.id.item_list)).setActivateOnItemClick(true);
+		}else{
+			
+			menu = new SlidingMenu(this);
+	        menu.setMode(SlidingMenu.RIGHT);
+	        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+	        //menu.setShadowWidthRes(R.dimen.shadow_width);
+	        //menu.setShadowDrawable(R.drawable.shadow);
+	        menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+	        menu.setFadeDegree(0.95f);
+	        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+	        menu.setMenu(R.layout.menu);
+			
 		}
 
 		// セーブデータオープン
@@ -186,6 +200,9 @@ public class ItemListActivity extends Activity implements
 			ois.close();
 		} catch (Exception e) {
 		}
+		
+		
+
 
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
 
@@ -288,7 +305,9 @@ public class ItemListActivity extends Activity implements
 		boolean ret = true;
 		switch (item.getItemId()) {
 		case R.id.item_list:
-			efectViewPager.setCurrentItem(1, true);
+			if (findViewById(R.id.item_detail_container) == null){
+				menu.showMenu();
+			}
 			break;
 		case R.id.reflesh:
 			i = 0;

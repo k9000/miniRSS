@@ -105,34 +105,6 @@ public class ItemListActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_item_list);
 
-		if (findViewById(R.id.item_detail_container) != null) {// タブレット用
-			// The detail container view will be present only in the
-			// large-screen layouts (res/values-large and
-			// res/values-sw600dp). If this view is present, then the
-			// activity should be in two-pane mode.
-			mTwoPane = true;
-
-			// In two-pane mode, list items should be given the
-			// 'activated' state when touched.
-			((ItemListFragment) getFragmentManager().findFragmentById(
-					R.id.item_list)).setActivateOnItemClick(true);
-		} else if (sharedPreferences.getBoolean("sliding_menu", true)) {
-			final DisplayMetrics displayMetrics = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-			menu = new SlidingMenu(this);
-			if (sharedPreferences.getString("sliding_side", "Right").equals(
-					"Left")) {
-				menu.setMode(SlidingMenu.LEFT);
-			} else {
-				menu.setMode(SlidingMenu.RIGHT);
-			}
-			menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-			menu.setBehindWidth(displayMetrics.widthPixels / 2);
-			menu.setFadeDegree(0.95f);
-			menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-			menu.setMenu(R.layout.menu);
-		}
-
 		// セーブデータオープン
 		try {
 			FileInputStream fis = openFileInput("SaveData.txt");
@@ -193,6 +165,34 @@ public class ItemListActivity extends Activity implements
 			final Editor editor = sharedPreferences.edit();
 			editor.putInt("save_version", 1);
 			editor.commit();
+		}
+		
+		if (findViewById(R.id.item_detail_container) != null) {// タブレット用
+			// The detail container view will be present only in the
+			// large-screen layouts (res/values-large and
+			// res/values-sw600dp). If this view is present, then the
+			// activity should be in two-pane mode.
+			mTwoPane = true;
+
+			// In two-pane mode, list items should be given the
+			// 'activated' state when touched.
+			((ItemListFragment) getFragmentManager().findFragmentById(
+					R.id.item_list)).setActivateOnItemClick(true);
+		} else if (sharedPreferences.getBoolean("sliding_menu", true)) {
+			final DisplayMetrics displayMetrics = new DisplayMetrics();
+			getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+			menu = new SlidingMenu(this);
+			if (sharedPreferences.getString("sliding_side", "Right").equals(
+					"Left")) {
+				menu.setMode(SlidingMenu.LEFT);
+			} else {
+				menu.setMode(SlidingMenu.RIGHT);
+			}
+			menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+			menu.setBehindWidth(displayMetrics.widthPixels / 2);
+			menu.setFadeDegree(0.95f);
+			menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+			menu.setMenu(R.layout.menu);
 		}
 
 		hp = new HashMap<String, ArrayList<RssItem>>();

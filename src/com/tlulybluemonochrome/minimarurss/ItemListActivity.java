@@ -225,7 +225,8 @@ public class ItemListActivity extends Activity implements
 				menu.setMode(SlidingMenu.RIGHT);
 			}
 			menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-			menu.setBehindWidth(displayMetrics.widthPixels / 2);
+			menu.setBehindWidth(displayMetrics.widthPixels*sharedPreferences
+					.getInt("menu_width", 50)/100);
 			menu.setFadeDegree(0.95f);
 			menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
 			menu.setMenu(R.layout.menu);

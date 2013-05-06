@@ -225,8 +225,8 @@ public class ItemListActivity extends Activity implements
 				menu.setMode(SlidingMenu.RIGHT);
 			}
 			menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-			menu.setBehindWidth(displayMetrics.widthPixels*sharedPreferences
-					.getInt("menu_width", 50)/100);
+			menu.setBehindWidth(displayMetrics.widthPixels
+					* sharedPreferences.getInt("menu_width", 50) / 100);
 			menu.setFadeDegree(0.95f);
 			menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
 			menu.setMenu(R.layout.menu);
@@ -309,10 +309,20 @@ public class ItemListActivity extends Activity implements
 		switch (item.getItemId()) {
 		case R.id.item_list:
 			if (menu != null) {
-				menu.showMenu();
+				if (!menu.isMenuShowing()) {
+					menu.showMenu();
+				} else {
+					menu.showContent();
+				}
 			} else {
 				efectViewPager.setCurrentItem(1, true);
 			}
+			break;
+		case R.id.item_setting:
+			if (menu != null) {
+				menu.showContent();
+			}
+			efectViewPager.setCurrentItem(0);
 			break;
 		case R.id.reflesh:
 			i = 0;

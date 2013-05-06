@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item android:id="@+id/reflesh"
+    <item
+        android:id="@+id/reflesh"
         android:icon="@android:drawable/ic_menu_rotate"
+        android:showAsAction="ifRoom">
+    </item>
+    <item
+        android:id="@+id/item_setting"
+        android:icon="@android:drawable/ic_menu_manage"
         android:showAsAction="ifRoom">
     </item>
     <item
@@ -11,6 +17,5 @@
         android:showAsAction="ifRoom"
         android:title="LIST">
     </item>
-    
 
 </menu>

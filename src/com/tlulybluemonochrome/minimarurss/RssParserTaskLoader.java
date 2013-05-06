@@ -18,6 +18,7 @@ package com.tlulybluemonochrome.minimarurss;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
@@ -144,20 +145,8 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 						.openConnection();
 				conn.addRequestProperty("User-Agent", "desktop");
 				conn.setDoInput(true);
-				conn.setRequestMethod("GET");
-
-				// URL接続
-				final BufferedReader urlIn = new BufferedReader(
-						new InputStreamReader(conn.getInputStream()));
-
-				// HTMLソースの取得
-				final StringBuilder strb = new StringBuilder();
-				while (urlIn.ready()) {
-					strb.append(urlIn.readLine());
-				}
-				urlIn.close();
-				conn.disconnect();
-				result = parseRSS(strb.toString());
+				conn.connect();
+				result = parseRSS(conn.getInputStream());
 			} catch (Exception e) {
 				e.printStackTrace();
 				return null;
@@ -170,23 +159,9 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 						.openConnection();
 				conn.addRequestProperty("User-Agent", "desktop");
 				conn.setDoInput(true);
-				conn.setRequestMethod("GET");
-				conn.setConnectTimeout(100000);
-				conn.setReadTimeout(100000);
+				conn.connect();
+				result = parseXml(conn.getInputStream(), colorTag);
 
-				// URL接続
-				final BufferedReader urlIn = new BufferedReader(
-						new InputStreamReader(conn.getInputStream()));
-
-				// HTMLソースの取得
-				final StringBuilder strb = new StringBuilder(65536);
-				strb.append(urlIn.readLine());
-				while (urlIn.ready()) {
-					strb.append(urlIn.readLine());
-				}
-				urlIn.close();
-				conn.disconnect();
-				result = parseXml(strb.toString(), colorTag);
 			} catch (Exception e) {
 				e.printStackTrace();
 				return null;
@@ -206,7 +181,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	/**
 	 * XMLをパースする
 	 * 
-	 * @param str
+	 * @param is
 	 *            InputStream
 	 * @param color
 	 *            色
@@ -214,12 +189,12 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	 * @throws IOException
 	 * @throws XmlPullParserException
 	 */
-	public static ArrayList<RssItem> parseXml(final String str, final int color)
-			throws IOException, XmlPullParserException {
+	public static ArrayList<RssItem> parseXml(final InputStream is,
+			final int color) throws IOException, XmlPullParserException {
 		final ArrayList<RssItem> list = new ArrayList<RssItem>();
 		final XmlPullParser parser = Xml.newPullParser();
 		try {
-			parser.setInput(new StringReader(str));
+			parser.setInput(is, null);
 			int eventType = parser.getEventType();
 			RssItem currentItem = null;
 			while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -390,18 +365,18 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	/**
 	 * RSSをパースする
 	 * 
-	 * @param str
+	 * @param is
 	 *            InputStream
 	 * @return ページタイトル
 	 * @throws IOException
 	 * @throws XmlPullParserException
 	 */
-	public static ArrayList<RssItem> parseRSS(final String str)
+	public static ArrayList<RssItem> parseRSS(final InputStream is)
 			throws IOException, XmlPullParserException {
 		final ArrayList<RssItem> list = new ArrayList<RssItem>();
 		final XmlPullParser parser = Xml.newPullParser();
 		try {
-			parser.setInput(new StringReader(str));
+			parser.setInput(is, null);
 			int eventType = parser.getEventType();
 			RssItem currentItem = null;
 			while (eventType != XmlPullParser.END_DOCUMENT) {

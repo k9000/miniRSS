@@ -37,6 +37,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.preference.PreferenceManager;
 import android.util.Xml;
 
@@ -325,14 +326,17 @@ public class NotificationService extends IntentService {
 				bitmap = BitmapFactory.decodeStream(is);
 				is.close();
 				final Resources res = getBaseContext().getResources();
-				bitmap = Bitmap
-						.createScaledBitmap(
-								bitmap,
-								(int) res
-										.getDimension(android.R.dimen.notification_large_icon_width),
-								(int) res
-										.getDimension(android.R.dimen.notification_large_icon_height),
-								false);
+				final float scale = Math
+						.min((float) res
+								.getDimension(android.R.dimen.notification_large_icon_width)
+								/ bitmap.getWidth(),
+								(float) res
+										.getDimension(android.R.dimen.notification_large_icon_height)
+										/ bitmap.getHeight());
+				final Matrix matrix = new Matrix();
+				matrix.postScale(scale, scale);
+				bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
+						bitmap.getHeight(), matrix, true);
 			} catch (IOException e) {
 				e.printStackTrace();
 				return base;

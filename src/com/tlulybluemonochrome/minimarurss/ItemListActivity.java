@@ -558,4 +558,17 @@ public class ItemListActivity extends Activity implements
 
 	}
 
+	@Override
+	public void onRefreshList(String string, ArrayList<RssItem> arg1) {
+		hp.put(string, arg1);
+		try {// セーブ書き込み
+			FileOutputStream fos = this.openFileOutput("RssData.dat",
+					Context.MODE_PRIVATE);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(hp);
+			oos.close();
+		} catch (Exception e1) {
+		}
+	}
+
 }

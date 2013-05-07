@@ -68,6 +68,8 @@ public class ItemDetailFragment extends Fragment implements
 	 */
 	private int mActivatedPosition = ListView.INVALID_POSITION;
 
+	private ArrayList<RssItem> list;
+
 	/**
 	 * A callback interface that all activities containing this fragment must
 	 * implement. This mechanism allows activities to be notified of item
@@ -82,6 +84,8 @@ public class ItemDetailFragment extends Fragment implements
 		public void onAdapterSelected(final int tag, final String url,
 				final int position);
 
+		public void onRefreshList(String string, ArrayList<RssItem> arg1);
+
 	}
 
 	/**
@@ -92,6 +96,12 @@ public class ItemDetailFragment extends Fragment implements
 		@Override
 		public void onAdapterSelected(final int tag, final String url,
 				final int position) {
+		}
+
+		@Override
+		public void onRefreshList(String string, ArrayList<RssItem> arg1) {
+			// TODO 自動生成されたメソッド・スタブ
+
 		}
 
 	};
@@ -115,11 +125,11 @@ public class ItemDetailFragment extends Fragment implements
 
 		mListView.setAdapter(null);
 
+		list = (ArrayList<RssItem>) getArguments().getSerializable("LIST");
+
 		if (getArguments().getSerializable("LIST") != null) {
 			mListView
-					.setAdapter(new CustomDetailAdapter(getActivity(), 0,
-							(ArrayList<RssItem>) getArguments()
-									.getSerializable("LIST")));
+					.setAdapter(new CustomDetailAdapter(getActivity(), 0, list));
 
 			// 引っ張って更新
 			mListView.setOnRefreshListener(new OnRefreshListener() {
@@ -139,10 +149,8 @@ public class ItemDetailFragment extends Fragment implements
 			public void onItemClick(final AdapterView<?> arg0, final View arg1,
 					final int position, final long id) {
 				// TODO 自動生成されたメソッド・スタブ
-				mCallbacks.onAdapterSelected(
-						position,
-						((ArrayList<RssItem>) getArguments().getSerializable(
-								"LIST")).get(position).getUrl(), position);
+				mCallbacks.onAdapterSelected(position, list.get(position)
+						.getUrl(), position);
 
 			}
 
@@ -194,6 +202,10 @@ public class ItemDetailFragment extends Fragment implements
 		}
 		// リスト更新
 		mListView.setAdapter(new CustomDetailAdapter(getActivity(), 0, arg1));
+		mCallbacks.onRefreshList(
+				this.getArguments().getString(ItemDetailFragment.ARG_ITEM_ID),
+				arg1);
+		list = arg1;
 		if (mFlag) {// 引っ張って更新したとき
 			mListView.completeRefreshing();
 			LayoutAnimationController anim = getListCascadeAnimation();

@@ -200,33 +200,24 @@ public class SettingsFragment extends Fragment {
 			}
 		});
 
-		final RadioGroup mRadioGroupOs = (RadioGroup) rootView
-				.findViewById(R.id.radioGroup0);
-
-		// ラジオボタンの初期値
-		final String sliding_side = sharedPreferences.getString("sliding_side",
-				"Right");
-		if (sliding_side.equals("Left"))
-			mRadioGroupOs.check(R.id.radio00);
-		else if (sliding_side.equals("Right"))
-			mRadioGroupOs.check(R.id.radio01);
-
-		// ラジオボタンのリスナー
-		mRadioGroupOs.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		// ON/OFFボタンのリスナー
+		final boolean browser = sharedPreferences.getBoolean("include_browser",
+				true);
+		final Switch s6 = (Switch) rootView.findViewById(R.id.switch6);
+		s6.setOnCheckedChangeListener(null);
+		s6.setChecked(browser);
+		s6.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			@Override
-			public void onCheckedChanged(final RadioGroup group, final int id) {
-				editor.putString("sliding_side",
-						(String) ((RadioButton) rootView.findViewById(id))
-								.getText());
+			public void onCheckedChanged(final CompoundButton buttonView,
+					final boolean isChecked) {
+				editor.putBoolean("include_browser", isChecked);
 				editor.commit();
-
 			}
-
 		});
 
 		SeekBar seekBar2 = (SeekBar) rootView.findViewById(R.id.seekBar2);
 		seekBar2.setMax(100);
-		seekBar2.setProgress(sharedPreferences.getInt("menu_width", 70));
+		seekBar2.setProgress(sharedPreferences.getInt("slide_width", 80));
 
 		// シークバーのリスナー
 		seekBar2.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
@@ -242,7 +233,7 @@ public class SettingsFragment extends Fragment {
 
 			public void onStopTrackingTouch(final SeekBar seekBar) {
 				// ツマミを離したときに呼ばれる
-				editor.putInt("menu_width", seekBar.getProgress());
+				editor.putInt("slide_width", seekBar.getProgress());
 				editor.commit();
 			}
 		});

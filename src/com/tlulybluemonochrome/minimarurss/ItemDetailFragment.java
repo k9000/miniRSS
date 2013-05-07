@@ -142,7 +142,7 @@ public class ItemDetailFragment extends Fragment implements
 				mCallbacks.onAdapterSelected(
 						position,
 						((ArrayList<RssItem>) getArguments().getSerializable(
-								"LIST")).get(position + 1).getUrl(), position);
+								"LIST")).get(position).getUrl(), position);
 
 			}
 

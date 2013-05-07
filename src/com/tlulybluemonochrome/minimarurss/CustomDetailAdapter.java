@@ -27,11 +27,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -123,7 +125,7 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		view.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(final View v) {
-				((ListView) parent).performItemClick(v, position,
+				((ListView) parent).performItemClick(v, position + 1,// なぜか+1しないとうまく動かない
 						(long) v.getId());
 			}
 		});

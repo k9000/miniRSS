@@ -86,6 +86,8 @@ public class ItemListActivity extends Activity implements
 
 	private SlidingMenu menu;
 
+	private int slide = 0;
+
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -209,6 +211,21 @@ public class ItemListActivity extends Activity implements
 				getIntent().getIntExtra(ItemDetailFragment.ARG_ITEM_ID, 1),
 				false);
 
+		final boolean slidingMenu = sharedPreferences.getBoolean(
+				"sliding_menu", true);
+		final boolean includeBrowser = sharedPreferences.getBoolean(
+				"include_browser", true);
+
+		if (!slidingMenu && !includeBrowser) {
+			slide = 0;
+		} else if (slidingMenu && !includeBrowser) {
+			slide = 1;
+		} else if (!slidingMenu && includeBrowser) {
+			slide = 2;
+		} else if (slidingMenu && includeBrowser) {
+			slide = 3;
+		}
+
 		if (findViewById(R.id.item_detail_container) != null) {// タブレット用
 			// The detail container view will be present only in the
 			// large-screen layouts (res/values-large and
@@ -220,28 +237,28 @@ public class ItemListActivity extends Activity implements
 			// 'activated' state when touched.
 			((ItemListFragment) getFragmentManager().findFragmentById(
 					R.id.item_list)).setActivateOnItemClick(true);
-		} else if (sharedPreferences.getBoolean("sliding_menu", true)) {
+
+		} else if (slide != 0) {
 			final DisplayMetrics displayMetrics = new DisplayMetrics();
 			getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 			menu = new SlidingMenu(this);
-			/*
-			 * if (sharedPreferences.getString( "sliding_side", "Right").equals(
-			 * "Left")) { menu.setMode(SlidingMenu.LEFT); } else {
-			 * menu.setMode(SlidingMenu.RIGHT); }
-			 */
-			menu.setMode(SlidingMenu.LEFT);
 			menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
 			menu.setBehindWidth(displayMetrics.widthPixels
-					* sharedPreferences.getInt("menu_width", 70) / 100);
-			menu.setFadeDegree(0.95f);
+					* sharedPreferences.getInt("slide_width", 80) / 100);
+			menu.setFadeDegree(1f);
 			menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-			menu.setMenu(R.layout.menu);
+			if (slide == 1 || slide == 3) {
 
-			// menu.setContentView(webview, new
-			// LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
-			// ViewGroup.LayoutParams.FILL_PARENT));
-			//
-			menu.showMenu();
+				menu.setMode(SlidingMenu.LEFT);
+				menu.setMenu(R.layout.menu);
+				// menu.showMenu();
+			} else {
+
+				menu.setMode(SlidingMenu.RIGHT);
+				menu.setMenu(R.layout.browser);
+
+			}
+
 		}
 
 		if (sharedPreferences.getBoolean("ref_switch", true)
@@ -306,9 +323,14 @@ public class ItemListActivity extends Activity implements
 
 	@Override
 	public void onAdapterSelected(int tag, String url, int position) {
-		if (menu != null) {
-			menu.setMode(SlidingMenu.LEFT_RIGHT);
-			menu.setSecondaryMenu(R.layout.browser);
+		if (slide == 0 || slide == 1) {
+			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+
+		} else {
+			if (slide == 3) {
+				menu.setMode(SlidingMenu.LEFT_RIGHT);
+				menu.setSecondaryMenu(R.layout.browser);
+			}
 			final WebView webview = (WebView) findViewById(R.id.webView1);
 			webview.setWebViewClient(new WebViewClient());
 			webview.getSettings().setBuiltInZoomControls(true);
@@ -319,9 +341,11 @@ public class ItemListActivity extends Activity implements
 			webview.getSettings().setCacheMode(
 					WebSettings.LOAD_CACHE_ELSE_NETWORK);
 			webview.loadUrl(url);
-			menu.showSecondaryMenu();
-		} else {
-			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+			if (slide == 2) {
+				menu.showMenu();
+			} else if (slide == 3) {
+				menu.showSecondaryMenu();
+			}
 		}
 
 	}
@@ -345,8 +369,8 @@ public class ItemListActivity extends Activity implements
 		boolean ret = true;
 		switch (item.getItemId()) {
 		case R.id.item_list:
-			if (menu != null) {
-				if (!menu.isMenuShowing()) {
+			if (slide == 1 || slide == 3) {
+				if (!menu.isMenuShowing() || menu.isSecondaryMenuShowing()) {
 					menu.showMenu();
 				} else {
 					menu.showContent();
@@ -407,9 +431,7 @@ public class ItemListActivity extends Activity implements
 
 			if (position == 0)// 設定画面
 				return new SettingsFragment();
-			else if (position == 1
-					&& (mTwoPane || sharedPreferences.getBoolean(
-							"sliding_menu", true)))// トップページ(タブレット用)
+			else if (position == 1 && (mTwoPane || slide == 1 || slide == 3))// トップページ(タブレット用)
 				return new TopPageFragment();
 			else if (position == 1)// フィードリスト
 				return new ItemListFragment();
@@ -441,9 +463,7 @@ public class ItemListActivity extends Activity implements
 		public CharSequence getPageTitle(final int position) {
 			if (position == 0)
 				return "Setting";
-			else if (position == 1
-					&& (mTwoPane || sharedPreferences.getBoolean(
-							"sliding_menu", true)))
+			else if (position == 1 && (mTwoPane || slide == 1 || slide == 3))
 				return "TopPage";
 			else if (position == 1)
 				return "LIST";

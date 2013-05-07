@@ -30,5 +30,6 @@
     <string name="automatic_update_startup_app">Automatic update startup app</string>
     <string name="back_button_to_return_to_the_list">Back button to return to the list</string>
     <string name="sliding_menu">SlidingMenu</string>
+    <string name="include_browser">IncrudeBrowser</string>
 
 </resources>

@@ -121,39 +121,19 @@
                 android:padding="8dp"
                 android:text="@+string/sliding_menu" />
 
-            <LinearLayout
+            <Switch
+                android:id="@+id/switch6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:padding="8dp"
+                android:text="@+string/include_browser" />
 
-                <RadioGroup
-                    android:id="@+id/radioGroup0"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingLeft="8dp" >
-
-                    <RadioButton
-                        android:id="@+id/radio00"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="Left" />
-
-                    <RadioButton
-                        android:id="@+id/radio01"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:text="Right" />
-                </RadioGroup>
-
-                <SeekBar
-                    android:id="@+id/seekBar2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="8dp" />
-            </LinearLayout>
+            <SeekBar
+                android:id="@+id/seekBar2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp" />
 
             <TextView
                 android:layout_width="match_parent"

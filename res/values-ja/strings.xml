@@ -30,5 +30,6 @@
     <string name="automatic_update_startup_app">アプリ起動時に自動更新</string>
     <string name="back_button_to_return_to_the_list">戻るボタンでリストに戻る</string>
     <string name="sliding_menu">サイドメニュー</string>
+    <string name="include_browser">内蔵ブラウザ</string>
     
 </resources>

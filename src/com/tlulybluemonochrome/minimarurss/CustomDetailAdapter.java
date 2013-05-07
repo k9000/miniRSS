@@ -36,6 +36,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 /**
@@ -122,9 +123,8 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		view.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(final View v) {
-				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item
-						.getUrl()));
-				v.getContext().startActivity(intent);
+				((ListView) parent).performItemClick(v, position,
+						(long) v.getId());
 			}
 		});
 
@@ -152,7 +152,7 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 					holder.bound = true;
 				}
 				makeThread(holder.bound, holder.btn, holder.content);
-				if(item.getImage()!=null){
+				if (item.getImage() != null) {
 					makeImage(item.getImage(), holder.urlImageView);
 				}
 			}

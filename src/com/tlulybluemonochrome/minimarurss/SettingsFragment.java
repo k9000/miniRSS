@@ -226,7 +226,7 @@ public class SettingsFragment extends Fragment {
 
 		SeekBar seekBar2 = (SeekBar) rootView.findViewById(R.id.seekBar2);
 		seekBar2.setMax(100);
-		seekBar2.setProgress(sharedPreferences.getInt("menu_width", 50));
+		seekBar2.setProgress(sharedPreferences.getInt("menu_width", 70));
 
 		// シークバーのリスナー
 		seekBar2.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {

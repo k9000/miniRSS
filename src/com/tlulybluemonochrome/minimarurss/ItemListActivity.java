@@ -30,9 +30,11 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
@@ -43,6 +45,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 /**
  * メインのActivity
@@ -51,7 +56,8 @@ import android.view.Window;
  * 
  */
 public class ItemListActivity extends Activity implements
-		ItemListFragment.Callbacks, LoaderCallbacks<ArrayList<RssItem>> {
+		ItemListFragment.Callbacks, ItemDetailFragment.Callbacks,
+		LoaderCallbacks<ArrayList<RssItem>> {
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -218,18 +224,23 @@ public class ItemListActivity extends Activity implements
 			final DisplayMetrics displayMetrics = new DisplayMetrics();
 			getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 			menu = new SlidingMenu(this);
-			if (sharedPreferences.getString("sliding_side", "Right").equals(
-					"Left")) {
-				menu.setMode(SlidingMenu.LEFT);
-			} else {
-				menu.setMode(SlidingMenu.RIGHT);
-			}
+			/*
+			 * if (sharedPreferences.getString( "sliding_side", "Right").equals(
+			 * "Left")) { menu.setMode(SlidingMenu.LEFT); } else {
+			 * menu.setMode(SlidingMenu.RIGHT); }
+			 */
+			menu.setMode(SlidingMenu.LEFT);
 			menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
 			menu.setBehindWidth(displayMetrics.widthPixels
-					* sharedPreferences.getInt("menu_width", 50) / 100);
+					* sharedPreferences.getInt("menu_width", 70) / 100);
 			menu.setFadeDegree(0.95f);
 			menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
 			menu.setMenu(R.layout.menu);
+
+			// menu.setContentView(webview, new
+			// LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+			// ViewGroup.LayoutParams.FILL_PARENT));
+			//
 			menu.showMenu();
 		}
 
@@ -283,13 +294,39 @@ public class ItemListActivity extends Activity implements
 			oos.close();
 		} catch (Exception e1) {
 		}
+
+		if (menu != null || menu.isMenuShowing()) {
+			menu.setMenu(R.layout.menu);
+		}
+
 		set = 3;
 		mSectionsPagerAdapter.notifyDataSetChanged();
 
 	}
 
-	// 右上のメニュー作成
+	@Override
+	public void onAdapterSelected(int tag, String url, int position) {
+		if (menu != null) {
+			menu.setMode(SlidingMenu.LEFT_RIGHT);
+			menu.setSecondaryMenu(R.layout.browser);
+			final WebView webview = (WebView) findViewById(R.id.webView1);
+			webview.setWebViewClient(new WebViewClient());
+			webview.getSettings().setBuiltInZoomControls(true);
+			webview.getSettings().setLoadWithOverviewMode(true);
+			webview.getSettings().setUseWideViewPort(true);
+			webview.setScrollBarStyle(WebView.SCROLLBARS_INSIDE_OVERLAY);
+			webview.getSettings().setAppCacheMaxSize(4194304);
+			webview.getSettings().setCacheMode(
+					WebSettings.LOAD_CACHE_ELSE_NETWORK);
+			webview.loadUrl(url);
+			menu.showSecondaryMenu();
+		} else {
+			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+		}
 
+	}
+
+	// 右上のメニュー作成
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);

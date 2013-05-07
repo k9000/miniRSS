@@ -17,6 +17,8 @@
 package com.tlulybluemonochrome.minimarurss;
 
 import java.util.ArrayList;
+
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
@@ -29,6 +31,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.LayoutAnimationController;
 import android.view.animation.TranslateAnimation;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.tlulybluemonochrome.minimarurss.RefreshableListView.OnRefreshListener;
@@ -52,6 +56,45 @@ public class ItemDetailFragment extends Fragment implements
 	 * represents.
 	 */
 	public static final String ARG_ITEM_ID = "item_id";
+
+	/**
+	 * The fragment's current callback object, which is notified of list item
+	 * clicks.
+	 */
+	private Callbacks mCallbacks = sDummyCallbacks;
+
+	/**
+	 * The current activated item position. Only used on tablets.
+	 */
+	private int mActivatedPosition = ListView.INVALID_POSITION;
+
+	/**
+	 * A callback interface that all activities containing this fragment must
+	 * implement. This mechanism allows activities to be notified of item
+	 * selections.
+	 */
+	public interface Callbacks {
+		/**
+		 * Callback for when an item has been selected.
+		 * 
+		 * @param position
+		 */
+		public void onAdapterSelected(final int tag, final String url,
+				final int position);
+
+	}
+
+	/**
+	 * A dummy implementation of the {@link Callbacks} interface that does
+	 * nothing. Used only when this fragment is not attached to an activity.
+	 */
+	private static Callbacks sDummyCallbacks = new Callbacks() {
+		@Override
+		public void onAdapterSelected(final int tag, final String url,
+				final int position) {
+		}
+
+	};
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -90,9 +133,45 @@ public class ItemDetailFragment extends Fragment implements
 			});
 		}
 
-		 //getLoaderManager().initLoader(0, getArguments(), this);
+		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(final AdapterView<?> arg0, final View arg1,
+					final int position, final long id) {
+				// TODO 自動生成されたメソッド・スタブ
+				mCallbacks.onAdapterSelected(
+						position,
+						((ArrayList<RssItem>) getArguments().getSerializable(
+								"LIST")).get(position + 1).getUrl(), position);
+
+			}
+
+		});
+
+		// getLoaderManager().initLoader(0, getArguments(), this);
 
 		return rootView;
+	}
+
+	@Override
+	public void onAttach(final Activity activity) {
+		super.onAttach(activity);
+
+		// Activities containing this fragment must implement its callbacks.
+		if (!(activity instanceof Callbacks)) {
+			throw new IllegalStateException(
+					"Activity must implement fragment's callbacks.");
+		}
+
+		mCallbacks = (Callbacks) activity;
+	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+
+		// Reset the active callbacks interface to the dummy implementation.
+		mCallbacks = sDummyCallbacks;
 	}
 
 	// ASyncTaskLoader始動

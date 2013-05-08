@@ -4,12 +4,16 @@
     <item android:state_pressed="false">
         <layer-list>
             <item
+                android:left="8dp" 
+                android:right="8dp"
                 android:drawable="@drawable/gray_repeat" >
 
                
                 </item>
 
-            <item android:bottom="50dp">
+            <item android:bottom="50dp"
+                android:left="8dp" 
+                android:right="8dp">
             <shape android:shape="rectangle">
                     <gradient android:angle="270" 
                         android:startColor="#44000000" 
@@ -18,7 +22,9 @@
                 </shape>
                 </item>
 
-            <item android:top="40dp">
+            <item android:top="40dp"
+                android:left="8dp" 
+                android:right="8dp">
             <shape android:shape="rectangle">
                     <gradient android:angle="270" 
                         
@@ -31,7 +37,9 @@
         </layer-list>
         </item>
         
-    <item android:state_pressed="true">
+    <item android:state_pressed="true"
+        android:left="8dp" 
+                android:right="8dp">
                 <shape android:shape="rectangle">
                     <gradient android:angle="270" 
                         android:endColor="#66113D4D" 

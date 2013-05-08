@@ -19,7 +19,7 @@
             android:layout_width="8dp"
             android:layout_height="8dp"
             android:layout_gravity="left|center_vertical"
-            android:layout_margin="8dp"/>
+            android:layout_margin="12dp"/>
 
         <TextView
             android:id="@+id/text"

@@ -17,6 +17,9 @@
 package com.tlulybluemonochrome.minimarurss;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import android.graphics.Bitmap;
 
@@ -37,6 +40,7 @@ public class RssItem implements Serializable {
 	private int tag;
 	private String page;
 	private String image;
+	private Date date;
 
 	public RssItem(final String title, final String url, final String text,
 			final int tag, final String page, final String image) {
@@ -81,6 +85,10 @@ public class RssItem implements Serializable {
 		return image;
 	}
 
+	public final Date getDate() {
+		return date;
+	}
+
 	public final void setTitle(final String title) {
 		this.title = title;
 	}
@@ -109,6 +117,10 @@ public class RssItem implements Serializable {
 		final Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
 		bmp.eraseColor(tag);
 		return bmp;
+	}
+
+	public void setDate(final Date date) {
+		this.date = date;
 	}
 
 }

@@ -23,7 +23,9 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -209,6 +211,12 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 						if (tag.equals("title")) {
 							currentItem.setTitle(parser.nextText().replaceAll(
 									"(&#....;|&....;|&...;)", ""));// タグ除去;
+						} else if (tag.equals("pubDate")) {
+							currentItem.setDate(new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH)
+									.parse(parser.nextText()));
+						} else if (tag.equals("dc:date")||tag.equals("published")) {
+							currentItem.setDate(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+									.parse(parser.nextText()));
 						} else if (tag.equals("link")) {
 							final String link = parser.nextText();
 							if (link != "") {

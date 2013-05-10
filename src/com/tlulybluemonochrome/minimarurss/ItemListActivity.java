@@ -202,7 +202,7 @@ public class ItemListActivity extends Activity implements
 		EfectViewPager.setTransitionEffect(effect);
 		efectViewPager.setAdapter(mSectionsPagerAdapter);
 		efectViewPager.setOffscreenPageLimit(3);
-		efectViewPager.setPageMargin(  (int) (getResources().getDisplayMetrics().density * -8) );
+		//efectViewPager.setPageMargin(  (int) (getResources().getDisplayMetrics().density * -8) );
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.

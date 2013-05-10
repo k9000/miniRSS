@@ -1,20 +1,39 @@
-<com.tlulybluemonochrome.minimarurss.EfectViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/jazzy_pager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ItemListActivity"
-    android:background="?android:colorBackground" >
+    android:layout_gravity="center"
+    android:background="?android:colorBackground"
+    android:orientation="horizontal"
+    tools:context=".ItemListActivity" >
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="16dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/handle" />
 
 
-  
-    <android.support.v4.view.PagerTitleStrip
-        android:id="@+id/pager_title_strip"
-        android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:layout_gravity="top"
-        android:background="?android:colorForeground"
-        android:gravity="center"
-        android:textColor="#fff" />
+    <com.tlulybluemonochrome.minimarurss.EfectViewPager
+        android:id="@+id/jazzy_pager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" >
 
-</com.tlulybluemonochrome.minimarurss.EfectViewPager>
+        <android.support.v4.view.PagerTitleStrip
+            android:id="@+id/pager_title_strip"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_gravity="top"
+            android:background="?android:colorForeground"
+            android:gravity="center"
+            android:textColor="#fff" />
+    </com.tlulybluemonochrome.minimarurss.EfectViewPager>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="16dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/handle" />
+
+</LinearLayout>

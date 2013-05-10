@@ -3,9 +3,7 @@
 
     <item android:state_pressed="false">
         <layer-list>
-            <item
-                android:left="8dp" 
-                android:right="8dp" ><shape android:shape="rectangle">
+            <item ><shape android:shape="rectangle">
                     <gradient android:angle="270" 
                         android:endColor="#000000" 
                         android:startColor="#666666" 
@@ -13,8 +11,8 @@
                 </shape>
                 </item>
 
-            <item android:left="9dp" 
-                android:right="9dp" 
+            <item android:left="1dp" 
+                android:right="1dp" 
                 android:top="30dp">
             <shape android:shape="rectangle">
                     <solid android:color="#88000000" />
@@ -22,8 +20,8 @@
                 </item>
 
             <item android:bottom="1dp" 
-                android:left="9dp" 
-                android:right="9dp" 
+                android:left="1dp" 
+                android:right="1dp" 
                 android:top="40dp">
             <shape android:shape="rectangle">
                     <gradient android:angle="270" 
@@ -43,9 +41,7 @@
                     <solid android:color="#2233B5E5" />
                 </shape>
                 </item>
-            <item
-                android:left="8dp" 
-                android:right="8dp" >
+            <item >
                 <shape android:shape="rectangle">
                     <gradient android:angle="270" 
                         android:endColor="#66000000" 
@@ -54,8 +50,8 @@
                 </shape>
                 </item>
 
-            <item android:left="9dp" 
-                android:right="9dp" 
+            <item android:left="1dp" 
+                android:right="1dp" 
                 android:top="30dp">
                 <shape android:shape="rectangle">
                     <solid android:color="#44000000" />
@@ -63,8 +59,8 @@
                 </item>
 
             <item android:bottom="1dp" 
-                android:left="9dp" 
-                android:right="9dp" 
+                android:left="1dp" 
+                android:right="1dp" 
                 android:top="40dp">
                 <shape android:shape="rectangle">
                     <gradient android:angle="270" 

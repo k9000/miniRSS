@@ -214,15 +214,15 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 						} else if (tag.equals("pubDate")) {
 							currentItem.setDate(new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH)
 									.parse(parser.nextText()));
-						} else if (tag.equals("dc:date")||tag.equals("published")) {
-							currentItem.setDate(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+						} else if (tag.equals("date")||tag.equals("published")) {
+							currentItem.setDate(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 									.parse(parser.nextText()));
 						} else if (tag.equals("link")) {
 							final String link = parser.nextText();
 							if (link != "") {
 								currentItem.setUrl(link);
 							} else {
-								final String rel = parser.getAttributeValue(
+								final String rel =  parser.getAttributeValue(
 										null, "rel");
 								final String herf = parser.getAttributeValue(
 										null, "href");

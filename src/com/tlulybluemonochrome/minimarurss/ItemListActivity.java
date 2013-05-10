@@ -56,7 +56,7 @@ import android.webkit.WebViewClient;
  * 
  */
 public class ItemListActivity extends Activity implements
-		ItemListFragment.Callbacks, ItemDetailFragment.Callbacks,
+		ItemListFragment.Callbacks, ItemDetailFragment.Callbacks, TopPageFragment.Callbacks,
 		LoaderCallbacks<ArrayList<RssItem>> {
 
 	/**
@@ -432,8 +432,16 @@ public class ItemListActivity extends Activity implements
 
 			if (position == 0)// 設定画面
 				return new SettingsFragment();
-			else if (position == 1 && (mTwoPane || slide == 1 || slide == 3))// トップページ(タブレット用)
-				return new TopPageFragment();
+			else if (position == 1 && (mTwoPane || slide == 1 || slide == 3)){
+				final Bundle arguments = new Bundle();
+				arguments.putSerializable("LIST",
+						hp.get(items.get(0).getUrl()));
+				final TopPageFragment fragment = new TopPageFragment();
+				fragment.setArguments(arguments);
+				return fragment;
+			}
+				
+				
 			else if (position == 1)// フィードリスト
 				return new ItemListFragment();
 			else {// 記事一覧

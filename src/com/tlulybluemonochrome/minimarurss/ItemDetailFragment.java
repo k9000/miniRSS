@@ -188,7 +188,7 @@ public class ItemDetailFragment extends Fragment implements
 			final Bundle args) {
 		final RssParserTaskLoader appLoader = new RssParserTaskLoader(
 				getActivity(), args.getString(ItemDetailFragment.ARG_ITEM_ID),
-				wait, args.getInt("COLOR"));
+				wait, args.getInt("COLOR"), args.getString("TITLE"));
 		appLoader.forceLoad();
 		return appLoader;
 	}

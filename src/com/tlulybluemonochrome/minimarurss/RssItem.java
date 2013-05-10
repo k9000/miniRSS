@@ -17,8 +17,6 @@
 package com.tlulybluemonochrome.minimarurss;
 
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.graphics.Bitmap;

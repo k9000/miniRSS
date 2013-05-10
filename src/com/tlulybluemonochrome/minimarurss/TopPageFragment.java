@@ -17,7 +17,6 @@
 package com.tlulybluemonochrome.minimarurss;
 
 import java.util.ArrayList;
-
 import com.haarman.listviewanimations.itemmanipulation.OnDismissCallback;
 import com.haarman.listviewanimations.itemmanipulation.SwipeDismissAdapter;
 import com.haarman.listviewanimations.swinginadapters.prepared.SwingBottomInAnimationAdapter;
@@ -41,13 +40,13 @@ public class TopPageFragment extends Fragment implements OnDismissCallback {
 
 	private GoogleCardsAdapter mGoogleCardsAdapter;
 	private ArrayList<RssItem> list;
-	
+
 	/**
 	 * The fragment's current callback object, which is notified of list item
 	 * clicks.
 	 */
 	private Callbacks mCallbacks = sDummyCallbacks;
-	
+
 	/**
 	 * A callback interface that all activities containing this fragment must
 	 * implement. This mechanism allows activities to be notified of item
@@ -75,7 +74,7 @@ public class TopPageFragment extends Fragment implements OnDismissCallback {
 		}
 
 	};
-	
+
 	@Override
 	public void onAttach(final Activity activity) {
 		super.onAttach(activity);
@@ -129,7 +128,9 @@ public class TopPageFragment extends Fragment implements OnDismissCallback {
 				new SwipeDismissAdapter(mGoogleCardsAdapter, this));
 		swingBottomInAnimationAdapter.setListView(listView);
 
-		listView.setAdapter(swingBottomInAnimationAdapter);
+		if (list != null) {
+			listView.setAdapter(swingBottomInAnimationAdapter);
+		}
 
 		return rootView;
 	}

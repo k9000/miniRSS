@@ -19,12 +19,12 @@ import android.widget.TextView;
 public class GoogleCardsAdapter extends ArrayAdapter<RssItem> {
 
 	private LayoutInflater layoutInflater_;
-	
+
 	private static final Handler handler = new Handler();
-	
+
 	static class ViewHolder {
 		ImageView image;
-		TextView title,text;
+		TextView title, text;
 	}
 
 	public GoogleCardsAdapter(Context context, int textViewResourceId,
@@ -33,7 +33,7 @@ public class GoogleCardsAdapter extends ArrayAdapter<RssItem> {
 		layoutInflater_ = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
-	
+
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
@@ -57,37 +57,32 @@ public class GoogleCardsAdapter extends ArrayAdapter<RssItem> {
 			holder.image.setImageBitmap(null);
 
 		}
-		
+
 		final RssItem item = (RssItem) getItem(position);
-		
+
 		if (item.getImage() != null) {
 			holder.image.setVisibility(View.VISIBLE);
 			makeImage(item.getImage(), holder.image);
-		}else{
+		} else {
 			holder.image.setVisibility(View.GONE);
 		}
-		
+
 		holder.title.setText(item.getTitle());
-		//holder.text.setText(item.getText());
-		
-		
-		
-/*
-		// 特定の行(position)のデータを得る
-		RssFeed item = (RssFeed) getItem(position);
+		holder.text.setText(item.getPage() + "   "
+				+ String.valueOf(item.getDate()));
 
-		// CustomDataのデータをViewの各Widgetにセットする
-		if (item.getNoti()) {
-			holder.image.setImageBitmap(item.getImageData());
-		} else {
-			holder.image.setImageBitmap(null);
-		}
-
-		holder.text.setText(item.getTitle());
-*/
+		/*
+		 * // 特定の行(position)のデータを得る RssFeed item = (RssFeed) getItem(position);
+		 * 
+		 * // CustomDataのデータをViewの各Widgetにセットする if (item.getNoti()) {
+		 * holder.image.setImageBitmap(item.getImageData()); } else {
+		 * holder.image.setImageBitmap(null); }
+		 * 
+		 * holder.text.setText(item.getTitle());
+		 */
 		return view;
 	}
-	
+
 	private static void makeImage(final String image,
 			final ImageView urlImageView) {
 		new Thread(new Runnable() {

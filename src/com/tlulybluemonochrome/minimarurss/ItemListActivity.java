@@ -21,8 +21,9 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import android.app.Activity;
@@ -56,8 +57,8 @@ import android.webkit.WebViewClient;
  * 
  */
 public class ItemListActivity extends Activity implements
-		ItemListFragment.Callbacks, ItemDetailFragment.Callbacks, TopPageFragment.Callbacks,
-		LoaderCallbacks<ArrayList<RssItem>> {
+		ItemListFragment.Callbacks, ItemDetailFragment.Callbacks,
+		TopPageFragment.Callbacks, LoaderCallbacks<ArrayList<RssItem>> {
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -68,6 +69,8 @@ public class ItemListActivity extends Activity implements
 	private SharedPreferences sharedPreferences;
 
 	private ArrayList<RssFeed> items;
+
+	private ArrayList<RssItem> alllist = new ArrayList<RssItem>();
 
 	private HashMap<String, ArrayList<RssItem>> hp;
 
@@ -181,6 +184,23 @@ public class ItemListActivity extends Activity implements
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			hp = (HashMap<String, ArrayList<RssItem>>) ois.readObject();
 			ois.close();
+			alllist = new ArrayList<RssItem>();
+			if(sharedPreferences.getBoolean("card", false)){
+				for (String key : hp.keySet()) {
+					alllist.addAll(hp.get(key));
+				}
+				Collections.sort(alllist, new Comparator<RssItem>() {
+					@Override
+					public int compare(RssItem lhs, RssItem rhs) {
+						if (lhs.getDate().before(rhs.getDate()))
+							return 1;
+						else
+							return -1;
+
+					}
+				});
+			}
+			
 		} catch (Exception e) {
 		}
 
@@ -202,7 +222,8 @@ public class ItemListActivity extends Activity implements
 		EfectViewPager.setTransitionEffect(effect);
 		efectViewPager.setAdapter(mSectionsPagerAdapter);
 		efectViewPager.setOffscreenPageLimit(3);
-		//efectViewPager.setPageMargin(  (int) (getResources().getDisplayMetrics().density * -8) );
+		// efectViewPager.setPageMargin( (int)
+		// (getResources().getDisplayMetrics().density * -8) );
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
@@ -432,22 +453,22 @@ public class ItemListActivity extends Activity implements
 
 			if (position == 0)// 設定画面
 				return new SettingsFragment();
-			else if (position == 1 && (mTwoPane || slide == 1 || slide == 3)){
+			else if (position == 1 && (mTwoPane || slide == 1 || slide == 3)) {
 				final Bundle arguments = new Bundle();
-				arguments.putSerializable("LIST",
-						hp.get(items.get(0).getUrl()));
+				arguments.putSerializable("LIST", alllist);
 				final TopPageFragment fragment = new TopPageFragment();
 				fragment.setArguments(arguments);
 				return fragment;
 			}
-				
-				
+
 			else if (position == 1)// フィードリスト
 				return new ItemListFragment();
 			else {// 記事一覧
 				final Bundle arguments = new Bundle();
 				arguments.putString(ItemDetailFragment.ARG_ITEM_ID,
 						items.get(position - 2).getUrl());
+				arguments
+						.putString("TITLE", items.get(position - 2).getTitle());
 				arguments.putInt("COLOR", items.get(position - 2).getTag());
 				arguments.putSerializable("LIST",
 						hp.get(items.get(position - 2).getUrl()));
@@ -499,7 +520,7 @@ public class ItemListActivity extends Activity implements
 		url = items.get(i).getUrl();
 		final int color = items.get(i).getTag();
 		final RssParserTaskLoader appLoader = new RssParserTaskLoader(this,
-				url, 0, color);
+				url, 0, color, items.get(i).getTitle());
 		appLoader.forceLoad();
 		return appLoader;
 	}
@@ -511,6 +532,17 @@ public class ItemListActivity extends Activity implements
 			return;
 		}
 		hp.put(url, arg1);
+		alllist.addAll(arg1);
+		Collections.sort(alllist, new Comparator<RssItem>() {
+			@Override
+			public int compare(RssItem lhs, RssItem rhs) {
+				if (lhs.getDate().before(rhs.getDate()))
+					return 1;
+				else
+					return -1;
+
+			}
+		});
 		i++;
 		if (i < items.size()) {
 			getLoaderManager().restartLoader(0, null, this);
@@ -576,6 +608,7 @@ public class ItemListActivity extends Activity implements
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(hp);
 			oos.close();
+			sharedPreferences.edit().putBoolean("card", true).commit();
 		} catch (Exception e1) {
 		}
 	}

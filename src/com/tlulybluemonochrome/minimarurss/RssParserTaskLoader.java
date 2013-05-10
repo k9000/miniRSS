@@ -49,6 +49,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	private int wait;
 	private int flag;
 	private int colorTag = 0x33b5e5;
+	private String pageTitle;
 
 	/**
 	 * ItewDetailFragment用コンストラクタ
@@ -61,14 +62,17 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	 *            待ち時間
 	 * @param color
 	 *            通知色
+	 * @param string
 	 * @param activity
 	 *            多重起動防止用
 	 */
 	public RssParserTaskLoader(final Context context, final String url,
-			final int wait, final int color) {
+			final int wait, final int color, String title) {
 		super(context);
 
 		this.colorTag = color;
+
+		this.pageTitle = title;
 
 		this.wait = wait;// 引っ張って更新の機嫌取り
 
@@ -162,7 +166,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 				conn.addRequestProperty("User-Agent", "desktop");
 				conn.setDoInput(true);
 				conn.connect();
-				result = parseXml(conn.getInputStream(), colorTag);
+				result = parseXml(conn.getInputStream(), colorTag, pageTitle);
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -192,7 +196,8 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	 * @throws XmlPullParserException
 	 */
 	public static ArrayList<RssItem> parseXml(final InputStream is,
-			final int color) throws IOException, XmlPullParserException {
+			final int color, final String page) throws IOException,
+			XmlPullParserException {
 		final ArrayList<RssItem> list = new ArrayList<RssItem>();
 		final XmlPullParser parser = Xml.newPullParser();
 		try {
@@ -207,22 +212,26 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 					if (tag.equals("item") || tag.equals("entry")) {
 						currentItem = new RssItem();
 						currentItem.setTag(color);
+						currentItem.setPage(page);
 					} else if (currentItem != null) {
 						if (tag.equals("title")) {
 							currentItem.setTitle(parser.nextText().replaceAll(
 									"(&#....;|&....;|&...;)", ""));// タグ除去;
 						} else if (tag.equals("pubDate")) {
-							currentItem.setDate(new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH)
-									.parse(parser.nextText()));
-						} else if (tag.equals("date")||tag.equals("published")) {
-							currentItem.setDate(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-									.parse(parser.nextText()));
+							currentItem.setDate(new SimpleDateFormat(
+									"EEE, dd MMM yyyy HH:mm:ss Z",
+									Locale.ENGLISH).parse(parser.nextText()));
+						} else if (tag.equals("date")
+								|| tag.equals("published")) {
+							currentItem.setDate(new SimpleDateFormat(
+									"yyyy-MM-dd'T'HH:mm:ss").parse(parser
+									.nextText()));
 						} else if (tag.equals("link")) {
 							final String link = parser.nextText();
 							if (link != "") {
 								currentItem.setUrl(link);
 							} else {
-								final String rel =  parser.getAttributeValue(
+								final String rel = parser.getAttributeValue(
 										null, "rel");
 								final String herf = parser.getAttributeValue(
 										null, "href");

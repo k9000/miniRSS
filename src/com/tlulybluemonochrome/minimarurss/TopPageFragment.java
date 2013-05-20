@@ -17,9 +17,6 @@
 package com.tlulybluemonochrome.minimarurss;
 
 import java.util.ArrayList;
-import com.haarman.listviewanimations.itemmanipulation.OnDismissCallback;
-import com.haarman.listviewanimations.itemmanipulation.SwipeDismissAdapter;
-import com.haarman.listviewanimations.swinginadapters.prepared.SwingBottomInAnimationAdapter;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -28,7 +25,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
+import android.widget.ArrayAdapter;
+import android.widget.GridView;
 
 /**
  * タブレット用トップページ
@@ -36,9 +34,8 @@ import android.widget.ListView;
  * @author k9000
  * 
  */
-public class TopPageFragment extends Fragment implements OnDismissCallback {
+public class TopPageFragment extends Fragment {
 
-	private GoogleCardsAdapter mGoogleCardsAdapter;
 	private ArrayList<RssItem> list;
 
 	/**
@@ -109,10 +106,12 @@ public class TopPageFragment extends Fragment implements OnDismissCallback {
 
 		list = (ArrayList<RssItem>) getArguments().getSerializable("LIST");
 
-		ListView listView = (ListView) rootView
-				.findViewById(R.id.googlecards_listview);
+		final GridView gridView = (GridView) rootView
+				.findViewById(R.id.googlecards_gridview);
+		
+		gridView.setAdapter(new CustomDetailAdapter(getActivity(), 0, list));
 
-		listView.setOnItemClickListener(new OnItemClickListener() {
+		gridView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(final AdapterView<?> arg0, final View arg1,
 					final int position, final long arg3) {
@@ -122,7 +121,10 @@ public class TopPageFragment extends Fragment implements OnDismissCallback {
 			}
 
 		});
-
+		
+		
+		return rootView;
+/*
 		mGoogleCardsAdapter = new GoogleCardsAdapter(getActivity(), 0, list);
 		final SwingBottomInAnimationAdapter swingBottomInAnimationAdapter = new SwingBottomInAnimationAdapter(
 				new SwipeDismissAdapter(mGoogleCardsAdapter, this));
@@ -140,7 +142,7 @@ public class TopPageFragment extends Fragment implements OnDismissCallback {
 		// TODO 自動生成されたメソッド・スタブ
 		for (int position : reverseSortedPositions) {
 			mGoogleCardsAdapter.remove(list.get(position));
-		}
+		}*/
 	}
 
 }

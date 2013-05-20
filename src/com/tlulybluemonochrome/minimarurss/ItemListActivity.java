@@ -72,7 +72,11 @@ public class ItemListActivity extends Activity implements
 
 	private ArrayList<RssItem> alllist = new ArrayList<RssItem>();
 
-	private HashMap<String, ArrayList<RssItem>> hp;
+	private ArrayList<RssItem> nalllist = new ArrayList<RssItem>();
+
+	private HashMap<String, ArrayList<RssItem>> hp = new HashMap<String, ArrayList<RssItem>>();
+
+	private HashMap<String, ArrayList<RssItem>> nhp = new HashMap<String, ArrayList<RssItem>>();
 
 	private String url;
 
@@ -178,29 +182,30 @@ public class ItemListActivity extends Activity implements
 			editor.commit();
 		}
 
-		hp = new HashMap<String, ArrayList<RssItem>>();
 		try {// 既読セーブデータオープン
 			FileInputStream fis = openFileInput("RssData.dat");
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			hp = (HashMap<String, ArrayList<RssItem>>) ois.readObject();
 			ois.close();
 			alllist = new ArrayList<RssItem>();
-			if(sharedPreferences.getBoolean("card", false)){
-				for (String key : hp.keySet()) {
-					alllist.addAll(hp.get(key));
-				}
-				Collections.sort(alllist, new Comparator<RssItem>() {
-					@Override
-					public int compare(RssItem lhs, RssItem rhs) {
-						if (lhs.getDate().before(rhs.getDate()))
-							return 1;
-						else
-							return -1;
-
-					}
-				});
+			for (String key : hp.keySet()) {
+				alllist.addAll(hp.get(key));
 			}
-			
+			Collections.sort(alllist, new Comparator<RssItem>() {
+				@Override
+				public int compare(RssItem lhs, RssItem rhs) {
+					if (lhs.getDate() == null)
+						return 1;
+					else if (rhs.getDate() == null)
+						return -1;
+					else if (lhs.getDate().before(rhs.getDate()))
+						return 1;
+					else
+						return -1;
+
+				}
+			});
+
 		} catch (Exception e) {
 		}
 
@@ -531,12 +536,16 @@ public class ItemListActivity extends Activity implements
 		if (arg1 == null) {// 失敗時(意味ないかも)
 			return;
 		}
-		hp.put(url, arg1);
-		alllist.addAll(arg1);
-		Collections.sort(alllist, new Comparator<RssItem>() {
+		nhp.put(url, arg1);
+		nalllist.addAll(arg1);
+		Collections.sort(nalllist, new Comparator<RssItem>() {
 			@Override
-			public int compare(RssItem lhs, RssItem rhs) {
-				if (lhs.getDate().before(rhs.getDate()))
+			public int compare(final RssItem lhs, final RssItem rhs) {
+				if (lhs.getDate() == null)
+					return 1;
+				else if (rhs.getDate() == null)
+					return -1;
+				else if (lhs.getDate().before(rhs.getDate()))
 					return 1;
 				else
 					return -1;
@@ -548,6 +557,10 @@ public class ItemListActivity extends Activity implements
 			getLoaderManager().restartLoader(0, null, this);
 		} else {
 			try {// セーブ書き込み
+				alllist = nalllist;
+				nalllist = new ArrayList<RssItem>();
+				hp = nhp;
+				nhp = new HashMap<String, ArrayList<RssItem>>();
 				FileOutputStream fos = this.openFileOutput("RssData.dat",
 						Context.MODE_PRIVATE);
 				ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -555,9 +568,6 @@ public class ItemListActivity extends Activity implements
 				oos.close();
 			} catch (Exception e1) {
 			}
-			final Editor editor = sharedPreferences.edit();
-			editor.putInt("save_version", 1);
-			editor.commit();
 
 			set = 3;
 			mSectionsPagerAdapter.notifyDataSetChanged();

@@ -25,7 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
 /**
@@ -108,8 +107,8 @@ public class TopPageFragment extends Fragment {
 
 		final GridView gridView = (GridView) rootView
 				.findViewById(R.id.googlecards_gridview);
-		
-		gridView.setAdapter(new CustomDetailAdapter(getActivity(), 0, list));
+
+		gridView.setAdapter(new GoogleCardsAdapter(getActivity(), 0, list));
 
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -121,28 +120,9 @@ public class TopPageFragment extends Fragment {
 			}
 
 		});
-		
-		
-		return rootView;
-/*
-		mGoogleCardsAdapter = new GoogleCardsAdapter(getActivity(), 0, list);
-		final SwingBottomInAnimationAdapter swingBottomInAnimationAdapter = new SwingBottomInAnimationAdapter(
-				new SwipeDismissAdapter(mGoogleCardsAdapter, this));
-		swingBottomInAnimationAdapter.setListView(listView);
-
-		if (list != null) {
-			listView.setAdapter(swingBottomInAnimationAdapter);
-		}
 
 		return rootView;
-	}
 
-	@Override
-	public void onDismiss(ListView listView, int[] reverseSortedPositions) {
-		// TODO 自動生成されたメソッド・スタブ
-		for (int position : reverseSortedPositions) {
-			mGoogleCardsAdapter.remove(list.get(position));
-		}*/
 	}
 
 }

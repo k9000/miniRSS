@@ -185,36 +185,6 @@ public class SettingsFragment extends Fragment {
 			}
 		});
 
-		// ON/OFFボタンのリスナー
-		final boolean slidingmenu = sharedPreferences.getBoolean(
-				"sliding_menu", true);
-		final Switch s5 = (Switch) rootView.findViewById(R.id.switch5);
-		s5.setOnCheckedChangeListener(null);
-		s5.setChecked(slidingmenu);
-		s5.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(final CompoundButton buttonView,
-					final boolean isChecked) {
-				editor.putBoolean("sliding_menu", isChecked);
-				editor.commit();
-			}
-		});
-
-		// ON/OFFボタンのリスナー
-		final boolean browser = sharedPreferences.getBoolean("include_browser",
-				true);
-		final Switch s6 = (Switch) rootView.findViewById(R.id.switch6);
-		s6.setOnCheckedChangeListener(null);
-		s6.setChecked(browser);
-		s6.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(final CompoundButton buttonView,
-					final boolean isChecked) {
-				editor.putBoolean("include_browser", isChecked);
-				editor.commit();
-			}
-		});
-
 		SeekBar seekBar2 = (SeekBar) rootView.findViewById(R.id.seekBar2);
 		seekBar2.setMax(100);
 		seekBar2.setProgress(sharedPreferences.getInt("slide_width", 80));

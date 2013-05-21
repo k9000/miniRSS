@@ -31,5 +31,6 @@
     <string name="back_button_to_return_to_the_list">Back button to return to the list</string>
     <string name="sliding_menu">SlidingMenu</string>
     <string name="include_browser">IncrudeBrowser</string>
+    <string name="slide_width">Slide Width</string>
 
 </resources>

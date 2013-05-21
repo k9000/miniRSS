@@ -31,5 +31,6 @@
     <string name="back_button_to_return_to_the_list">戻るボタンでリストに戻る</string>
     <string name="sliding_menu">サイドメニュー</string>
     <string name="include_browser">内蔵ブラウザ</string>
+    <string name="slide_width">スライド幅</string>
     
 </resources>

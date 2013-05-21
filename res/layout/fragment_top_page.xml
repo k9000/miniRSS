@@ -17,7 +17,6 @@
     android:id="@+id/googlecards_gridview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
     android:numColumns="auto_fit"
     android:columnWidth="160dp"
     android:stretchMode="columnWidth"

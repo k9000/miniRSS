@@ -39,7 +39,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,7 +49,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 /**
  * メインのActivity
@@ -72,13 +70,13 @@ public class ItemListActivity extends Activity implements
 
 	private ArrayList<RssFeed> items;
 
-	private ArrayList<RssItem> alllist = new ArrayList<RssItem>();
+	private final ArrayList<RssItem> alllist = new ArrayList<RssItem>();
 
-	private ArrayList<RssItem> nalllist = new ArrayList<RssItem>();
+	private final ArrayList<RssItem> nalllist = new ArrayList<RssItem>();
 
-	private HashMap<String, ArrayList<RssItem>> hp = new HashMap<String, ArrayList<RssItem>>();
+	private final HashMap<String, ArrayList<RssItem>> hp = new HashMap<String, ArrayList<RssItem>>();
 
-	private HashMap<String, ArrayList<RssItem>> nhp = new HashMap<String, ArrayList<RssItem>>();
+	private final HashMap<String, ArrayList<RssItem>> nhp = new HashMap<String, ArrayList<RssItem>>();
 
 	private String url;
 
@@ -187,9 +185,10 @@ public class ItemListActivity extends Activity implements
 		try {// 既読セーブデータオープン
 			FileInputStream fis = openFileInput("RssData.dat");
 			ObjectInputStream ois = new ObjectInputStream(fis);
-			hp = (HashMap<String, ArrayList<RssItem>>) ois.readObject();
+			hp.clear();
+			hp.putAll((HashMap<String, ArrayList<RssItem>>) ois.readObject());
 			ois.close();
-			alllist = new ArrayList<RssItem>();
+			alllist.clear();
 			for (String key : hp.keySet()) {
 				alllist.addAll(hp.get(key));
 			}
@@ -520,13 +519,15 @@ public class ItemListActivity extends Activity implements
 				
 				
 				try {// セーブ書き込み
-					alllist = nalllist;
-					nalllist = new ArrayList<RssItem>();
-					hp = nhp;
-					nhp = new HashMap<String, ArrayList<RssItem>>();
-					FileOutputStream fos = this.openFileOutput("RssData.dat",
+					alllist.clear();
+					alllist.addAll(nalllist);
+					nalllist.clear();
+					hp.clear();
+					hp.putAll(nhp);
+					nhp.clear();
+					final FileOutputStream fos = this.openFileOutput("RssData.dat",
 							Context.MODE_PRIVATE);
-					ObjectOutputStream oos = new ObjectOutputStream(fos);
+					final ObjectOutputStream oos = new ObjectOutputStream(fos);
 					oos.writeObject(hp);
 					oos.close();
 				} catch (Exception e1) {
@@ -567,9 +568,13 @@ public class ItemListActivity extends Activity implements
 		// ImageCache.deleteAll(getCacheDir());
 		getLoaderManager().destroyLoader(0);
 		// efectViewPager.setAdapter(null);
+		alllist.clear();
+		nalllist.clear();
+		hp.clear();
+		nhp.clear();
 		efectViewPager = null;
 		items = null;
-		hp = null;
+		//hp = null;
 		super.onDestroy();
 
 	}
@@ -578,9 +583,9 @@ public class ItemListActivity extends Activity implements
 	public void onRefreshList(String string, ArrayList<RssItem> arg1) {
 		hp.put(string, arg1);
 		try {// セーブ書き込み
-			FileOutputStream fos = this.openFileOutput("RssData.dat",
+			final FileOutputStream fos = this.openFileOutput("RssData.dat",
 					Context.MODE_PRIVATE);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			final ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(hp);
 			oos.close();
 			sharedPreferences.edit().putBoolean("card", true).commit();

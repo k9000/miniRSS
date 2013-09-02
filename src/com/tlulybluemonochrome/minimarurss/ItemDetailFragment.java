@@ -33,8 +33,6 @@ import android.view.animation.LayoutAnimationController;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
-
 import com.tlulybluemonochrome.minimarurss.RefreshableListView.OnRefreshListener;
 import com.tlulybluemonochrome.minimarurss.RefreshableListView;
 
@@ -245,6 +243,7 @@ public class ItemDetailFragment extends Fragment implements
 		mListView.setAdapter(null);
 		mListView.setOnRefreshListener(null);
 		mListView = null;
+		list = null;
 		super.onDestroyView();
 
 	}

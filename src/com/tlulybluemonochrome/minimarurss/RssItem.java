@@ -121,4 +121,14 @@ public class RssItem implements Serializable {
 		this.date = date;
 	}
 
+	public void clear() {
+		this.title = null;
+		this.url = null;
+		this.text = null;
+		this.tag = 0;
+		this.page = null;
+		this.image = null;
+
+	}
+
 }

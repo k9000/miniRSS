@@ -115,9 +115,9 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	}
 
 	@Override
-	synchronized public ArrayList<RssItem> loadInBackground() {
+	public final ArrayList<RssItem> loadInBackground() {
 
-		ArrayList<RssItem> result = new ArrayList<RssItem>();
+		// final ArrayList<RssItem> result = new ArrayList<RssItem>();
 
 		switch (flag) {
 		case 1:// RSSのURI獲得を目指す
@@ -142,12 +142,13 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 				}
 				urlIn.close();
 				conn.disconnect();
-				result = parseHtml(strb.toString());
-			} catch (SocketTimeoutException e){
+				final ArrayList<RssItem> result = parseHtml(strb.toString());
+				return result;
+				
+			} catch (SocketTimeoutException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
 				e.printStackTrace();
-				//return null;
 			}
 			break;
 
@@ -160,12 +161,15 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 				conn.addRequestProperty("User-Agent", "desktop");
 				conn.setDoInput(true);
 				conn.connect();
-				result = parseRSS(conn.getInputStream());
-			} catch (SocketTimeoutException e){
+				final ArrayList<RssItem> result = parseRSS(conn
+						.getInputStream());
+				return result;
+				
+			} catch (SocketTimeoutException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
 				e.printStackTrace();
-				//return null;
+				// return null;
 			}
 			break;
 
@@ -178,24 +182,27 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 				conn.addRequestProperty("User-Agent", "desktop");
 				conn.setDoInput(true);
 				conn.connect();
-				result = parseXml(conn.getInputStream(), colorTag, pageTitle);
-			} catch (SocketTimeoutException e){
+				final ArrayList<RssItem> result = parseXml(
+						conn.getInputStream(), colorTag, pageTitle);
+				try {
+					Thread.sleep(wait);
+				} catch (InterruptedException e) {
+				}
+				return result;
+
+			} catch (SocketTimeoutException e) {
 				Log.d("test", "timeout");
 				e.printStackTrace();
 			} catch (Exception e) {
 				e.printStackTrace();
-				//return null;
+				// return null;
 			}
-			break;
-		default:
-			//return null;
-		}
 
-		try {
-			Thread.sleep(wait);
-		} catch (InterruptedException e) {
+			break;
 		}
-		return result;
+		return null;
+
+		// return result;
 	}
 
 	/**
@@ -209,7 +216,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	 * @throws IOException
 	 * @throws XmlPullParserException
 	 */
-	public static ArrayList<RssItem> parseXml(final InputStream is,
+	public static final ArrayList<RssItem> parseXml(final InputStream is,
 			final int color, final String page) throws IOException,
 			XmlPullParserException {
 		final ArrayList<RssItem> list = new ArrayList<RssItem>();
@@ -281,11 +288,12 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		list.trimToSize();
 		return list;
 
 	}
 
-	private static String StripImageTags(String str) {
+	private static final String StripImageTags(String str) {
 		final Pattern o = Pattern.compile("<img.*?(jpg|png|images).*?>");
 		final Pattern p = Pattern.compile("http.*?(jpg|png)");
 		final Pattern q = Pattern.compile("//.*?(jpg|png)");
@@ -307,7 +315,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 				matchstr = "http:" + mq.group();
 			} else if (mr.find()) {
 				matchstr = "http:" + mr.group();
-				matchstr = matchstr.substring(0, matchstr.length()-1);
+				matchstr = matchstr.substring(0, matchstr.length() - 1);
 			} else {
 				matchstr = null;
 			}
@@ -324,7 +332,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	 * @param currentItem
 	 * @return 見つからなかったらtrue
 	 */
-	private static boolean removePR(final RssItem currentItem) {
+	private static final boolean removePR(final RssItem currentItem) {
 		final String title = currentItem.getTitle();
 		final String regex = "^PR";
 		final Pattern p = Pattern.compile(regex);
@@ -342,7 +350,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	 * @throws IOException
 	 * @throws XmlPullParserException
 	 */
-	public static ArrayList<RssItem> parseHtml(final String str)
+	public static final ArrayList<RssItem> parseHtml(final String str)
 			throws IOException, XmlPullParserException {
 
 		final XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -407,7 +415,7 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	 * @throws IOException
 	 * @throws XmlPullParserException
 	 */
-	public static ArrayList<RssItem> parseRSS(final InputStream is)
+	public static final ArrayList<RssItem> parseRSS(final InputStream is)
 			throws IOException, XmlPullParserException {
 		final ArrayList<RssItem> list = new ArrayList<RssItem>();
 		final XmlPullParser parser = Xml.newPullParser();

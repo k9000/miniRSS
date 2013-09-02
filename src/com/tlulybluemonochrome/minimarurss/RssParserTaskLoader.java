@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.util.Log;
 import android.util.Xml;
 
 /**
@@ -122,6 +124,8 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 			try {
 				final HttpURLConnection conn = (HttpURLConnection) url
 						.openConnection();
+				conn.setConnectTimeout(5000);
+				conn.setReadTimeout(5000);
 				conn.addRequestProperty("User-Agent", "desktop");
 				conn.setDoInput(true);
 				conn.setRequestMethod("GET");
@@ -139,9 +143,11 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 				urlIn.close();
 				conn.disconnect();
 				result = parseHtml(strb.toString());
+			} catch (SocketTimeoutException e){
+				e.printStackTrace();
 			} catch (Exception e) {
 				e.printStackTrace();
-				return null;
+				//return null;
 			}
 			break;
 
@@ -149,13 +155,17 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 			try {
 				final HttpURLConnection conn = (HttpURLConnection) url
 						.openConnection();
+				conn.setConnectTimeout(5000);
+				conn.setReadTimeout(5000);
 				conn.addRequestProperty("User-Agent", "desktop");
 				conn.setDoInput(true);
 				conn.connect();
 				result = parseRSS(conn.getInputStream());
+			} catch (SocketTimeoutException e){
+				e.printStackTrace();
 			} catch (Exception e) {
 				e.printStackTrace();
-				return null;
+				//return null;
 			}
 			break;
 
@@ -163,18 +173,22 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 			try {
 				final HttpURLConnection conn = (HttpURLConnection) url
 						.openConnection();
+				conn.setConnectTimeout(5000);
+				conn.setReadTimeout(5000);
 				conn.addRequestProperty("User-Agent", "desktop");
 				conn.setDoInput(true);
 				conn.connect();
 				result = parseXml(conn.getInputStream(), colorTag, pageTitle);
-
+			} catch (SocketTimeoutException e){
+				Log.d("test", "timeout");
+				e.printStackTrace();
 			} catch (Exception e) {
 				e.printStackTrace();
-				return null;
+				//return null;
 			}
 			break;
 		default:
-			return null;
+			//return null;
 		}
 
 		try {

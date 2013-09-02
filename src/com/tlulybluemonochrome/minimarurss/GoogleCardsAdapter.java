@@ -62,7 +62,7 @@ public class GoogleCardsAdapter extends ArrayAdapter<RssItem> {
 
 		if (item.getImage() != null) {
 			holder.image.setVisibility(View.VISIBLE);
-			makeImage(item.getImage(), holder.image);
+			//makeImage(item.getImage(), holder.image);
 		} else {
 			holder.image.setVisibility(View.GONE);
 		}
@@ -71,7 +71,7 @@ public class GoogleCardsAdapter extends ArrayAdapter<RssItem> {
 		holder.text.setText(item.getPage() + "   "
 				+ String.valueOf(item.getDate()));
 
-		/*
+		/* 
 		 * // 特定の行(position)のデータを得る RssFeed item = (RssFeed) getItem(position);
 		 * 
 		 * // CustomDataのデータをViewの各Widgetにセットする if (item.getNoti()) {
@@ -82,7 +82,6 @@ public class GoogleCardsAdapter extends ArrayAdapter<RssItem> {
 		 */
 		return view;
 	}
-
 	private static void makeImage(final String image,
 			final ImageView urlImageView) {
 		new Thread(new Runnable() {
@@ -110,5 +109,4 @@ public class GoogleCardsAdapter extends ArrayAdapter<RssItem> {
 			}
 		});
 	}
-
 }

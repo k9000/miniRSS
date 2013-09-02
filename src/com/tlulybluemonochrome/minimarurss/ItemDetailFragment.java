@@ -196,16 +196,17 @@ public class ItemDetailFragment extends Fragment implements
 	@Override
 	public void onLoadFinished(final Loader<ArrayList<RssItem>> arg0,
 			final ArrayList<RssItem> arg1) {
-		if (arg1 == null) {// 失敗時(意味ないかも)
-			Toast.makeText(getActivity(), "null", Toast.LENGTH_SHORT).show();
-			return;
+		if (arg1.isEmpty()) {// 失敗時
+			// Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show(); 
+		} else {
+			// リスト更新
+			mListView
+					.setAdapter(new CustomDetailAdapter(getActivity(), 0, arg1));
+			mCallbacks.onRefreshList(
+					this.getArguments().getString(
+							ItemDetailFragment.ARG_ITEM_ID), arg1);
+			list = arg1;
 		}
-		// リスト更新
-		mListView.setAdapter(new CustomDetailAdapter(getActivity(), 0, arg1));
-		mCallbacks.onRefreshList(
-				this.getArguments().getString(ItemDetailFragment.ARG_ITEM_ID),
-				arg1);
-		list = arg1;
 		if (mFlag) {// 引っ張って更新したとき
 			mListView.completeRefreshing();
 			LayoutAnimationController anim = getListCascadeAnimation();

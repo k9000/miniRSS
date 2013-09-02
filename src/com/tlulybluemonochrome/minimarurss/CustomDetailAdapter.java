@@ -205,7 +205,6 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		} catch (InterruptedException e) {
 		}
 	}
-
 	private static void makeImage(final String image,
 			final ImageView urlImageView) {
 		new Thread(new Runnable() {
@@ -233,5 +232,4 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 			}
 		});
 	}
-
 }

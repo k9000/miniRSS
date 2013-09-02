@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import android.app.Activity;
@@ -38,6 +39,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,6 +50,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 /**
  * メインのActivity
@@ -418,7 +421,7 @@ public class ItemListActivity extends Activity implements
 
 			if (position == 0)// 設定画面
 				return new SettingsFragment();
-			else if (position == 1) {
+			else if (position == 1) {// top画面
 				final Bundle arguments = new Bundle();
 				arguments.putSerializable("LIST", alllist);
 				final TopPageFragment fragment = new TopPageFragment();
@@ -489,42 +492,44 @@ public class ItemListActivity extends Activity implements
 	@Override
 	public void onLoadFinished(final Loader<ArrayList<RssItem>> arg0,
 			final ArrayList<RssItem> arg1) {
-		if (arg1 == null) {// 失敗時(意味ないかも)
-			return;
-		}
-		nhp.put(url, arg1);
-		nalllist.addAll(arg1);
-		Collections.sort(nalllist, new Comparator<RssItem>() {
-			@Override
-			public int compare(final RssItem lhs, final RssItem rhs) {
-				if (lhs.getDate() == null)
-					return 1;
-				else if (rhs.getDate() == null)
-					return -1;
-				else if (lhs.getDate().before(rhs.getDate()))
-					return 1;
-				else
-					return -1;
+		if (arg1.isEmpty()) {// 失敗時
+			// Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
+		} else {
+			nhp.put(url, arg1);
+			nalllist.addAll(arg1);
+			Collections.sort(nalllist, new Comparator<RssItem>() {
+				@Override
+				public int compare(final RssItem lhs, final RssItem rhs) {
+					if (lhs.getDate() == null)
+						return 1;
+					else if (rhs.getDate() == null)
+						return -1;
+					else if (lhs.getDate().before(rhs.getDate()))
+						return 1;
+					else
+						return -1;
 
-			}
-		});
+				}
+			});
+		}
 		i++;
 		if (i < items.size()) {
 			getLoaderManager().restartLoader(0, null, this);
 		} else {
-			try {// セーブ書き込み
-				alllist = nalllist;
-				nalllist = new ArrayList<RssItem>();
-				hp = nhp;
-				nhp = new HashMap<String, ArrayList<RssItem>>();
-				FileOutputStream fos = this.openFileOutput("RssData.dat",
-						Context.MODE_PRIVATE);
-				ObjectOutputStream oos = new ObjectOutputStream(fos);
-				oos.writeObject(hp);
-				oos.close();
-			} catch (Exception e1) {
+			if (!nalllist.isEmpty()) {
+				try {// セーブ書き込み
+					alllist = nalllist;
+					nalllist = new ArrayList<RssItem>();
+					hp = nhp;
+					nhp = new HashMap<String, ArrayList<RssItem>>();
+					FileOutputStream fos = this.openFileOutput("RssData.dat",
+							Context.MODE_PRIVATE);
+					ObjectOutputStream oos = new ObjectOutputStream(fos);
+					oos.writeObject(hp);
+					oos.close();
+				} catch (Exception e1) {
+				}
 			}
-
 			set = 3;
 			mSectionsPagerAdapter.notifyDataSetChanged();
 			setProgressBarIndeterminateVisibility(false);

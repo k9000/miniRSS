@@ -286,23 +286,28 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 	}
 
 	private static String StripImageTags(String str) {
-		final Pattern o = Pattern.compile("<img.*?(jpg|png).*?>");
+		final Pattern o = Pattern.compile("<img.*?(jpg|png|images).*?>");
 		final Pattern p = Pattern.compile("http.*?(jpg|png)");
 		final Pattern q = Pattern.compile("//.*?(jpg|png)");
+		final Pattern r = Pattern.compile("//.*?images.*?\"");
 
 		String matchstr = null;
 
-		Matcher x = o.matcher(str);
-		if (x.find()) {
-			str = x.group();
+		final Matcher mo = o.matcher(str);
+		if (mo.find()) {
+			str = mo.group();
 
-			x = p.matcher(str);
-			Matcher y = q.matcher(str);
+			final Matcher mp = p.matcher(str);
+			final Matcher mq = q.matcher(str);
+			final Matcher mr = r.matcher(str);
 
-			if (x.find()) {
-				matchstr = x.group();
-			} else if (y.find()) {
-				matchstr = "http:" + y.group();
+			if (mp.find()) {
+				matchstr = mp.group();
+			} else if (mq.find()) {
+				matchstr = "http:" + mq.group();
+			} else if (mr.find()) {
+				matchstr = "http:" + mr.group();
+				matchstr = matchstr.substring(0, matchstr.length()-1);
 			} else {
 				matchstr = null;
 			}

@@ -119,6 +119,17 @@ public class NotificationService extends IntentService {
 			}
 		}
 
+		if (!arraylist.isEmpty()) {
+			try {// 既読判定書き込み
+				FileOutputStream fos = openFileOutput("SaveData.dat",
+						MODE_PRIVATE);
+				ObjectOutputStream oos = new ObjectOutputStream(fos);
+				oos.writeObject(arraylist);
+				oos.close();
+			} catch (Exception e) {
+			}
+		}
+
 		// 未読記事通知
 		for (int i = 0; i < arraylist.size(); i++) {
 			if (arraylist.get(i).getTag() != 0) {
@@ -138,17 +149,6 @@ public class NotificationService extends IntentService {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 				}
-			}
-		}
-
-		if (!arraylist.isEmpty()) {
-			try {// 既読判定書き込み
-				FileOutputStream fos = openFileOutput("SaveData.dat",
-						MODE_PRIVATE);
-				ObjectOutputStream oos = new ObjectOutputStream(fos);
-				oos.writeObject(arraylist);
-				oos.close();
-			} catch (Exception e) {
 			}
 		}
 
@@ -251,9 +251,9 @@ public class NotificationService extends IntentService {
 				matchstr = mp.group();
 			} else if (mq.find()) {
 				matchstr = "http:" + mq.group();
-			} else if (mr.find()) {
-				matchstr = "http:" + mr.group();
-				matchstr = matchstr.substring(0, matchstr.length() - 1);
+				// } else if (mr.find()) {
+				// matchstr = "http:" + mr.group();
+				// matchstr = matchstr.substring(0, matchstr.length() - 1);
 			} else {
 				matchstr = null;
 			}
@@ -323,25 +323,43 @@ public class NotificationService extends IntentService {
 
 	private Bitmap makeImage(final String image, final Bitmap base,
 			boolean picChecked) {
-		if (picChecked) {
-			Bitmap bitmap;
+		if (picChecked && image != null) {
+			// Bitmap bitmap;
 			try {
 				final URL image_url = new URL(image);
 				final InputStream is = (InputStream) image_url.getContent();
-				bitmap = BitmapFactory.decodeStream(is);
+
+				// 画像サイズ情報を取得する
+				final BitmapFactory.Options imageOptions = new BitmapFactory.Options();
+				imageOptions.inJustDecodeBounds = true;
+				BitmapFactory.decodeStream(is, null, imageOptions);
 				is.close();
+
 				final Resources res = getBaseContext().getResources();
 				final float scale = Math
-						.min((float) res
-								.getDimension(android.R.dimen.notification_large_icon_width)
-								/ bitmap.getWidth(),
-								(float) res
-										.getDimension(android.R.dimen.notification_large_icon_height)
-										/ bitmap.getHeight());
+						.max((float) imageOptions.outWidth
+								/ res.getDimension(android.R.dimen.notification_large_icon_width),
+								(float) imageOptions.outHeight
+										/ res.getDimension(android.R.dimen.notification_large_icon_height));
+
+				final float sscale = ((int) scale != 0 ? (int) scale : 1)
+						/ scale;
+
+				imageOptions.inSampleSize = (int) scale;
+				// scale = scale/(int)scale;
+
+				// 計算したスケールで画像を読み込む
+				imageOptions.inJustDecodeBounds = false;
+				final InputStream is2 = (InputStream) image_url.getContent();
+				final Bitmap bitmap = BitmapFactory.decodeStream(is2, null,
+						imageOptions);
+				is2.close();
+
 				final Matrix matrix = new Matrix();
-				matrix.postScale(scale, scale);
-				bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
-						bitmap.getHeight(), matrix, true);
+				matrix.postScale(sscale, sscale);
+				if (bitmap != null)
+					return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
+							bitmap.getHeight(), matrix, true);
 			} catch (IOException e) {
 				e.printStackTrace();
 				return base;
@@ -349,7 +367,7 @@ public class NotificationService extends IntentService {
 				e.printStackTrace();
 				return base;
 			}
-			return bitmap;
+			// return bitmap;
 		}
 		return base;
 

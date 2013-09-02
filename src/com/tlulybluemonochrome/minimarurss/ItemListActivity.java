@@ -497,7 +497,13 @@ public class ItemListActivity extends Activity implements
 		} else {
 			nhp.put(url, arg1);
 			nalllist.addAll(arg1);
-			Collections.sort(nalllist, new Comparator<RssItem>() {
+		}
+		i++;
+		if (i < items.size()) {
+			getLoaderManager().restartLoader(0, null, this);
+		} else {
+			if (!nalllist.isEmpty()) {
+				Collections.sort(nalllist, new Comparator<RssItem>() {
 				@Override
 				public int compare(final RssItem lhs, final RssItem rhs) {
 					if (lhs.getDate() == null)
@@ -511,12 +517,8 @@ public class ItemListActivity extends Activity implements
 
 				}
 			});
-		}
-		i++;
-		if (i < items.size()) {
-			getLoaderManager().restartLoader(0, null, this);
-		} else {
-			if (!nalllist.isEmpty()) {
+				
+				
 				try {// セーブ書き込み
 					alllist = nalllist;
 					nalllist = new ArrayList<RssItem>();

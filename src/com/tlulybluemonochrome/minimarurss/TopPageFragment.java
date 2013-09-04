@@ -17,13 +17,22 @@
 package com.tlulybluemonochrome.minimarurss;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
@@ -36,6 +45,11 @@ import android.widget.GridView;
 public class TopPageFragment extends Fragment {
 
 	private ArrayList<RssItem> list;
+	
+	private final ImageLoader imageLoader = ImageLoader.getInstance();
+	
+	//private ImageLoaderConfiguration config;
+	
 
 	/**
 	 * The fragment's current callback object, which is notified of list item
@@ -102,6 +116,9 @@ public class TopPageFragment extends Fragment {
 		// Inflate the layout for this fragment
 		final View rootView = inflater.inflate(R.layout.fragment_top_page,
 				container, false);
+		
+		final ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity()).build();
+		ImageLoader.getInstance().init(config);
 
 		list = (ArrayList<RssItem>) getArguments().getSerializable("LIST");
 
@@ -123,6 +140,68 @@ public class TopPageFragment extends Fragment {
 
 		return rootView;
 
+	}
+
+	private static class ViewHolder {
+		ImageView image;
+		TextView title, text;
+	}
+	
+	
+
+	private class GoogleCardsAdapter extends ArrayAdapter<RssItem> {
+
+		private LayoutInflater layoutInflater_;
+
+		public GoogleCardsAdapter(Context context, int textViewResourceId,
+				List<RssItem> objects) {
+			super(context, textViewResourceId, objects);
+			layoutInflater_ = (LayoutInflater) context
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		}
+
+		@Override
+		public View getView(final int position, View convertView,
+				ViewGroup parent) {
+			ViewHolder holder;
+
+			// ビューを受け取る
+			View view = convertView;
+
+			// convertViewは使い回しされている可能性があるのでnullの時だけ新しく作る
+			if (view == null) {
+				view = layoutInflater_.inflate(R.layout.card, null);
+
+				holder = new ViewHolder();
+				holder.image = (ImageView) view.findViewById(R.id.card_image);
+				holder.title = (TextView) view.findViewById(R.id.card_title);
+				holder.text = (TextView) view.findViewById(R.id.card_text);
+
+				view.setTag(holder);
+
+			} else {
+				holder = (ViewHolder) view.getTag();
+				holder.image.setImageBitmap(null);
+
+			}
+
+			final RssItem item = (RssItem) getItem(position);
+
+			if (item.getImage() != null) {
+				holder.image.setVisibility(View.VISIBLE);
+				imageLoader
+						.displayImage(item.getImage(), holder.image);
+				// makeImage(item.getImage(), holder.image);
+			} else {
+				holder.image.setVisibility(View.GONE);
+			}
+
+			holder.title.setText(item.getTitle());
+			holder.text.setText(item.getPage() + "   "
+					+ String.valueOf(item.getDate()));
+
+			return view;
+		}
 	}
 
 }

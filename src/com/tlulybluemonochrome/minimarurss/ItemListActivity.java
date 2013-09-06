@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import shared.ui.actionscontentview.ActionsContentView;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -39,16 +39,11 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.util.DisplayMetrics;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.webkit.WebSettings;
-import android.webkit.WebSettings.LayoutAlgorithm;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 /**
  * メインのActivity
@@ -91,7 +86,8 @@ public class ItemListActivity extends Activity implements
 
 	private MenuItem ref;
 
-	private SlidingMenu menu;
+	//private SlidingMenu menu;
+	private ActionsContentView viewActionsContentView;
 
 	// private int slide = 0;
 
@@ -118,7 +114,10 @@ public class ItemListActivity extends Activity implements
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_item_list);
+		setContentView(R.layout.activity_action_content);
+		
+		viewActionsContentView = (ActionsContentView) findViewById(R.id.actionsContentView);
+	    viewActionsContentView.setSwipingType(ActionsContentView.SWIPING_EDGE);
 
 		// セーブデータオープン
 		try {
@@ -252,6 +251,7 @@ public class ItemListActivity extends Activity implements
 					R.id.item_list)).setActivateOnItemClick(true);
 
 		}
+		/*
 		final DisplayMetrics displayMetrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 		menu = new SlidingMenu(this);
@@ -262,6 +262,7 @@ public class ItemListActivity extends Activity implements
 		menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
 		menu.setMode(SlidingMenu.LEFT);
 		menu.setMenu(R.layout.menu);
+		*/
 
 		if (sharedPreferences.getBoolean("ref_switch", true)
 				&& savedInstanceState == null) {
@@ -295,9 +296,9 @@ public class ItemListActivity extends Activity implements
 	public void onItemSelected(final int tag, final String url,
 			final int position) {
 		efectViewPager.setCurrentItem(position + 2, true);
-		if (menu != null) {
-			menu.showContent();
-		}
+//		if (menu != null) {
+//			menu.showContent();
+//		}
 
 	}
 
@@ -314,9 +315,9 @@ public class ItemListActivity extends Activity implements
 		} catch (Exception e1) {
 		}
 
-		if (menu != null || menu.isMenuShowing()) {
+		/*if (menu != null || menu.isMenuShowing()) {
 			menu.setMenu(R.layout.menu);
-		}
+		}*/
 
 		set = 3;
 		mSectionsPagerAdapter.notifyDataSetChanged();
@@ -326,7 +327,7 @@ public class ItemListActivity extends Activity implements
 	@Override
 	public void onAdapterSelected(int tag, String url, int position) {
 
-		menu.setMode(SlidingMenu.LEFT_RIGHT);
+		/*menu.setMode(SlidingMenu.LEFT_RIGHT);
 		menu.setSecondaryMenu(R.layout.browser);
 		final WebView webview = (WebView) findViewById(R.id.webView1);
 		webview.setWebViewClient(new WebViewClient());
@@ -338,7 +339,7 @@ public class ItemListActivity extends Activity implements
 		webview.getSettings().setAppCacheMaxSize(4194304);
 		webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 		webview.loadUrl(url);
-		menu.showSecondaryMenu();
+		menu.showSecondaryMenu();*/
 
 	}
 
@@ -356,7 +357,7 @@ public class ItemListActivity extends Activity implements
 	}
 
 	// メニューボタンクリック
-	@Override
+	/*@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		boolean ret = true;
 		switch (item.getItemId()) {
@@ -386,7 +387,7 @@ public class ItemListActivity extends Activity implements
 			break;
 		}
 		return ret;
-	}
+	}*/
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -548,7 +549,7 @@ public class ItemListActivity extends Activity implements
 	}
 
 	// 戻るボタン
-	@Override
+	/*@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if (menu.isMenuShowing() || menu.isSecondaryMenuShowing())
@@ -561,7 +562,7 @@ public class ItemListActivity extends Activity implements
 			return true;
 		}
 		return false;
-	}
+	}*/
 
 	@Override
 	public void onDestroy() {

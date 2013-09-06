@@ -1,15 +1,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_item_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:background="?android:colorBackground"
-    android:orientation="horizontal"
-    tools:context=".ItemListActivity" >
+    android:orientation="horizontal" >
 
     <Button
         android:id="@+id/button1"
-        android:layout_width="16dp"
+        android:layout_width="12dp"
         android:layout_height="match_parent"
         android:background="@drawable/handle" />
 
@@ -29,11 +29,11 @@
             android:gravity="center"
             android:textColor="#fff" />
     </com.tlulybluemonochrome.minimarurss.EfectViewPager>
-
+<!--
     <Button
         android:id="@+id/button1"
         android:layout_width="16dp"
         android:layout_height="match_parent"
         android:background="@drawable/handle" />
-
+-->
 </LinearLayout>

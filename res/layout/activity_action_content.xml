@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/sample.actionscontentview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+
+    <!--  
+    <shared.ui.actionscontentview.ActionsContentView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/actionsContentView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        
+        app:actions_layout="@layout/menu"
+        app:actions_spacing="@dimen/actions_spacing"
+        app:content_layout="@layout/activity_item_list"
+        app:fade_max_value="@integer/default_pref_fade_max_value"
+        app:fade_type="actions"
+        app:fling_duration="@integer/default_pref_fling_delay"
+        app:shadow_drawable="@drawable/shadow"
+        app:shadow_width="@dimen/default_pref_shadow_width" />
+        -->
+    <!--  
+    <shared.ui.actionscontentview.ActionsContentView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/actionsContentView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:actions_layout="@layout/menu"
+        app:content_layout="@layout/activity_item_list"
+        app:swiping_type="full"
+        app:spacing_type="actions_width"
+        app:spacing="150dp"
+        app:fade_type="actions" />
+        -->
+        
+        <shared.ui.actionscontentview.ActionsContentView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/actionsContentView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        
+        app:actions_layout="@layout/menu"
+        app:actions_spacing="24dp"
+        app:content_layout="@layout/activity_item_list"
+        app:fade_max_value="@integer/default_pref_fade_max_value"
+        app:fade_type="content"
+        app:fling_duration="@integer/default_pref_fling_delay" />
+
+</RelativeLayout>

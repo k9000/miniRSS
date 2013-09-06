@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -107,10 +108,15 @@ public class NotificationService extends IntentService {
 
 			if (urilist.get(i).getNoti()) {// Notifications設定確認
 				try {
-					final InputStream is = new URL(urilist.get(i).getUrl())
-							.openConnection().getInputStream();
-					arraylist.addAll(parseXml(is, urilist.get(i).getTag(),
-							urilist.get(i).getTitle()));
+					final HttpURLConnection conn = (HttpURLConnection) new URL(
+							urilist.get(i).getUrl()).openConnection();
+					conn.setConnectTimeout(5000);
+					conn.setReadTimeout(5000);
+					conn.addRequestProperty("User-Agent", "desktop");
+					conn.setDoInput(true);
+					conn.connect();
+					arraylist.addAll(parseXml(conn.getInputStream(), urilist
+							.get(i).getTag(), urilist.get(i).getTitle()));
 
 				} catch (Exception e) {
 					e.printStackTrace();

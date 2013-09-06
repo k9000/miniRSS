@@ -491,7 +491,7 @@ public class ItemListActivity extends Activity implements
 	@Override
 	public void onLoadFinished(final Loader<ArrayList<RssItem>> arg0,
 			final ArrayList<RssItem> arg1) {
-		if (arg1.isEmpty()) {// 失敗時
+		if (arg1==null) {// 失敗時
 			// Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
 		} else {
 			nhp.put(url, arg1);

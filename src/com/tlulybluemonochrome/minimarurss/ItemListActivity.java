@@ -26,7 +26,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import shared.ui.actionscontentview.ActionsContentView;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -38,7 +37,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
-import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -295,11 +294,8 @@ public class ItemListActivity extends Activity implements
 	@Override
 	public void onItemSelected(final int tag, final String url,
 			final int position) {
+		viewActionsContentView.showContent();
 		efectViewPager.setCurrentItem(position + 2, true);
-//		if (menu != null) {
-//			menu.showContent();
-//		}
-
 	}
 
 	// 並べ替え用
@@ -357,22 +353,12 @@ public class ItemListActivity extends Activity implements
 	}
 
 	// メニューボタンクリック
-	/*@Override
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		boolean ret = true;
 		switch (item.getItemId()) {
-		case R.id.item_list:
-
-			if (!menu.isMenuShowing() || menu.isSecondaryMenuShowing()) {
-				menu.showMenu();
-			} else {
-				menu.showContent();
-			}
-			break;
 		case R.id.item_setting:
-			if (menu != null) {
-				menu.showContent();
-			}
+			viewActionsContentView.showContent();
 			efectViewPager.setCurrentItem(0);
 			break;
 		case R.id.reflesh:
@@ -387,7 +373,7 @@ public class ItemListActivity extends Activity implements
 			break;
 		}
 		return ret;
-	}*/
+	}
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -549,11 +535,11 @@ public class ItemListActivity extends Activity implements
 	}
 
 	// 戻るボタン
-	/*@Override
+	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if (menu.isMenuShowing() || menu.isSecondaryMenuShowing())
-				menu.showContent();
+			if (viewActionsContentView.isActionsShown())
+				viewActionsContentView.showContent();
 			else if (mTwoPane == false && efectViewPager.getCurrentItem() != 1
 					&& sharedPreferences.getBoolean("back_switch", false))
 				efectViewPager.setCurrentItem(1, true);
@@ -562,7 +548,7 @@ public class ItemListActivity extends Activity implements
 			return true;
 		}
 		return false;
-	}*/
+	}
 
 	@Override
 	public void onDestroy() {

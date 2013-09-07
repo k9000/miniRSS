@@ -17,7 +17,9 @@
 package com.tlulybluemonochrome.minimarurss;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -111,102 +113,97 @@ public class ItemListActivity extends Activity implements
 
 		// タイトルバーにプログレスアイコンを表示可能にする
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		
+		// セーブデータオープン
+				try {
+					FileInputStream fis = openFileInput("SaveData.txt");
+					ObjectInputStream ois = new ObjectInputStream(fis);
+					items = ((ArrayList<RssFeed>) ois.readObject());
+					ois.close();
+				} catch (Exception e) {
+					items = new ArrayList<RssFeed>();
+				}
+
+				if (items.isEmpty() || sharedPreferences.getInt("save_version", 0) != 1) {// セーブ空のとき
+					items = new ArrayList<RssFeed>();
+					items.add(new RssFeed(
+							"Googleニュース",
+							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss",
+							0xff00aeef, true));
+					items.add(new RssFeed("4Gamer.net",
+							"http://www.4gamer.net/rss/index.xml", 0xffffc0cb, true));
+					items.add(new RssFeed("ORICON ニュース",
+							"http://rss.rssad.jp/rss/oricon/news/total", 0xff99cc00,
+							true));
+					items.add(new RssFeed("映画.com", "http://feeds.eiga.com/eiga_news",
+							0xffcc0000, true));
+					items.add(new RssFeed("ASCII.jp",
+							"http://rss.rssad.jp/rss/ascii/rss.xml", 0xfff9f903, true));
+					items.add(new RssFeed("ガジェット速報", "http://ggsoku.com/feed/",
+							0xffda31e5, true));
+					items.add(new RssFeed("Engadget",
+							"http://feed.rssad.jp/rss/engadget/rss", 0xff0000cd, true));
+					items.add(new RssFeed("GIGAZINE",
+							"http://feed.rssad.jp/rss/gigazine/rss_2.0", 0xff2f4f4f,
+							true));
+					items.add(new RssFeed("lifehacker",
+							"http://feeds.lifehacker.jp/rss/lifehacker/index.xml",
+							0xff808000, true));
+					items.add(new RssFeed("痛いニュース(ﾉ∀`)",
+							"http://blog.livedoor.jp/dqnplus/index.rdf", 0xff8b4513,
+							true));
+					items.add(new RssFeed("アルファルファモザイク",
+							"http://alfalfalfa.com/index.rdf", 0xff808080, true));
+					items.add(new RssFeed("andronavi", "http://andronavi.com/feed",
+							0xffadd8e6, true));
+					items.add(new RssFeed("オクトバ", "http://octoba.net/feed", 0xff9370db,
+							true));
+					items.add(new RssFeed("ドロイドバンク", "http://androidnavi.net/feed/",
+							0xfffcb414, true));
+					items.add(new RssFeed("アンドロイダー", "https://androider.jp/rss/home/",
+							0xff33b5e5, true));
+
+					saveItem(items);// セーブ書き込み
+					final Editor editor = sharedPreferences.edit();
+					editor.putInt("save_version", 1);
+					editor.commit();
+				}
+
+				try {// 既読セーブデータオープン
+					FileInputStream fis = openFileInput("RssData.dat");
+					ObjectInputStream ois = new ObjectInputStream(fis);
+					hp.clear();
+					hp.putAll((HashMap<String, ArrayList<RssItem>>) ois.readObject());
+					ois.close();
+					alllist.clear();
+					for (String key : hp.keySet()) {
+						alllist.addAll(hp.get(key));
+					}
+					Collections.sort(alllist, new Comparator<RssItem>() {
+						@Override
+						public int compare(RssItem lhs, RssItem rhs) {
+							if (lhs.getDate() == null)
+								return 1;
+							else if (rhs.getDate() == null)
+								return -1;
+							else if (lhs.getDate().before(rhs.getDate()))
+								return 1;
+							else
+								return -1;
+
+						}
+					});
+
+				} catch (Exception e) {
+				}
+		
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_action_content);
 		
-		viewActionsContentView = (ActionsContentView) findViewById(R.id.actionsContentView);
-	    viewActionsContentView.setSwipingType(ActionsContentView.SWIPING_EDGE);
+		
 
-		// セーブデータオープン
-		try {
-			FileInputStream fis = openFileInput("SaveData.txt");
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			items = ((ArrayList<RssFeed>) ois.readObject());
-			ois.close();
-		} catch (Exception e) {
-			items = new ArrayList<RssFeed>();
-		}
-
-		if (items.isEmpty() || sharedPreferences.getInt("save_version", 0) != 1) {// セーブ空のとき
-			items = new ArrayList<RssFeed>();
-			items.add(new RssFeed(
-					"Googleニュース",
-					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss",
-					0xff00aeef, true));
-			items.add(new RssFeed("4Gamer.net",
-					"http://www.4gamer.net/rss/index.xml", 0xffffc0cb, true));
-			items.add(new RssFeed("ORICON ニュース",
-					"http://rss.rssad.jp/rss/oricon/news/total", 0xff99cc00,
-					true));
-			items.add(new RssFeed("映画.com", "http://feeds.eiga.com/eiga_news",
-					0xffcc0000, true));
-			items.add(new RssFeed("ASCII.jp",
-					"http://rss.rssad.jp/rss/ascii/rss.xml", 0xfff9f903, true));
-			items.add(new RssFeed("ガジェット速報", "http://ggsoku.com/feed/",
-					0xffda31e5, true));
-			items.add(new RssFeed("Engadget",
-					"http://feed.rssad.jp/rss/engadget/rss", 0xff0000cd, true));
-			items.add(new RssFeed("GIGAZINE",
-					"http://feed.rssad.jp/rss/gigazine/rss_2.0", 0xff2f4f4f,
-					true));
-			items.add(new RssFeed("lifehacker",
-					"http://feeds.lifehacker.jp/rss/lifehacker/index.xml",
-					0xff808000, true));
-			items.add(new RssFeed("痛いニュース(ﾉ∀`)",
-					"http://blog.livedoor.jp/dqnplus/index.rdf", 0xff8b4513,
-					true));
-			items.add(new RssFeed("アルファルファモザイク",
-					"http://alfalfalfa.com/index.rdf", 0xff808080, true));
-			items.add(new RssFeed("andronavi", "http://andronavi.com/feed",
-					0xffadd8e6, true));
-			items.add(new RssFeed("オクトバ", "http://octoba.net/feed", 0xff9370db,
-					true));
-			items.add(new RssFeed("ドロイドバンク", "http://androidnavi.net/feed/",
-					0xfffcb414, true));
-			items.add(new RssFeed("アンドロイダー", "https://androider.jp/rss/home/",
-					0xff33b5e5, true));
-
-			try {// セーブ書き込み
-				FileOutputStream fos = this.openFileOutput("SaveData.txt",
-						Context.MODE_PRIVATE);
-				ObjectOutputStream oos = new ObjectOutputStream(fos);
-				oos.writeObject(items);
-				oos.close();
-			} catch (Exception e1) {
-			}
-			final Editor editor = sharedPreferences.edit();
-			editor.putInt("save_version", 1);
-			editor.commit();
-		}
-
-		try {// 既読セーブデータオープン
-			FileInputStream fis = openFileInput("RssData.dat");
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			hp.clear();
-			hp.putAll((HashMap<String, ArrayList<RssItem>>) ois.readObject());
-			ois.close();
-			alllist.clear();
-			for (String key : hp.keySet()) {
-				alllist.addAll(hp.get(key));
-			}
-			Collections.sort(alllist, new Comparator<RssItem>() {
-				@Override
-				public int compare(RssItem lhs, RssItem rhs) {
-					if (lhs.getDate() == null)
-						return 1;
-					else if (rhs.getDate() == null)
-						return -1;
-					else if (lhs.getDate().before(rhs.getDate()))
-						return 1;
-					else
-						return -1;
-
-				}
-			});
-
-		} catch (Exception e) {
-		}
+		
 
 		final String animation = sharedPreferences.getString("animation",
 				"Cube");
@@ -250,6 +247,9 @@ public class ItemListActivity extends Activity implements
 					R.id.item_list)).setActivateOnItemClick(true);
 
 		}
+		
+		viewActionsContentView = (ActionsContentView) findViewById(R.id.actionsContentView);
+	    viewActionsContentView.setSwipingType(ActionsContentView.SWIPING_EDGE);
 		/*
 		final DisplayMetrics displayMetrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -302,22 +302,26 @@ public class ItemListActivity extends Activity implements
 	@Override
 	public void onSetItems(final ArrayList<RssFeed> items) {
 		this.items = items;
-		try {
-			FileOutputStream fos = this.openFileOutput("SaveData.txt",
-					Context.MODE_PRIVATE);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(items);
-			oos.close();
-		} catch (Exception e1) {
-		}
-
-		/*if (menu != null || menu.isMenuShowing()) {
-			menu.setMenu(R.layout.menu);
-		}*/
-
+		saveItem(items);
 		set = 3;
 		mSectionsPagerAdapter.notifyDataSetChanged();
 
+	}
+
+	private void saveItem(final ArrayList<RssFeed> items2) {
+			
+			try {
+				final FileOutputStream fos;
+				fos = this.openFileOutput("SaveData.txt",
+						Context.MODE_PRIVATE);
+			final ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(items2);
+			oos.close();
+		} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -483,6 +487,8 @@ public class ItemListActivity extends Activity implements
 		} else {
 			nhp.put(url, arg1);
 			nalllist.addAll(arg1);
+			((ItemListFragment) getFragmentManager().findFragmentById(R.id.menu)).setIcon(arg1.get(0).getUrl(),i);
+			
 		}
 		i++;
 		if (i < items.size()) {

@@ -18,6 +18,8 @@ package com.tlulybluemonochrome.minimarurss;
 
 import java.util.List;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +36,8 @@ import android.widget.TextView;
  */
 public class CustomAdapter extends ArrayAdapter<RssFeed> {
 	private LayoutInflater layoutInflater_;
+	
+	private final ImageLoader imageLoader = ImageLoader.getInstance();
 
 	static class ViewHolder {
 		ImageView image;
@@ -78,13 +82,9 @@ public class CustomAdapter extends ArrayAdapter<RssFeed> {
 
 		// 特定の行(position)のデータを得る
 		RssFeed item = (RssFeed) getItem(position);
-
-		// CustomDataのデータをViewの各Widgetにセットする
-		if (item.getNoti()) {
-			holder.image.setImageBitmap(item.getImageData());
-		} else {
-			holder.image.setImageBitmap(null);
-		}
+		
+		if(item.getImage() != null)
+			holder.image.setImageBitmap(item.getImage());
 
 		holder.text.setText(item.getTitle());
 

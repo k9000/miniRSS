@@ -42,7 +42,7 @@
         android:layout_height="match_parent"
         
         app:actions_layout="@layout/menu"
-        app:actions_spacing="24dp"
+        app:actions_spacing="36dp"
         app:content_layout="@layout/activity_item_list"
         app:fade_max_value="@integer/default_pref_fade_max_value"
         app:fade_type="content"

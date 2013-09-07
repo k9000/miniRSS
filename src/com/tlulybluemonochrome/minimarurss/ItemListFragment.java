@@ -17,19 +17,27 @@
 package com.tlulybluemonochrome.minimarurss;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 import net.margaritov.preference.colorpicker.ColorPickerDialog;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -143,6 +151,8 @@ public class ItemListFragment extends Fragment {
 			items = (ArrayList<RssFeed>) ois.readObject();
 			ois.close();
 			mListView.setAdapter(new CustomAdapter(getActivity(), 0, items));
+			
+			
 		} catch (Exception e) {
 		}
 
@@ -157,8 +167,56 @@ public class ItemListFragment extends Fragment {
 			}
 
 		});
+	
+		for(int i=0;i<items.size();i++){
+			if(items.get(i).getImage() == null){
+				makeImage(items.get(i).getUrl(), items.get(i));
+			}
+		}
+		
 
 		return rootView;
+	}
+	
+	private void saveItem(ArrayList<RssFeed> items2) {
+		try {
+			final FileOutputStream fos;
+			fos = getActivity().openFileOutput("SaveData.txt",
+					Context.MODE_PRIVATE);
+		final ObjectOutputStream oos = new ObjectOutputStream(fos);
+		oos.writeObject(items2);
+		oos.close();
+	} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+		e.printStackTrace();
+	}
+		
+	}
+
+	private void makeImage(final String image,final RssFeed rssFeed) {
+		new Thread(new Runnable() {
+
+			public void run() {
+				
+				try {
+					final URL url = new URL(image);
+					final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+					connection.getResponseCode();
+					final String redirectUrl = connection.getURL().toString();
+					//final String redirectUrl = connection.getHeaderField();
+					connection.disconnect();
+					Log.d("test", redirectUrl);
+					final URL image_url = new URL("http://www.google.com/s2/favicons?domain_url="+redirectUrl);
+					final InputStream is = (InputStream) image_url.getContent();
+					rssFeed.setImage(BitmapFactory.decodeStream(is));
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				saveItem(items);
+			}
+		}).start();
 	}
 
 	@Override
@@ -385,6 +443,11 @@ public class ItemListFragment extends Fragment {
 		items = null;
 		super.onDestroyView();
 
+	}
+
+	public void setIcon(final String uri,final int i) {
+		makeImage(uri, items.get(i));
+		mListView.invalidateViews();
 	}
 
 }

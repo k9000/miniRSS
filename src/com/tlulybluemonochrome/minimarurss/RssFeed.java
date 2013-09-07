@@ -16,9 +16,12 @@
 
 package com.tlulybluemonochrome.minimarurss;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 
 /**
  * RSSフィードリストを1行毎に保存するクラス
@@ -35,6 +38,7 @@ public class RssFeed implements Serializable {
 	private String url;
 	private int tag;
 	private boolean noti = false;
+	private byte[] imageArray;
 
 	public RssFeed(String title, String url, int tag, boolean noti) {
 		this.title = title;
@@ -68,26 +72,41 @@ public class RssFeed implements Serializable {
 		return noti;
 	}
 
-	public final void setTitle(String title) {
+	public final void setTitle(final String title) {
 		this.title = title;
 	}
 
-	public final void setUrl(String url) {
+	public final void setUrl(final String url) {
 		this.url = url;
 	}
 
-	public final void setTag(int tag) {
+	public final void setTag(final int tag) {
 		this.tag = tag;
 	}
 
-	public final void setNoti(boolean noti) {
+	public final void setNoti(final boolean noti) {
 		this.noti = noti;
+	}
+
+	public final void setImage(final Bitmap image) {
+		final ByteArrayOutputStream os = new ByteArrayOutputStream();
+		image.compress(CompressFormat.PNG, 100, os);
+		this.imageArray = os.toByteArray();
+
 	}
 
 	public final Bitmap getImageData() {
 		final Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
 		bmp.eraseColor(tag);
 		return bmp;
+	}
+
+	public final Bitmap getImage() {
+		if (imageArray != null)
+			return BitmapFactory.decodeByteArray(imageArray, 0,
+					imageArray.length);
+		else
+			return null;
 	}
 
 }

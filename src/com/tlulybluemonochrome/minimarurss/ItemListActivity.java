@@ -33,9 +33,11 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
@@ -87,7 +89,7 @@ public class ItemListActivity extends Activity implements
 
 	private MenuItem ref;
 
-	//private SlidingMenu menu;
+	// private SlidingMenu menu;
 	private ActionsContentView viewActionsContentView;
 
 	// private int slide = 0;
@@ -113,97 +115,92 @@ public class ItemListActivity extends Activity implements
 
 		// タイトルバーにプログレスアイコンを表示可能にする
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		
+
 		// セーブデータオープン
-				try {
-					FileInputStream fis = openFileInput("SaveData.txt");
-					ObjectInputStream ois = new ObjectInputStream(fis);
-					items = ((ArrayList<RssFeed>) ois.readObject());
-					ois.close();
-				} catch (Exception e) {
-					items = new ArrayList<RssFeed>();
+		try {
+			FileInputStream fis = openFileInput("SaveData.txt");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			items = ((ArrayList<RssFeed>) ois.readObject());
+			ois.close();
+		} catch (Exception e) {
+			items = new ArrayList<RssFeed>();
+		}
+
+		if (items.isEmpty() || sharedPreferences.getInt("save_version", 0) != 1) {// セーブ空のとき
+			items = new ArrayList<RssFeed>();
+			items.add(new RssFeed(
+					"Googleニュース",
+					"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss",
+					0xff00aeef, true));
+			items.add(new RssFeed("4Gamer.net",
+					"http://www.4gamer.net/rss/index.xml", 0xffffc0cb, true));
+			items.add(new RssFeed("ORICON ニュース",
+					"http://rss.rssad.jp/rss/oricon/news/total", 0xff99cc00,
+					true));
+			items.add(new RssFeed("映画.com", "http://feeds.eiga.com/eiga_news",
+					0xffcc0000, true));
+			items.add(new RssFeed("ASCII.jp",
+					"http://rss.rssad.jp/rss/ascii/rss.xml", 0xfff9f903, true));
+			items.add(new RssFeed("ガジェット速報", "http://ggsoku.com/feed/",
+					0xffda31e5, true));
+			items.add(new RssFeed("Engadget",
+					"http://feed.rssad.jp/rss/engadget/rss", 0xff0000cd, true));
+			items.add(new RssFeed("GIGAZINE",
+					"http://feed.rssad.jp/rss/gigazine/rss_2.0", 0xff2f4f4f,
+					true));
+			items.add(new RssFeed("lifehacker",
+					"http://feeds.lifehacker.jp/rss/lifehacker/index.xml",
+					0xff808000, true));
+			items.add(new RssFeed("痛いニュース(ﾉ∀`)",
+					"http://blog.livedoor.jp/dqnplus/index.rdf", 0xff8b4513,
+					true));
+			items.add(new RssFeed("アルファルファモザイク",
+					"http://alfalfalfa.com/index.rdf", 0xff808080, true));
+			items.add(new RssFeed("andronavi", "http://andronavi.com/feed",
+					0xffadd8e6, true));
+			items.add(new RssFeed("オクトバ", "http://octoba.net/feed", 0xff9370db,
+					true));
+			items.add(new RssFeed("ドロイドバンク", "http://androidnavi.net/feed/",
+					0xfffcb414, true));
+			items.add(new RssFeed("アンドロイダー", "https://androider.jp/rss/home/",
+					0xff33b5e5, true));
+
+			saveItem(items);// セーブ書き込み
+			final Editor editor = sharedPreferences.edit();
+			editor.putInt("save_version", 1);
+			editor.commit();
+		}
+
+		try {// 既読セーブデータオープン
+			FileInputStream fis = openFileInput("RssData.dat");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			hp.clear();
+			hp.putAll((HashMap<String, ArrayList<RssItem>>) ois.readObject());
+			ois.close();
+			alllist.clear();
+			for (String key : hp.keySet()) {
+				alllist.addAll(hp.get(key));
+			}
+			Collections.sort(alllist, new Comparator<RssItem>() {
+				@Override
+				public int compare(RssItem lhs, RssItem rhs) {
+					if (lhs.getDate() == null)
+						return 1;
+					else if (rhs.getDate() == null)
+						return -1;
+					else if (lhs.getDate().before(rhs.getDate()))
+						return 1;
+					else
+						return -1;
+
 				}
+			});
 
-				if (items.isEmpty() || sharedPreferences.getInt("save_version", 0) != 1) {// セーブ空のとき
-					items = new ArrayList<RssFeed>();
-					items.add(new RssFeed(
-							"Googleニュース",
-							"http://news.google.com/news?hl=ja&ned=us&ie=UTF-8&oe=UTF-8&output=rss",
-							0xff00aeef, true));
-					items.add(new RssFeed("4Gamer.net",
-							"http://www.4gamer.net/rss/index.xml", 0xffffc0cb, true));
-					items.add(new RssFeed("ORICON ニュース",
-							"http://rss.rssad.jp/rss/oricon/news/total", 0xff99cc00,
-							true));
-					items.add(new RssFeed("映画.com", "http://feeds.eiga.com/eiga_news",
-							0xffcc0000, true));
-					items.add(new RssFeed("ASCII.jp",
-							"http://rss.rssad.jp/rss/ascii/rss.xml", 0xfff9f903, true));
-					items.add(new RssFeed("ガジェット速報", "http://ggsoku.com/feed/",
-							0xffda31e5, true));
-					items.add(new RssFeed("Engadget",
-							"http://feed.rssad.jp/rss/engadget/rss", 0xff0000cd, true));
-					items.add(new RssFeed("GIGAZINE",
-							"http://feed.rssad.jp/rss/gigazine/rss_2.0", 0xff2f4f4f,
-							true));
-					items.add(new RssFeed("lifehacker",
-							"http://feeds.lifehacker.jp/rss/lifehacker/index.xml",
-							0xff808000, true));
-					items.add(new RssFeed("痛いニュース(ﾉ∀`)",
-							"http://blog.livedoor.jp/dqnplus/index.rdf", 0xff8b4513,
-							true));
-					items.add(new RssFeed("アルファルファモザイク",
-							"http://alfalfalfa.com/index.rdf", 0xff808080, true));
-					items.add(new RssFeed("andronavi", "http://andronavi.com/feed",
-							0xffadd8e6, true));
-					items.add(new RssFeed("オクトバ", "http://octoba.net/feed", 0xff9370db,
-							true));
-					items.add(new RssFeed("ドロイドバンク", "http://androidnavi.net/feed/",
-							0xfffcb414, true));
-					items.add(new RssFeed("アンドロイダー", "https://androider.jp/rss/home/",
-							0xff33b5e5, true));
-
-					saveItem(items);// セーブ書き込み
-					final Editor editor = sharedPreferences.edit();
-					editor.putInt("save_version", 1);
-					editor.commit();
-				}
-
-				try {// 既読セーブデータオープン
-					FileInputStream fis = openFileInput("RssData.dat");
-					ObjectInputStream ois = new ObjectInputStream(fis);
-					hp.clear();
-					hp.putAll((HashMap<String, ArrayList<RssItem>>) ois.readObject());
-					ois.close();
-					alllist.clear();
-					for (String key : hp.keySet()) {
-						alllist.addAll(hp.get(key));
-					}
-					Collections.sort(alllist, new Comparator<RssItem>() {
-						@Override
-						public int compare(RssItem lhs, RssItem rhs) {
-							if (lhs.getDate() == null)
-								return 1;
-							else if (rhs.getDate() == null)
-								return -1;
-							else if (lhs.getDate().before(rhs.getDate()))
-								return 1;
-							else
-								return -1;
-
-						}
-					});
-
-				} catch (Exception e) {
-				}
-		
+		} catch (Exception e) {
+		}
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_action_content);
-		
-		
-
-		
 
 		final String animation = sharedPreferences.getString("animation",
 				"Cube");
@@ -247,21 +244,9 @@ public class ItemListActivity extends Activity implements
 					R.id.item_list)).setActivateOnItemClick(true);
 
 		}
-		
+
 		viewActionsContentView = (ActionsContentView) findViewById(R.id.actionsContentView);
-	    viewActionsContentView.setSwipingType(ActionsContentView.SWIPING_EDGE);
-		/*
-		final DisplayMetrics displayMetrics = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-		menu = new SlidingMenu(this);
-		menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-		menu.setBehindWidth(displayMetrics.widthPixels
-				* sharedPreferences.getInt("slide_width", 80) / 100);
-		menu.setFadeDegree(1f);
-		menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-		menu.setMode(SlidingMenu.LEFT);
-		menu.setMenu(R.layout.menu);
-		*/
+		viewActionsContentView.setSwipingType(ActionsContentView.SWIPING_EDGE);
 
 		if (sharedPreferences.getBoolean("ref_switch", true)
 				&& savedInstanceState == null) {
@@ -309,38 +294,23 @@ public class ItemListActivity extends Activity implements
 	}
 
 	private void saveItem(final ArrayList<RssFeed> items2) {
-			
-			try {
-				final FileOutputStream fos;
-				fos = this.openFileOutput("SaveData.txt",
-						Context.MODE_PRIVATE);
+
+		try {
+			final FileOutputStream fos;
+			fos = this.openFileOutput("SaveData.txt", Context.MODE_PRIVATE);
 			final ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(items2);
 			oos.close();
 		} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void onAdapterSelected(int tag, String url, int position) {
-
-		/*menu.setMode(SlidingMenu.LEFT_RIGHT);
-		menu.setSecondaryMenu(R.layout.browser);
-		final WebView webview = (WebView) findViewById(R.id.webView1);
-		webview.setWebViewClient(new WebViewClient());
-		webview.getSettings().setBuiltInZoomControls(true);
-		webview.getSettings().setLoadWithOverviewMode(true);
-		webview.getSettings().setUseWideViewPort(true);
-		webview.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
-		webview.setScrollBarStyle(WebView.SCROLLBARS_INSIDE_OVERLAY);
-		webview.getSettings().setAppCacheMaxSize(4194304);
-		webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-		webview.loadUrl(url);
-		menu.showSecondaryMenu();*/
-
+		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
 	}
 
 	// 右上のメニュー作成
@@ -482,13 +452,15 @@ public class ItemListActivity extends Activity implements
 	@Override
 	public void onLoadFinished(final Loader<ArrayList<RssItem>> arg0,
 			final ArrayList<RssItem> arg1) {
-		if (arg1==null) {// 失敗時
+		if (arg1 == null) {// 失敗時
 			// Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
 		} else {
 			nhp.put(url, arg1);
 			nalllist.addAll(arg1);
-			((ItemListFragment) getFragmentManager().findFragmentById(R.id.menu)).setIcon(arg1.get(0).getUrl(),i);
-			
+			((ItemListFragment) getFragmentManager()
+					.findFragmentById(R.id.menu)).setIcon(arg1.get(0).getUrl(),
+					i);
+
 		}
 		i++;
 		if (i < items.size()) {
@@ -496,21 +468,20 @@ public class ItemListActivity extends Activity implements
 		} else {
 			if (!nalllist.isEmpty()) {
 				Collections.sort(nalllist, new Comparator<RssItem>() {
-				@Override
-				public int compare(final RssItem lhs, final RssItem rhs) {
-					if (lhs.getDate() == null)
-						return 1;
-					else if (rhs.getDate() == null)
-						return -1;
-					else if (lhs.getDate().before(rhs.getDate()))
-						return 1;
-					else
-						return -1;
+					@Override
+					public int compare(final RssItem lhs, final RssItem rhs) {
+						if (lhs.getDate() == null)
+							return 1;
+						else if (rhs.getDate() == null)
+							return -1;
+						else if (lhs.getDate().before(rhs.getDate()))
+							return 1;
+						else
+							return -1;
 
-				}
-			});
-				
-				
+					}
+				});
+
 				try {// セーブ書き込み
 					alllist.clear();
 					alllist.addAll(nalllist);
@@ -518,8 +489,8 @@ public class ItemListActivity extends Activity implements
 					hp.clear();
 					hp.putAll(nhp);
 					nhp.clear();
-					final FileOutputStream fos = this.openFileOutput("RssData.dat",
-							Context.MODE_PRIVATE);
+					final FileOutputStream fos = this.openFileOutput(
+							"RssData.dat", Context.MODE_PRIVATE);
 					final ObjectOutputStream oos = new ObjectOutputStream(fos);
 					oos.writeObject(hp);
 					oos.close();
@@ -567,7 +538,7 @@ public class ItemListActivity extends Activity implements
 		nhp.clear();
 		efectViewPager = null;
 		items = null;
-		//hp = null;
+		// hp = null;
 		super.onDestroy();
 
 	}

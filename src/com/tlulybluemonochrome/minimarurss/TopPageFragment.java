@@ -19,8 +19,11 @@ package com.tlulybluemonochrome.minimarurss;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.origamilabs.library.views.StaggeredGridView;
 
 import android.app.Activity;
@@ -43,17 +46,18 @@ import android.widget.TextView;
 public class TopPageFragment extends Fragment {
 
 	private ArrayList<RssItem> list;
-	
+
 	private final ImageLoader imageLoader = ImageLoader.getInstance();
-	
-	//private ImageLoaderConfiguration config;
-	
+
+	// private ImageLoaderConfiguration config;
 
 	/**
 	 * The fragment's current callback object, which is notified of list item
 	 * clicks.
 	 */
 	private Callbacks mCallbacks = sDummyCallbacks;
+
+	private DisplayImageOptions options;
 
 	/**
 	 * A callback interface that all activities containing this fragment must
@@ -114,43 +118,38 @@ public class TopPageFragment extends Fragment {
 		// Inflate the layout for this fragment
 		final View rootView = inflater.inflate(R.layout.fragment_top_page,
 				container, false);
-		
-		final ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity()).build();
+
+		final ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
+				getActivity()).memoryCache(new LruMemoryCache(2 * 1024 * 1024))
+				.memoryCacheSize(2 * 1024 * 1024).build();
 		ImageLoader.getInstance().init(config);
+
+		options = new DisplayImageOptions.Builder().cacheInMemory(true)
+				.displayer(new FadeInBitmapDisplayer(500)).build();
 
 		list = (ArrayList<RssItem>) getArguments().getSerializable("LIST");
 
 		final StaggeredGridView gridView = (StaggeredGridView) rootView
 				.findViewById(R.id.googlecards_gridview);
-		
-		final GoogleCardsAdapter adapter = new GoogleCardsAdapter(getActivity(), 0, list);
+
+		final GoogleCardsAdapter adapter = new GoogleCardsAdapter(
+				getActivity(), 0, list);
 
 		gridView.setAdapter(adapter);
-		
+
 		adapter.notifyDataSetChanged();
-		
-		gridView.setOnItemClickListener(new StaggeredGridView.OnItemClickListener(){
+
+		gridView.setOnItemClickListener(new StaggeredGridView.OnItemClickListener() {
 			@Override
 			public void onItemClick(StaggeredGridView parent, View view,
 					int position, long id) {
 				mCallbacks.onAdapterSelected(position, list.get(position)
 						.getUrl(), position);
 				// TODO 自動生成されたメソッド・スタブ
-				
+
 			}
-			
+
 		});
-
-		/*gridView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(final AdapterView<?> arg0, final View arg1,
-					final int position, final long arg3) {
-				// TODO 自動生成されたメソッド・スタブ
-				mCallbacks.onAdapterSelected(position, list.get(position)
-						.getUrl(), position);
-			}
-
-		});*/
 
 		return rootView;
 
@@ -160,8 +159,6 @@ public class TopPageFragment extends Fragment {
 		ImageView image;
 		TextView title, text;
 	}
-	
-	
 
 	private class GoogleCardsAdapter extends ArrayAdapter<RssItem> {
 
@@ -204,7 +201,7 @@ public class TopPageFragment extends Fragment {
 			if (item.getImage() != null) {
 				holder.image.setVisibility(View.VISIBLE);
 				imageLoader
-						.displayImage(item.getImage(), holder.image);
+						.displayImage(item.getImage(), holder.image, options);
 				// makeImage(item.getImage(), holder.image);
 			} else {
 				holder.image.setVisibility(View.GONE);

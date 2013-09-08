@@ -28,7 +28,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import shared.ui.actionscontentview.ActionsContentView;
-import android.app.ActionBar;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -94,6 +95,8 @@ public class ItemListActivity extends Activity implements
 	// private SlidingMenu menu;
 	private ActionsContentView viewActionsContentView;
 
+	private PullToRefreshAttacher mPullToRefreshAttacher;
+
 	// private int slide = 0;
 
 	@Override
@@ -117,7 +120,7 @@ public class ItemListActivity extends Activity implements
 
 		// タイトルバーにプログレスアイコンを表示可能にする
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		
+
 		getActionBar().setHomeButtonEnabled(true);
 
 		// セーブデータオープン
@@ -205,6 +208,12 @@ public class ItemListActivity extends Activity implements
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_action_content);
+		
+		// The attacher should always be created in the Activity's onCreate
+        mPullToRefreshAttacher = PullToRefreshAttacher.get(this);
+        
+     // Retrieve the PullToRefreshLayout from the content view
+        PullToRefreshLayout ptrLayout = (PullToRefreshLayout) findViewById(R.id.ptr_layout);
 
 		final String animation = sharedPreferences.getString("animation",
 				"Cube");
@@ -235,22 +244,30 @@ public class ItemListActivity extends Activity implements
 				getIntent().getIntExtra(ItemDetailFragment.ARG_ITEM_ID, 1),
 				false);
 		efectViewPager.setOnPageChangeListener(new OnPageChangeListener() {
-		    @Override
-		    public void onPageSelected(int position) {
-		    	if (position == 0)
-					getActionBar().setTitle("Setting");
-				else if (position == 1)
+			@Override
+			public void onPageSelected(int position) {
+				if (position == 0) {
+					getActionBar().setTitle(" Setting");
+					getActionBar().setDisplayHomeAsUpEnabled(true);
+
+				} else if (position == 1) {
 					getActionBar().setTitle("minimaruRSS");
-				else
-					getActionBar().setTitle(items.get(position - 2).getTitle());
-		    }
-		    @Override
-		    public void onPageScrolled(int arg0, float arg1, int arg2) {
-		    }
-		    @Override
-		    public void onPageScrollStateChanged(int arg0) {
-		    }
-		 });
+					getActionBar().setDisplayHomeAsUpEnabled(false);
+				} else {
+					getActionBar().setTitle(" " + items.get(position - 2).getTitle());
+					getActionBar().setDisplayHomeAsUpEnabled(true);
+				}
+
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+			}
+		});
 
 		if (findViewById(R.id.item_detail_container) != null) {// タブレット用
 			// The detail container view will be present only in the
@@ -340,7 +357,7 @@ public class ItemListActivity extends Activity implements
 		super.onCreateOptionsMenu(menu);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.my_menu, menu);
-		//ref = menu.findItem(R.id.reflesh);
+		// ref = menu.findItem(R.id.reflesh);
 		if (sharedPreferences.getBoolean("ref_switch", true)) {
 			ref.setVisible(false);
 		}
@@ -360,13 +377,11 @@ public class ItemListActivity extends Activity implements
 			viewActionsContentView.showContent();
 			efectViewPager.setCurrentItem(0);
 			break;
-		/*case R.id.reflesh:
-			i = 0;
-			getLoaderManager().initLoader(0, null, this);
-			ref.setVisible(false);
-			// タイトルバーのプログレスアイコンを表示する
-			setProgressBarIndeterminateVisibility(true);
-			break;*/
+		/*
+		 * case R.id.reflesh: i = 0; getLoaderManager().initLoader(0, null,
+		 * this); ref.setVisible(false); // タイトルバーのプログレスアイコンを表示する
+		 * setProgressBarIndeterminateVisibility(true); break;
+		 */
 		default:
 			ret = super.onOptionsItemSelected(item);
 			break;
@@ -404,11 +419,10 @@ public class ItemListActivity extends Activity implements
 			// getIntent().getStringExtra(ItemDetailFragment.ARG_ITEM_ID));
 			// Fragment fragment;
 
-			if (position == 0){// 設定画面
-				
+			if (position == 0) {// 設定画面
+
 				return new SettingsFragment();
-			}
-			else if (position == 1) {// top画面
+			} else if (position == 1) {// top画面
 				final Bundle arguments = new Bundle();
 				arguments.putSerializable("LIST", alllist);
 				final TopPageFragment fragment = new TopPageFragment();
@@ -569,6 +583,10 @@ public class ItemListActivity extends Activity implements
 		super.onDestroy();
 
 	}
+	
+	PullToRefreshAttacher getPullToRefreshAttacher() {
+        return mPullToRefreshAttacher;
+    }
 
 	@Override
 	public void onRefreshList(String string, ArrayList<RssItem> arg1) {

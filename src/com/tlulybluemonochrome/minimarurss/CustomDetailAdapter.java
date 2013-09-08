@@ -117,15 +117,6 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 
 		}
 
-		// クリックしてブラウザ起動
-		view.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(final View v) {
-				((ListView) parent).performItemClick(v, position + 1,// なぜか+1しないとうまく動かない
-						(long) v.getId());
-			}
-		});
-
 		// CustomDataのデータをViewの各Widgetにセットする
 
 		holder.textView.setText(item.getTitle());
@@ -205,6 +196,7 @@ public class CustomDetailAdapter extends ArrayAdapter<RssItem> {
 		} catch (InterruptedException e) {
 		}
 	}
+
 	private static void makeImage(final String image,
 			final ImageView urlImageView) {
 		new Thread(new Runnable() {

@@ -18,6 +18,7 @@ package com.tlulybluemonochrome.minimarurss;
 
 import java.util.ArrayList;
 
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -33,8 +34,6 @@ import android.view.animation.LayoutAnimationController;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.tlulybluemonochrome.minimarurss.RefreshableListView.OnRefreshListener;
-import com.tlulybluemonochrome.minimarurss.RefreshableListView;
 
 /**
  * 更新ページ表示用フラグメント
@@ -42,12 +41,14 @@ import com.tlulybluemonochrome.minimarurss.RefreshableListView;
  * @author k9000
  * 
  */
-public class ItemDetailFragment extends Fragment implements
-		LoaderCallbacks<ArrayList<RssItem>> {
+public class ItemDetailFragment extends Fragment
+		implements
+		LoaderCallbacks<ArrayList<RssItem>>,
+		uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener {
 
 	boolean mFlag = false;
 
-	private RefreshableListView mListView;
+	private ListView mListView;
 
 	/**
 	 * The fragment argument representing the item ID that this fragment
@@ -67,6 +68,8 @@ public class ItemDetailFragment extends Fragment implements
 	private int mActivatedPosition = ListView.INVALID_POSITION;
 
 	private ArrayList<RssItem> list;
+
+	private PullToRefreshAttacher mPullToRefreshAttacher;
 
 	/**
 	 * A callback interface that all activities containing this fragment must
@@ -119,7 +122,7 @@ public class ItemDetailFragment extends Fragment implements
 			final ViewGroup container, final Bundle savedInstanceState) {
 		final View rootView = inflater.inflate(R.layout.main, container, false);
 
-		mListView = (RefreshableListView) rootView.findViewById(R.id.listview);
+		mListView = (ListView) rootView.findViewById(R.id.listview);
 
 		mListView.setAdapter(null);
 
@@ -130,15 +133,10 @@ public class ItemDetailFragment extends Fragment implements
 					.setAdapter(new CustomDetailAdapter(getActivity(), 0, list));
 
 			// 引っ張って更新
-			mListView.setOnRefreshListener(new OnRefreshListener() {
-				@Override
-				public void onRefresh(final RefreshableListView listView) {
-					mFlag = true;
-					getLoaderManager().restartLoader(500,
-							ItemDetailFragment.this.getArguments(),
-							ItemDetailFragment.this);
-				}
-			});
+			mPullToRefreshAttacher = ((ItemListActivity) getActivity())
+					.getPullToRefreshAttacher();
+			mPullToRefreshAttacher.addRefreshableView(mListView, this);
+
 		}
 
 		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -195,7 +193,8 @@ public class ItemDetailFragment extends Fragment implements
 	public void onLoadFinished(final Loader<ArrayList<RssItem>> arg0,
 			final ArrayList<RssItem> arg1) {
 		if (arg1.isEmpty()) {// 失敗時
-			// Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show(); 
+			// Toast.makeText(getActivity(), "error",
+			// Toast.LENGTH_SHORT).show();
 		} else {
 			// リスト更新
 			mListView
@@ -206,7 +205,8 @@ public class ItemDetailFragment extends Fragment implements
 			list = arg1;
 		}
 		if (mFlag) {// 引っ張って更新したとき
-			mListView.completeRefreshing();
+			// mListView.completeRefreshing();
+			mPullToRefreshAttacher.setRefreshComplete();
 			LayoutAnimationController anim = getListCascadeAnimation();
 			mListView.setLayoutAnimation(anim);
 			mFlag = false;
@@ -241,10 +241,18 @@ public class ItemDetailFragment extends Fragment implements
 	public void onDestroyView() {
 		getLoaderManager().destroyLoader(0);
 		mListView.setAdapter(null);
-		mListView.setOnRefreshListener(null);
+		// mListView.setOnRefreshListener(null);
 		mListView = null;
 		list = null;
 		super.onDestroyView();
 
+	}
+
+	@Override
+	public void onRefreshStarted(View view) {
+		mFlag = true;
+		getLoaderManager()
+				.restartLoader(500, ItemDetailFragment.this.getArguments(),
+						ItemDetailFragment.this);
 	}
 }

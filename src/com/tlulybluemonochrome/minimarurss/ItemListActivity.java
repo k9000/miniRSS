@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import shared.ui.actionscontentview.ActionsContentView;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -41,6 +42,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -115,6 +117,8 @@ public class ItemListActivity extends Activity implements
 
 		// タイトルバーにプログレスアイコンを表示可能にする
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		
+		getActionBar().setHomeButtonEnabled(true);
 
 		// セーブデータオープン
 		try {
@@ -230,6 +234,23 @@ public class ItemListActivity extends Activity implements
 		efectViewPager.setCurrentItem(
 				getIntent().getIntExtra(ItemDetailFragment.ARG_ITEM_ID, 1),
 				false);
+		efectViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+		    @Override
+		    public void onPageSelected(int position) {
+		    	if (position == 0)
+					getActionBar().setTitle("Setting");
+				else if (position == 1)
+					getActionBar().setTitle("minimaruRSS");
+				else
+					getActionBar().setTitle(items.get(position - 2).getTitle());
+		    }
+		    @Override
+		    public void onPageScrolled(int arg0, float arg1, int arg2) {
+		    }
+		    @Override
+		    public void onPageScrollStateChanged(int arg0) {
+		    }
+		 });
 
 		if (findViewById(R.id.item_detail_container) != null) {// タブレット用
 			// The detail container view will be present only in the
@@ -319,7 +340,7 @@ public class ItemListActivity extends Activity implements
 		super.onCreateOptionsMenu(menu);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.my_menu, menu);
-		ref = menu.findItem(R.id.reflesh);
+		//ref = menu.findItem(R.id.reflesh);
 		if (sharedPreferences.getBoolean("ref_switch", true)) {
 			ref.setVisible(false);
 		}
@@ -331,17 +352,21 @@ public class ItemListActivity extends Activity implements
 	public boolean onOptionsItemSelected(MenuItem item) {
 		boolean ret = true;
 		switch (item.getItemId()) {
+		case android.R.id.home:
+			viewActionsContentView.showContent();
+			efectViewPager.setCurrentItem(1);
+			break;
 		case R.id.item_setting:
 			viewActionsContentView.showContent();
 			efectViewPager.setCurrentItem(0);
 			break;
-		case R.id.reflesh:
+		/*case R.id.reflesh:
 			i = 0;
 			getLoaderManager().initLoader(0, null, this);
 			ref.setVisible(false);
 			// タイトルバーのプログレスアイコンを表示する
 			setProgressBarIndeterminateVisibility(true);
-			break;
+			break;*/
 		default:
 			ret = super.onOptionsItemSelected(item);
 			break;
@@ -379,8 +404,10 @@ public class ItemListActivity extends Activity implements
 			// getIntent().getStringExtra(ItemDetailFragment.ARG_ITEM_ID));
 			// Fragment fragment;
 
-			if (position == 0)// 設定画面
+			if (position == 0){// 設定画面
+				
 				return new SettingsFragment();
+			}
 			else if (position == 1) {// top画面
 				final Bundle arguments = new Bundle();
 				arguments.putSerializable("LIST", alllist);

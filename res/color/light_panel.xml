@@ -3,10 +3,10 @@
 
     <item android:state_pressed="false">
         <layer-list>
-            <item android:bottom="8dp" 
-                android:left="10dp" 
-                android:right="10dp" 
-                android:top="8dp">
+            <item android:bottom="3dp" 
+                android:left="6dp" 
+                android:right="6dp" 
+                android:top="3dp">
                 <shape android:shape="rectangle">
                     <gradient android:angle="270" 
                         android:endColor="#CCCCCC" 
@@ -14,14 +14,14 @@
                         android:startColor="#FFFFFF" 
                         android:centerY="0.9"
                         android:type="linear" />
-                    <corners android:radius="32dp"  />
+                    <corners android:radius="30dp"  />
                 </shape>
                 </item>
 
-            <item android:bottom="8dp" 
-                android:left="10dp" 
-                android:right="10dp" 
-                android:top="8dp">
+            <item android:bottom="3dp" 
+                android:left="6dp" 
+                android:right="6dp" 
+                android:top="3dp">
             <shape android:shape="rectangle">
                     <gradient android:angle="270" 
                         android:endColor="#99FFFFFF" 
@@ -29,7 +29,7 @@
                         android:startColor="#00FFFFFF" 
                         android:centerY="0.95"
                         android:type="linear" />
-                    <corners android:radius="32dp" />
+                    <corners android:radius="30dp" />
                 </shape>
                 </item>
 
@@ -40,10 +40,10 @@
          <layer-list>
              
              
-            <item android:bottom="8dp" 
-                android:left="10dp" 
-                android:right="10dp" 
-                android:top="8dp">
+            <item android:bottom="3dp" 
+                android:left="6dp" 
+                android:right="6dp" 
+                android:top="3dp">
                 <shape android:shape="rectangle">
                     <gradient android:angle="270" 
                         android:endColor="#9900BBFF" 
@@ -51,14 +51,14 @@
                         android:startColor="#99FFFFFF" 
                         android:centerY="0.3"
                         android:type="linear" />
-                    <corners android:radius="32dp"  />
+                    <corners android:radius="30dp"  />
                 </shape>
                 </item>
 
-            <item android:bottom="8dp" 
-                android:left="10dp" 
-                android:right="10dp" 
-                android:top="8dp">
+            <item android:bottom="3dp" 
+                android:left="6dp" 
+                android:right="6dp" 
+                android:top="3dp">
             <shape android:shape="rectangle">
                     <gradient android:angle="270" 
                         android:endColor="#99FFFFFF" 
@@ -66,14 +66,14 @@
                         android:startColor="#00FFFFFF" 
                         android:centerY="0.9"
                         android:type="linear" />
-                    <corners android:radius="32dp" />
+                    <corners android:radius="30dp" />
                 </shape>
                 </item>
                 
             <item>
                 <shape android:shape="rectangle">
                     <solid android:color="#3300BBFF" />
-                    <corners android:radius="32dp"  />
+                    <corners android:radius="30dp"  />
                 </shape>
                 </item>
         </layer-list>

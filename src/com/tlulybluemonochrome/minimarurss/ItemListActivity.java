@@ -359,7 +359,7 @@ public class ItemListActivity extends Activity implements
 		inflater.inflate(R.menu.my_menu, menu);
 		// ref = menu.findItem(R.id.reflesh);
 		if (sharedPreferences.getBoolean("ref_switch", true)) {
-			ref.setVisible(false);
+			//ref.setVisible(false);
 		}
 		return true;
 	}
@@ -541,7 +541,7 @@ public class ItemListActivity extends Activity implements
 			set = 3;
 			mSectionsPagerAdapter.notifyDataSetChanged();
 			setProgressBarIndeterminateVisibility(false);
-			ref.setVisible(true);
+			//ref.setVisible(true);
 		}
 
 	}

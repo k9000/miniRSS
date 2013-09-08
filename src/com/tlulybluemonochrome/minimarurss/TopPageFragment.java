@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.origamilabs.library.views.StaggeredGridView;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -29,12 +30,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.GridView;
 
 /**
  * タブレット用トップページ
@@ -122,12 +120,28 @@ public class TopPageFragment extends Fragment {
 
 		list = (ArrayList<RssItem>) getArguments().getSerializable("LIST");
 
-		final GridView gridView = (GridView) rootView
+		final StaggeredGridView gridView = (StaggeredGridView) rootView
 				.findViewById(R.id.googlecards_gridview);
+		
+		final GoogleCardsAdapter adapter = new GoogleCardsAdapter(getActivity(), 0, list);
 
-		gridView.setAdapter(new GoogleCardsAdapter(getActivity(), 0, list));
+		gridView.setAdapter(adapter);
+		
+		adapter.notifyDataSetChanged();
+		
+		gridView.setOnItemClickListener(new StaggeredGridView.OnItemClickListener(){
+			@Override
+			public void onItemClick(StaggeredGridView parent, View view,
+					int position, long id) {
+				mCallbacks.onAdapterSelected(position, list.get(position)
+						.getUrl(), position);
+				// TODO 自動生成されたメソッド・スタブ
+				
+			}
+			
+		});
 
-		gridView.setOnItemClickListener(new OnItemClickListener() {
+		/*gridView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(final AdapterView<?> arg0, final View arg1,
 					final int position, final long arg3) {
@@ -136,7 +150,7 @@ public class TopPageFragment extends Fragment {
 						.getUrl(), position);
 			}
 
-		});
+		});*/
 
 		return rootView;
 

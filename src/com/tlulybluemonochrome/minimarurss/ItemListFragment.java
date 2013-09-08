@@ -37,7 +37,6 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -206,7 +205,6 @@ public class ItemListFragment extends Fragment {
 					final String redirectUrl = connection.getURL().toString();
 					//final String redirectUrl = connection.getHeaderField();
 					connection.disconnect();
-					Log.d("test", redirectUrl);
 					final URL image_url = new URL("http://www.google.com/s2/favicons?domain_url="+redirectUrl);
 					final InputStream is = (InputStream) image_url.getContent();
 					rssFeed.setImage(BitmapFactory.decodeStream(is));

@@ -36,7 +36,6 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.util.Log;
 import android.util.Xml;
 
 /**
@@ -191,7 +190,6 @@ public class RssParserTaskLoader extends AsyncTaskLoader<ArrayList<RssItem>> {
 				return result;
 
 			} catch (SocketTimeoutException e) {
-				Log.d("test", "timeout");
 				e.printStackTrace();
 			} catch (Exception e) {
 				e.printStackTrace();

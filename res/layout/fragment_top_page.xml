@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:staggered="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    tools:context=".TopPageFragment" >
     <!--  
 <ListView
     android:layout_width="match_parent"
@@ -13,14 +15,18 @@
     android:padding="8dp"
     android:scrollbarStyle="outsideOverlay" />
 -->
-<GridView
+<com.origamilabs.library.views.StaggeredGridView
     android:id="@+id/googlecards_gridview"
-    android:layout_width="match_parent"
+    staggered:numColumns="2"
+        staggered:drawSelectorOnTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <!-- android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:numColumns="auto_fit"
     android:columnWidth="120dp"
     android:stretchMode="columnWidth"
-    android:gravity="center" >
-</GridView>
-
-</LinearLayout>
+    android:gravity="center" > 
+</com.origamilabs.library.views.StaggeredGridView>
+-->
+</RelativeLayout>

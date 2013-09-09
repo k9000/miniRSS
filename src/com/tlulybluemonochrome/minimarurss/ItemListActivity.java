@@ -29,6 +29,7 @@ import java.util.HashMap;
 
 import shared.ui.actionscontentview.ActionsContentView;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -47,6 +48,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
@@ -58,7 +60,7 @@ import android.view.Window;
  */
 public class ItemListActivity extends Activity implements
 		ItemListFragment.Callbacks, ItemDetailFragment.Callbacks,
-		TopPageFragment.Callbacks, LoaderCallbacks<ArrayList<RssItem>> {
+		TopPageFragment.Callbacks, LoaderCallbacks<ArrayList<RssItem>>, OnRefreshListener {
 
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -210,9 +212,6 @@ public class ItemListActivity extends Activity implements
 		
 		// The attacher should always be created in the Activity's onCreate
         mPullToRefreshAttacher = PullToRefreshAttacher.get(this);
-        
-     // Retrieve the PullToRefreshLayout from the content view
-     //   PullToRefreshLayout ptrLayout = (PullToRefreshLayout) findViewById(R.id.ptr_layout);
 
 		final String animation = sharedPreferences.getString("animation",
 				"Cube");
@@ -540,6 +539,7 @@ public class ItemListActivity extends Activity implements
 			set = 3;
 			mSectionsPagerAdapter.notifyDataSetChanged();
 			setProgressBarIndeterminateVisibility(false);
+			mPullToRefreshAttacher.setRefreshComplete();
 			//ref.setVisible(true);
 		}
 
@@ -597,6 +597,14 @@ public class ItemListActivity extends Activity implements
 			sharedPreferences.edit().putBoolean("card", true).commit();
 		} catch (Exception e1) {
 		}
+	}
+
+	@Override
+	public void onRefreshStarted(View view) {
+		i = 0;
+		// タイトルバーのプログレスアイコンを表示する
+		setProgressBarIndeterminateVisibility(true);
+		getLoaderManager().initLoader(0, null,this);
 	}
 
 }

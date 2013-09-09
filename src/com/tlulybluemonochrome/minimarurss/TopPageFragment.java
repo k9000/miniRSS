@@ -19,6 +19,9 @@ package com.tlulybluemonochrome.minimarurss;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
+
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -47,7 +50,7 @@ import android.graphics.Bitmap;
  * @author k9000
  * 
  */
-public class TopPageFragment extends Fragment {
+public class TopPageFragment extends Fragment  {
 
 	private ArrayList<RssItem> list;
 
@@ -62,6 +65,8 @@ public class TopPageFragment extends Fragment {
 	private Callbacks mCallbacks = sDummyCallbacks;
 
 	private DisplayImageOptions options;
+
+	private PullToRefreshAttacher mPullToRefreshAttacher;
 
 	/**
 	 * A callback interface that all activities containing this fragment must
@@ -145,6 +150,13 @@ public class TopPageFragment extends Fragment {
 				getActivity(), 0, list);
 
 		gridView.setAdapter(adapter);
+
+		// 引っ張って更新
+		mPullToRefreshAttacher = ((ItemListActivity) getActivity())
+				.getPullToRefreshAttacher();
+		final PullToRefreshLayout ptrLayout = (PullToRefreshLayout) rootView
+				.findViewById(R.id.ptr_layout);
+		ptrLayout.setPullToRefreshAttacher(mPullToRefreshAttacher, (ItemListActivity)getActivity());
 
 		adapter.notifyDataSetChanged();
 

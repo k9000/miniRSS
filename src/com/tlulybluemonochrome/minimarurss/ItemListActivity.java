@@ -29,7 +29,6 @@ import java.util.HashMap;
 
 import shared.ui.actionscontentview.ActionsContentView;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -90,7 +89,7 @@ public class ItemListActivity extends Activity implements
 
 	private int set = 0;
 
-	private MenuItem ref;
+	//private MenuItem ref;
 
 	// private SlidingMenu menu;
 	private ActionsContentView viewActionsContentView;
@@ -213,7 +212,7 @@ public class ItemListActivity extends Activity implements
         mPullToRefreshAttacher = PullToRefreshAttacher.get(this);
         
      // Retrieve the PullToRefreshLayout from the content view
-        PullToRefreshLayout ptrLayout = (PullToRefreshLayout) findViewById(R.id.ptr_layout);
+     //   PullToRefreshLayout ptrLayout = (PullToRefreshLayout) findViewById(R.id.ptr_layout);
 
 		final String animation = sharedPreferences.getString("animation",
 				"Cube");
@@ -573,8 +572,6 @@ public class ItemListActivity extends Activity implements
 		// ImageCache.deleteAll(getCacheDir());
 		getLoaderManager().destroyLoader(0);
 		// efectViewPager.setAdapter(null);
-		alllist.clear();
-		nalllist.clear();
 		hp.clear();
 		nhp.clear();
 		efectViewPager = null;

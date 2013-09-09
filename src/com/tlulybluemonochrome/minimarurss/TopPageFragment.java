@@ -31,6 +31,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -134,17 +135,15 @@ public class TopPageFragment extends Fragment {
 				.bitmapConfig(Bitmap.Config.RGB_565)
 				.displayer(new FadeInBitmapDisplayer(500)).build();
 
-		list = (ArrayList<RssItem>) getArguments().getSerializable("LIST");
-
 		final StaggeredGridView gridView = (StaggeredGridView) rootView
 				.findViewById(R.id.googlecards_gridview);
+
+		list = (ArrayList<RssItem>) getArguments().getSerializable("LIST");
 
 		final GoogleCardsAdapter adapter = new GoogleCardsAdapter(
 				getActivity(), 0, list);
 
 		gridView.setAdapter(adapter);
-
-		adapter.notifyDataSetChanged();
 
 		gridView.setOnItemClickListener(new StaggeredGridView.OnItemClickListener() {
 			@Override
@@ -157,6 +156,8 @@ public class TopPageFragment extends Fragment {
 			}
 
 		});
+
+		adapter.notifyDataSetChanged();
 
 		return rootView;
 

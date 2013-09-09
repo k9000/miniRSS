@@ -31,12 +31,13 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.graphics.Bitmap;
 
@@ -145,18 +146,6 @@ public class TopPageFragment extends Fragment {
 
 		gridView.setAdapter(adapter);
 
-		gridView.setOnItemClickListener(new StaggeredGridView.OnItemClickListener() {
-			@Override
-			public void onItemClick(StaggeredGridView parent, View view,
-					int position, long id) {
-				mCallbacks.onAdapterSelected(position, list.get(position)
-						.getUrl(), position);
-				// TODO 自動生成されたメソッド・スタブ
-
-			}
-
-		});
-
 		adapter.notifyDataSetChanged();
 
 		return rootView;
@@ -166,6 +155,7 @@ public class TopPageFragment extends Fragment {
 	private static class ViewHolder {
 		ImageView image;
 		TextView title, text;
+		LinearLayout content;
 	}
 
 	private class GoogleCardsAdapter extends ArrayAdapter<RssItem> {
@@ -190,12 +180,11 @@ public class TopPageFragment extends Fragment {
 			// convertViewは使い回しされている可能性があるのでnullの時だけ新しく作る
 			if (view == null) {
 				view = layoutInflater_.inflate(R.layout.card, null);
-
 				holder = new ViewHolder();
 				holder.image = (ImageView) view.findViewById(R.id.card_image);
 				holder.title = (TextView) view.findViewById(R.id.card_title);
 				holder.text = (TextView) view.findViewById(R.id.card_text);
-
+				holder.content = (LinearLayout) view.findViewById(R.id.card);
 				view.setTag(holder);
 
 			} else {
@@ -218,6 +207,14 @@ public class TopPageFragment extends Fragment {
 			holder.title.setText(item.getTitle());
 			holder.text.setText(item.getPage() + "   "
 					+ String.valueOf(item.getDate()));
+			holder.content.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					mCallbacks.onAdapterSelected(position, list.get(position)
+							.getUrl(), position);
+				}
+
+			});
 
 			return view;
 		}

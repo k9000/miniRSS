@@ -23,6 +23,7 @@ import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.origamilabs.library.views.StaggeredGridView;
 
@@ -36,6 +37,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.graphics.Bitmap;
 
 /**
  * タブレット用トップページ
@@ -120,11 +122,16 @@ public class TopPageFragment extends Fragment {
 				container, false);
 
 		final ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
-				getActivity()).memoryCache(new LruMemoryCache(2 * 1024 * 1024))
-				.memoryCacheSize(2 * 1024 * 1024).build();
+				getActivity()).memoryCacheExtraOptions(320, 320)
+				.threadPoolSize(5)
+				.tasksProcessingOrder(QueueProcessingType.LIFO)
+				.denyCacheImageMultipleSizesInMemory()
+				.memoryCache(new LruMemoryCache(8 * 1024 * 1024))
+				.memoryCacheSize(8 * 1024 * 1024).build();
 		ImageLoader.getInstance().init(config);
 
 		options = new DisplayImageOptions.Builder().cacheInMemory(true)
+				.bitmapConfig(Bitmap.Config.RGB_565)
 				.displayer(new FadeInBitmapDisplayer(500)).build();
 
 		list = (ArrayList<RssItem>) getArguments().getSerializable("LIST");

@@ -19,9 +19,6 @@ package com.tlulybluemonochrome.minimarurss;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
-
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -34,6 +31,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -43,6 +41,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 
 /**
  * タブレット用トップページ
@@ -66,7 +65,7 @@ public class TopPageFragment extends Fragment  {
 
 	private DisplayImageOptions options;
 
-	private PullToRefreshAttacher mPullToRefreshAttacher;
+	//private PullToRefreshAttacher mPullToRefreshAttacher;
 
 	/**
 	 * A callback interface that all activities containing this fragment must
@@ -140,9 +139,22 @@ public class TopPageFragment extends Fragment  {
 		options = new DisplayImageOptions.Builder().cacheInMemory(true)
 				.bitmapConfig(Bitmap.Config.RGB_565)
 				.displayer(new FadeInBitmapDisplayer(500)).build();
+		
+		
+		// DPI取得
+		final int dpi = (int) getActivity().getResources().getDisplayMetrics().density;
+		
+		// 画面サイズを取得する
+        final Display display = getActivity().getWindowManager().getDefaultDisplay();
+        final Point p = new Point();
+        display.getSize(p);
+        
+        final int row = (Math.min(p.x, p.y))/(180*dpi);
 
 		final StaggeredGridView gridView = (StaggeredGridView) rootView
 				.findViewById(R.id.googlecards_gridview);
+
+		gridView.setColumnCount(row);
 
 		list = (ArrayList<RssItem>) getArguments().getSerializable("LIST");
 
@@ -150,13 +162,6 @@ public class TopPageFragment extends Fragment  {
 				getActivity(), 0, list);
 
 		gridView.setAdapter(adapter);
-
-		// 引っ張って更新
-		mPullToRefreshAttacher = ((ItemListActivity) getActivity())
-				.getPullToRefreshAttacher();
-		final PullToRefreshLayout ptrLayout = (PullToRefreshLayout) rootView
-				.findViewById(R.id.ptr_layout);
-		ptrLayout.setPullToRefreshAttacher(mPullToRefreshAttacher, (ItemListActivity)getActivity());
 
 		adapter.notifyDataSetChanged();
 

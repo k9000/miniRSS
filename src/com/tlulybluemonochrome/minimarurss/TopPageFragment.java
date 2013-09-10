@@ -16,8 +16,10 @@
 
 package com.tlulybluemonochrome.minimarurss;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -171,7 +173,7 @@ public class TopPageFragment extends Fragment  {
 
 	private static class ViewHolder {
 		ImageView image;
-		TextView title, text;
+		TextView title, day, text;
 		LinearLayout content;
 	}
 
@@ -221,9 +223,9 @@ public class TopPageFragment extends Fragment  {
 				holder.image.setVisibility(View.GONE);
 			}
 
+			final SimpleDateFormat sdf = new SimpleDateFormat("M'/'d k:mm ", Locale.JAPAN);
 			holder.title.setText(item.getTitle());
-			holder.text.setText(item.getPage() + "   "
-					+ String.valueOf(item.getDate()));
+			holder.text.setText(sdf.format(item.getDate())+"\n"+item.getPage());
 			holder.content.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {

@@ -112,7 +112,7 @@ public class RssItem implements Serializable {
 	}
 
 	public final Bitmap getImageData() {
-		final Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+		final Bitmap bmp = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565);
 		bmp.eraseColor(tag);
 		return bmp;
 	}

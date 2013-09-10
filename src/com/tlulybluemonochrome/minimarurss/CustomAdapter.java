@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -36,6 +37,7 @@ public class CustomAdapter extends ArrayAdapter<RssFeed> {
 	private LayoutInflater layoutInflater_;
 
 	static class ViewHolder {
+		LinearLayout color;
 		ImageView image;
 		TextView text;
 	}
@@ -66,6 +68,7 @@ public class CustomAdapter extends ArrayAdapter<RssFeed> {
 			view = layoutInflater_.inflate(R.layout.custom_layout, null);
 
 			holder = new ViewHolder();
+			holder.color = (LinearLayout) view.findViewById(R.id.color);
 			holder.image = (ImageView) view.findViewById(R.id.image);
 			holder.text = (TextView) view.findViewById(R.id.text);
 
@@ -78,6 +81,8 @@ public class CustomAdapter extends ArrayAdapter<RssFeed> {
 
 		// 特定の行(position)のデータを得る
 		RssFeed item = (RssFeed) getItem(position);
+
+		holder.color.setBackgroundColor(item.getTag());
 
 		if (item.getImage() != null)
 			holder.image.setImageBitmap(item.getImage());

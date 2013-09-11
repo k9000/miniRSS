@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="metalList" parent="@android:style/Widget.ListView">
         <item name="android:background">@color/metal</item>
     </style>
@@ -60,6 +60,16 @@
         <item name="android:colorForeground">@color/light_glass_bar</item>
         <item name="android:colorBackground">@color/light_back</item>
         <item name="android:activatedBackgroundIndicator">@color/light_panel</item>
+    </style>
+    
+    <style name="Cards" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/light_metal_actionbar</item>
+        <item name="android:listChoiceBackgroundIndicator">@color/card_list</item>
+        <item name="android:listPreferredItemHeight">60dp</item>
+        <item name="android:colorForeground">@color/light_glass_bar</item>
+        <item name="android:colorBackground">#cccccc</item>
+        <item name="android:activatedBackgroundIndicator">@color/card_list</item>
+        <item name="android:textColorPrimary">#444444</item>
     </style>
     
 

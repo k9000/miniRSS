@@ -156,33 +156,34 @@
                     android:id="@+id/radio0"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="Light" />
+                    android:text="Simple" />
 
                 <RadioButton
                     android:id="@+id/radio1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="White" />
+                    android:text="Metal" />
 
                 <RadioButton
                     android:id="@+id/radio2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Gray" />
+                    android:checked="true"
+                    android:text="White" />
 
                 <RadioButton
                     android:id="@+id/radio3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dark" />
+                    android:text="Gray" />
 
                 <RadioButton
                     android:id="@+id/radio4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Transparent" />
+                    android:text="Dark" />
+
             </RadioGroup>
 
             <TextView

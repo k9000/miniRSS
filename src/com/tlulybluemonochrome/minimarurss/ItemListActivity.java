@@ -105,16 +105,16 @@ public class ItemListActivity extends Activity implements
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		/* Preferencesからテーマ設定 */
 		final String thme_preference = sharedPreferences.getString(
-				"theme_preference", "Light");
+				"theme_preference", "Metal");
 		int theme = R.style.LightMetal;
-		if (thme_preference.equals("Light"))
+		if (thme_preference.equals("Metal"))
 			theme = R.style.LightMetal;
 		else if (thme_preference.equals("White"))
 			theme = R.style.WhiteGlass;
 		else if (thme_preference.equals("Dark"))
 			theme = R.style.DarkGlass;
-		else if (thme_preference.equals("Transparent"))
-			theme = R.style.Glass;
+		else if (thme_preference.equals("Simple"))
+			theme = R.style.Cards;
 		else if (thme_preference.equals("Gray"))
 			theme = R.style.NoiseGray;
 		setTheme(theme);

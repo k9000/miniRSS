@@ -23,7 +23,8 @@
         android:layout_height="match_parent"
         android:ellipsize="end"
         android:maxLines="3"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="?android:attr/textColorPrimary" />
     
     <TextView
         android:id="@+id/card_text"
@@ -37,6 +38,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:paddingBottom="6dp"
     	android:paddingLeft="6dp"
-    	android:paddingRight="6dp" />
+    	android:paddingRight="6dp"
+    	android:textColor="?android:attr/textColorPrimary" />
 
 </LinearLayout>

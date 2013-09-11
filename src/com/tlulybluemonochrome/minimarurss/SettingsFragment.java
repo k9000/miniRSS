@@ -213,16 +213,16 @@ public class SettingsFragment extends Fragment {
 
 		// ラジオボタンの初期値
 		final String theme_preference = sharedPreferences.getString(
-				"theme_preference", "Light");
-		if (theme_preference.equals("Light"))
+				"theme_preference", "Metal");
+		if (theme_preference.equals("Simple"))
 			mRadioGroupOs1.check(R.id.radio0);
-		else if (theme_preference.equals("White"))
+		else if (theme_preference.equals("Metal"))
 			mRadioGroupOs1.check(R.id.radio1);
-		else if (theme_preference.equals("Gray"))
+		else if (theme_preference.equals("White"))
 			mRadioGroupOs1.check(R.id.radio2);
-		else if (theme_preference.equals("Dark"))
+		else if (theme_preference.equals("Gray"))
 			mRadioGroupOs1.check(R.id.radio3);
-		else if (theme_preference.equals("Transparent"))
+		else if (theme_preference.equals("Dark"))
 			mRadioGroupOs1.check(R.id.radio4);
 
 		// ラジオボタンのリスナー

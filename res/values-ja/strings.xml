@@ -18,7 +18,7 @@
     <string name="half_day">半日</string>
     <string name="day">1日</string>
     <string name="release_to_update">指を離して更新</string>
-    <string name="pull_down_to_update">画面を引っ張って…</string>
+    <string name="pull_down_to_update">画面を引っ張って更新</string>
     <string name="loading">更新中...</string>
     <string name="pinned">ピンで留める</string>
     <string name="unpinned">ピンを外す</string>

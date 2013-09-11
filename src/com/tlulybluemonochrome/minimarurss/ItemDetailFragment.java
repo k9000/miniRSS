@@ -19,6 +19,7 @@ package com.tlulybluemonochrome.minimarurss;
 import java.util.ArrayList;
 
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
+import uk.co.senab.actionbarpulltorefresh.library.viewdelegates.AbsListViewDelegate;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -133,9 +134,13 @@ public class ItemDetailFragment extends Fragment
 					.setAdapter(new CustomDetailAdapter(getActivity(), 0, list));
 
 			// 引っ張って更新
+			/*mPullToRefreshAttacher = ((ItemListActivity) getActivity())
+					.getPullToRefreshAttacher();
+			mPullToRefreshAttacher.addRefreshableView(mListView, this);*/
 			mPullToRefreshAttacher = ((ItemListActivity) getActivity())
 					.getPullToRefreshAttacher();
-			mPullToRefreshAttacher.addRefreshableView(mListView, this);
+			PullToRefreshAttacher.ViewDelegate handler = new AbsListViewDelegate();
+	        mPullToRefreshAttacher.addRefreshableView(mListView, handler, this);
 
 		}
 

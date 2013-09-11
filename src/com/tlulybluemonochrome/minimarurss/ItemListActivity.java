@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 import shared.ui.actionscontentview.ActionsContentView;
+import uk.co.senab.actionbarpulltorefresh.library.DefaultHeaderTransformer;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
 import android.app.Activity;
@@ -51,6 +52,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.TextView;
 
 /**
  * メインのActivity
@@ -210,8 +212,14 @@ public class ItemListActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_action_content);
 		
-		// The attacher should always be created in the Activity's onCreate
-        mPullToRefreshAttacher = PullToRefreshAttacher.get(this);
+        // 引っ張って更新
+        final PullToRefreshAttacher.Options ptrOptions = new PullToRefreshAttacher.Options();
+        ptrOptions.refreshScrollDistance = 0.4f;
+        mPullToRefreshAttacher = PullToRefreshAttacher.get(this, ptrOptions);
+        final DefaultHeaderTransformer ht = (DefaultHeaderTransformer) mPullToRefreshAttacher.getHeaderTransformer();
+        ht.setPullText(getString(R.string.pull_down_to_update));
+        ht.setRefreshingText(getString(R.string.loading));
+        ht.setProgressBarColor(getResources().getColor(android.R.color.holo_orange_dark));
 
 		final String animation = sharedPreferences.getString("animation",
 				"Cube");

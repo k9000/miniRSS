@@ -113,30 +113,6 @@
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="8dp" />
-            
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:text="@+string/slide_width"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <SeekBar
-                android:id="@+id/seekBar2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:text="@+string/reflect_after_reboot" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="8dp" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -209,6 +185,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="8dp" >
+
+                <RadioButton
+                    android:id="@+id/radio9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="None" />
 
                 <RadioButton
                     android:id="@+id/radio10"

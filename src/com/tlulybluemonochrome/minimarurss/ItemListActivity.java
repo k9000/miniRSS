@@ -216,7 +216,9 @@ public class ItemListActivity extends Activity implements
 		final String animation = sharedPreferences.getString("animation",
 				"Cube");
 		int effect = 3;
-		if (animation.equals("Tablet"))
+		if (animation.equals("None"))
+			effect = 0;
+		else if (animation.equals("Tablet"))
 			effect = 1;
 		else if (animation.equals("Cube"))
 			effect = 3;

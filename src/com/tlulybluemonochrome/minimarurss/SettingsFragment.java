@@ -185,29 +185,6 @@ public class SettingsFragment extends Fragment {
 			}
 		});
 
-		SeekBar seekBar2 = (SeekBar) rootView.findViewById(R.id.seekBar2);
-		seekBar2.setMax(100);
-		seekBar2.setProgress(sharedPreferences.getInt("slide_width", 80));
-
-		// シークバーのリスナー
-		seekBar2.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-
-			public void onProgressChanged(final SeekBar seekBar,
-					final int progress, final boolean fromUser) {
-				// ツマミをドラッグしたときに呼ばれる
-			}
-
-			public void onStartTrackingTouch(final SeekBar seekBar) {
-				// ツマミに触れたときに呼ばれる
-			}
-
-			public void onStopTrackingTouch(final SeekBar seekBar) {
-				// ツマミを離したときに呼ばれる
-				editor.putInt("slide_width", seekBar.getProgress());
-				editor.commit();
-			}
-		});
-
 		final RadioGroup mRadioGroupOs1 = (RadioGroup) rootView
 				.findViewById(R.id.radioGroup1);
 
@@ -246,7 +223,9 @@ public class SettingsFragment extends Fragment {
 		// ラジオボタンの初期値
 		final String animation_preference = sharedPreferences.getString(
 				"animation", "Cube");
-		if (animation_preference.equals("Cube"))
+		if (animation_preference.equals("None"))
+			mRadioGroupOs2.check(R.id.radio9);
+		else if (animation_preference.equals("Cube"))
 			mRadioGroupOs2.check(R.id.radio10);
 		else if (animation_preference.equals("Tablet"))
 			mRadioGroupOs2.check(R.id.radio11);

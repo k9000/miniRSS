@@ -91,7 +91,7 @@ public class ItemListActivity extends Activity implements
 
 	private int set = 0;
 
-	//private MenuItem ref;
+	private MenuItem ref;
 
 	// private SlidingMenu menu;
 	private ActionsContentView viewActionsContentView;
@@ -357,9 +357,9 @@ public class ItemListActivity extends Activity implements
 		super.onCreateOptionsMenu(menu);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.my_menu, menu);
-		// ref = menu.findItem(R.id.reflesh);
+		 ref = menu.findItem(R.id.reflesh);
 		if (sharedPreferences.getBoolean("ref_switch", true)) {
-			//ref.setVisible(false);
+			ref.setVisible(false);
 		}
 		return true;
 	}
@@ -377,11 +377,11 @@ public class ItemListActivity extends Activity implements
 			viewActionsContentView.showContent();
 			efectViewPager.setCurrentItem(0);
 			break;
-		/*
-		 * case R.id.reflesh: i = 0; getLoaderManager().initLoader(0, null,
-		 * this); ref.setVisible(false); // タイトルバーのプログレスアイコンを表示する
-		 * setProgressBarIndeterminateVisibility(true); break;
-		 */
+		
+		 case R.id.reflesh: i = 0; getLoaderManager().initLoader(0, null,
+		 this); ref.setVisible(false); // タイトルバーのプログレスアイコンを表示する
+		 setProgressBarIndeterminateVisibility(true); break;
+		 
 		default:
 			ret = super.onOptionsItemSelected(item);
 			break;
@@ -542,7 +542,7 @@ public class ItemListActivity extends Activity implements
 			mSectionsPagerAdapter.notifyDataSetChanged();
 			setProgressBarIndeterminateVisibility(false);
 			mPullToRefreshAttacher.setRefreshComplete();
-			//ref.setVisible(true);
+			ref.setVisible(true);
 		}
 
 	}

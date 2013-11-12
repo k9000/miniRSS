@@ -21,13 +21,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.bulletnoid.android.widget.StaggeredGridView.StaggeredGridView;
+import com.bulletnoid.android.widget.StaggeredGridView.StaggeredGridView.OnLoadmoreListener;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.origamilabs.library.views.StaggeredGridView;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -49,7 +50,7 @@ import android.graphics.Bitmap;
  * @author k9000
  * 
  */
-public class TopPageFragment extends Fragment  {
+public class TopPageFragment extends Fragment {
 
 	private ArrayList<RssItem> list;
 
@@ -65,7 +66,7 @@ public class TopPageFragment extends Fragment  {
 
 	private DisplayImageOptions options;
 
-	//private PullToRefreshAttacher mPullToRefreshAttacher;
+	// private PullToRefreshAttacher mPullToRefreshAttacher;
 
 	/**
 	 * A callback interface that all activities containing this fragment must
@@ -141,7 +142,7 @@ public class TopPageFragment extends Fragment  {
 				.displayer(new FadeInBitmapDisplayer(500)).build();
 
 		final StaggeredGridView gridView = (StaggeredGridView) rootView
-				.findViewById(R.id.googlecards_gridview);
+				.findViewById(R.id.stgv);
 
 		list = (ArrayList<RssItem>) getArguments().getSerializable("LIST");
 
@@ -149,6 +150,13 @@ public class TopPageFragment extends Fragment  {
 				getActivity(), 0, list);
 
 		gridView.setAdapter(adapter);
+		
+		gridView.setOnLoadmoreListener(new StaggeredGridView.OnLoadmoreListener(){
+			@Override
+			public void onLoadmore() {
+				// TODO 自動生成されたメソッド・スタブ
+			}	
+		});
 
 		adapter.notifyDataSetChanged();
 
@@ -208,9 +216,11 @@ public class TopPageFragment extends Fragment  {
 				holder.image.setVisibility(View.GONE);
 			}
 
-			final SimpleDateFormat sdf = new SimpleDateFormat("M'/'d k:mm ", Locale.JAPAN);
+			final SimpleDateFormat sdf = new SimpleDateFormat("M'/'d k:mm ",
+					Locale.JAPAN);
 			holder.title.setText(item.getTitle());
-			holder.text.setText(sdf.format(item.getDate())+"\n"+item.getPage());
+			holder.text.setText(sdf.format(item.getDate()) + "\n"
+					+ item.getPage());
 			holder.content.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {

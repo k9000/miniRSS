@@ -139,7 +139,8 @@ public class NotificationService extends IntentService {
 		// 未読記事通知
 		for (int i = 0; i < arraylist.size(); i++) {
 			if (arraylist.get(i).getTag() != 0) {
-				RssMessageNotification.notify(
+				RssMessageNotification.noti(getApplicationContext(), arraylist, 0);
+				/*RssMessageNotification.notify(
 						getApplicationContext(),
 						arraylist.get(i).getTitle(),
 						arraylist.get(i).getTitle() + "\n"
@@ -150,7 +151,7 @@ public class NotificationService extends IntentService {
 								arraylist.get(i).getImage(),
 								Picuture(arraylist.get(i).getTag(),
 										R.drawable.ic_launcher), picChecked),
-						arraylist.get(i).getPage(), false);
+						arraylist.get(i).getPage(), false);*/
 				try {// 通知の間を置く
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {

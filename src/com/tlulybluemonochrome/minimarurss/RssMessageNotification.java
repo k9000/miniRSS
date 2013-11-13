@@ -16,6 +16,8 @@
 
 package com.tlulybluemonochrome.minimarurss;
 
+import java.util.ArrayList;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -298,6 +300,92 @@ public class RssMessageNotification {
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		nm.cancel(NOTIFICATION_TAG, id);
 
+	}
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	public static void noti(Context context,
+			ArrayList<RssItem> arraylist, int id) {
+		// TODO 自動生成されたメソッド・スタブ
+		final Resources res = context.getResources();
+
+		// This image is used as the notification's large icon (thumbnail).
+		// TODO: Remove this if your notification has no relevant thumbnail.
+
+		final String ticker = arraylist.get(id).getTitle();
+
+		final Notification.Builder builder;
+
+		Notification notification = new Notification();
+
+		builder = new Notification.Builder(context)
+
+				// Set appropriate defaults for the notification light, sound,
+				// and vibration.
+				// .setDefaults(Notification.DEFAULT_ALL)
+
+				// Set required fields, including the small icon, the
+				// notification title, and text.
+				.setSmallIcon(R.drawable.ic_stat_rss_message)
+				.setContentTitle(arraylist.get(id).getTitle()).setContentText(arraylist.get(id).getText())
+
+				// All fields below this line are optional.
+
+				// Provide a large icon, shown with the notification in the
+				// notification drawer on devices running Android 3.0 or later.
+				.setLargeIcon(BitmapFactory.decodeResource(res,R.drawable.ic_launcher))
+
+				// Set ticker text (preview) information for this notification.
+				.setTicker(ticker)
+
+				// Show a number. This is useful when stacking notifications of
+				// a single type.
+				// .setNumber(number)
+
+				// If this notification relates to a past or upcoming event, you
+				// should set the relevant time information using the setWhen
+				// method below. If this call is omitted, the notification's
+				// timestamp will by set to the time at which it was shown.
+				// TODO: Call setWhen if this notification relates to a past or
+				// upcoming event. The sole argument to this method should be
+				// the notification timestamp in milliseconds.
+				// .setWhen(...)
+
+				// Set the pending intent to be initiated when the user touches
+				// the notification.
+				.setContentIntent(
+						PendingIntent.getActivity(context, 0, new Intent(
+								Intent.ACTION_VIEW, Uri.parse(arraylist.get(id).getUrl())),
+								PendingIntent.FLAG_UPDATE_CURRENT))
+				
+				.setDeleteIntent(PendingIntent
+							.getService(
+									context,
+									id,
+									new Intent(context,
+											NotificationChangeService.class)
+											.putExtra("LIST", arraylist)
+											.putExtra("ID", id),
+									PendingIntent.FLAG_UPDATE_CURRENT))
+
+				// Automatically dismiss the notification when it is touched.
+				.setAutoCancel(false);
+		
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {// Android4.1以降
+			builder.setPriority(Notification.PRIORITY_LOW).setStyle(
+					new Notification.BigTextStyle().bigText(arraylist.get(id).getText())
+							.setBigContentTitle(arraylist.get(id).getTitle()).setSummaryText(arraylist.get(id).getPage()));
+
+			notification = builder.build();
+
+		} else {
+
+			notification = builder.getNotification();
+		}
+
+
+		notify(context, notification, id);
+		
 	}
 
 }

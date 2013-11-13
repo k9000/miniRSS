@@ -16,9 +16,11 @@
 
 package com.tlulybluemonochrome.minimarurss;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+
 import android.app.IntentService;
 import android.content.Intent;
-import android.graphics.Bitmap;
 
 /**
  * 通知をピン留めするサービス
@@ -34,6 +36,16 @@ public class NotificationChangeService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
+		RssMessageNotification.noti(getApplicationContext(), (ArrayList<RssItem>)intent.getSerializableExtra("LIST"), intent.getIntExtra("ID", 0)+1);
+		try {  
+	        Object service = getSystemService("statusbar");  
+	        if (service != null) {  
+	            Method expand = service.getClass().getMethod("expand");  
+	            expand.invoke(service);  
+	        }  
+	    } catch (Exception e) {  
+	    } 
+		/*
 		RssMessageNotification.cancel(getApplicationContext(),
 				intent.getIntExtra("ID", 0));
 		RssMessageNotification.notify(getApplicationContext(),
@@ -41,7 +53,7 @@ public class NotificationChangeService extends IntentService {
 				intent.getStringExtra("URL"), intent.getIntExtra("ID", 0),
 				(Bitmap) intent.getParcelableExtra("BITMAP"),
 				intent.getStringExtra("PAGE"),
-				intent.getBooleanExtra("PIN", false));
+				intent.getBooleanExtra("PIN", false));*/
 
 	}
 

@@ -16,11 +16,12 @@
 
 package com.tlulybluemonochrome.minimarurss;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 /**
  * 通知をピン留めするサービス
@@ -36,25 +37,22 @@ public class NotificationChangeService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		RssMessageNotification.noti(getApplicationContext(), (ArrayList<RssItem>)intent.getSerializableExtra("LIST"), intent.getIntExtra("ID", 0)+1);
-		try {  
-	        Object service = getSystemService("statusbar");  
-	        if (service != null) {  
-	            Method expand = service.getClass().getMethod("expand");  
-	            expand.invoke(service);  
-	        }  
-	    } catch (Exception e) {  
-	    } 
-		/*
-		RssMessageNotification.cancel(getApplicationContext(),
-				intent.getIntExtra("ID", 0));
-		RssMessageNotification.notify(getApplicationContext(),
-				intent.getStringExtra("TITLE"), intent.getStringExtra("TEXT"),
-				intent.getStringExtra("URL"), intent.getIntExtra("ID", 0),
-				(Bitmap) intent.getParcelableExtra("BITMAP"),
-				intent.getStringExtra("PAGE"),
-				intent.getBooleanExtra("PIN", false));*/
+
+		if (intent.getBooleanExtra("TITLE", true)){
+			final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+			if( sharedPreferences.getBoolean("notification_switch", false)) {
+				RssMessageNotification.titlenotify(getApplicationContext(),
+						"minimaruRSS", "タップして更新", "", -1);
+		}
+				
+		} else {
+			final ArrayList<RssItem> arraylist = (ArrayList<RssItem>) intent
+					.getSerializableExtra("LIST");
+			final int count = intent.getIntExtra("COUNT", 0) + 1;
+			if (count < arraylist.size())
+				RssMessageNotification.noti(getApplicationContext(), arraylist,
+						count, intent.getIntExtra("ID", 1));
+		}
 
 	}
-
 }

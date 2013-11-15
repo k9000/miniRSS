@@ -17,7 +17,6 @@
 package com.tlulybluemonochrome.minimarurss;
 
 import java.util.ArrayList;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -223,7 +222,8 @@ public class RssMessageNotification {
 				// Set required fields, including the small icon, the
 				// notification title, and text.
 				.setSmallIcon(R.drawable.ic_stat_rss_message)
-				.setContentTitle(title).setContentText(text)
+				.setContentTitle(title)
+				.setContentText(text)
 
 				// All fields below this line are optional.
 
@@ -251,7 +251,13 @@ public class RssMessageNotification {
 				// the notification.
 				.setContentIntent(
 						PendingIntent.getService(context, 0, new Intent(
-								context, NotificationService.class), 0));
+								context, NotificationService.class), 0))
+
+				.setDeleteIntent(
+						PendingIntent.getService(context, -1, new Intent(
+								context, NotificationChangeService.class)
+								.putExtra("TITLE", true),
+								PendingIntent.FLAG_UPDATE_CURRENT));
 
 		// Automatically dismiss the notification when it is touched.
 		// .setAutoCancel(true);
@@ -268,8 +274,6 @@ public class RssMessageNotification {
 
 			notification = builder.getNotification();
 		}
-
-		notification.flags = Notification.FLAG_NO_CLEAR;// 常駐フラグ
 
 		notify(context, notification, id);
 	}
@@ -303,15 +307,15 @@ public class RssMessageNotification {
 	}
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-	public static void noti(Context context,
-			ArrayList<RssItem> arraylist, int id) {
+	public static void noti(Context context, ArrayList<RssItem> arraylist,
+			int i, int id) {
 		// TODO 自動生成されたメソッド・スタブ
 		final Resources res = context.getResources();
 
 		// This image is used as the notification's large icon (thumbnail).
 		// TODO: Remove this if your notification has no relevant thumbnail.
 
-		final String ticker = arraylist.get(id).getTitle();
+		final String ticker = arraylist.get(i).getTitle();
 
 		final Notification.Builder builder;
 
@@ -326,20 +330,23 @@ public class RssMessageNotification {
 				// Set required fields, including the small icon, the
 				// notification title, and text.
 				.setSmallIcon(R.drawable.ic_stat_rss_message)
-				.setContentTitle(arraylist.get(id).getTitle()).setContentText(arraylist.get(id).getText())
+				.setContentTitle(arraylist.get(i).getTitle())
+				.setContentText(arraylist.get(i).getText())
 
 				// All fields below this line are optional.
 
 				// Provide a large icon, shown with the notification in the
 				// notification drawer on devices running Android 3.0 or later.
-				.setLargeIcon(BitmapFactory.decodeResource(res,R.drawable.ic_launcher))
+				.setLargeIcon(
+						BitmapFactory.decodeResource(res,
+								R.drawable.ic_launcher))
 
 				// Set ticker text (preview) information for this notification.
 				.setTicker(ticker)
 
 				// Show a number. This is useful when stacking notifications of
 				// a single type.
-				// .setNumber(number)
+				.setNumber(arraylist.size() - i)
 
 				// If this notification relates to a past or upcoming event, you
 				// should set the relevant time information using the setWhen
@@ -353,28 +360,34 @@ public class RssMessageNotification {
 				// Set the pending intent to be initiated when the user touches
 				// the notification.
 				.setContentIntent(
-						PendingIntent.getActivity(context, 0, new Intent(
-								Intent.ACTION_VIEW, Uri.parse(arraylist.get(id).getUrl())),
+						PendingIntent.getActivity(
+								context,
+								0,
+								new Intent(Intent.ACTION_VIEW, Uri
+										.parse(arraylist.get(i).getUrl())),
 								PendingIntent.FLAG_UPDATE_CURRENT))
-				
-				.setDeleteIntent(PendingIntent
-							.getService(
-									context,
-									id,
-									new Intent(context,
-											NotificationChangeService.class)
-											.putExtra("LIST", arraylist)
-											.putExtra("ID", id),
-									PendingIntent.FLAG_UPDATE_CURRENT))
+
+				.setDeleteIntent(
+						PendingIntent.getService(
+								context,
+								i,
+								new Intent(context,
+										NotificationChangeService.class)
+										.putExtra("TITLE", false)
+										.putExtra("LIST", arraylist)
+										.putExtra("COUNT", i)
+										.putExtra("ID", id),
+								PendingIntent.FLAG_UPDATE_CURRENT))
 
 				// Automatically dismiss the notification when it is touched.
 				.setAutoCancel(false);
-		
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {// Android4.1以降
 			builder.setPriority(Notification.PRIORITY_LOW).setStyle(
-					new Notification.BigTextStyle().bigText(arraylist.get(id).getText())
-							.setBigContentTitle(arraylist.get(id).getTitle()).setSummaryText(arraylist.get(id).getPage()));
+					new Notification.BigTextStyle()
+							.bigText(arraylist.get(i).getText())
+							.setBigContentTitle(arraylist.get(i).getTitle())
+							.setSummaryText(arraylist.get(i).getPage()));
 
 			notification = builder.build();
 
@@ -383,9 +396,8 @@ public class RssMessageNotification {
 			notification = builder.getNotification();
 		}
 
-
 		notify(context, notification, id);
-		
+
 	}
 
 }

@@ -25,6 +25,7 @@ import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,13 +34,10 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.preference.PreferenceManager;
 import android.util.Xml;
 
 /**
@@ -52,7 +50,7 @@ public class NotificationService extends IntentService {
 
 	static ArrayList<RssItem> oldlist;
 
-	int count;
+	//int count;
 
 	static final int maxSize = 10 * 1024 * 1024;
 
@@ -75,12 +73,6 @@ public class NotificationService extends IntentService {
 		RssMessageNotification.cancel(getApplicationContext(), -1);
 		RssMessageNotification.titlenotify(getApplicationContext(),
 				"minimaruRSS", "更新中", "更新中", -1);
-
-		final SharedPreferences sharedPreferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		count = sharedPreferences.getInt("COUNT", 0);
-		final boolean picChecked = sharedPreferences.getBoolean("pic_switch",
-				true);
 
 		final ArrayList<RssItem> arraylist = new ArrayList<RssItem>();
 
@@ -136,33 +128,18 @@ public class NotificationService extends IntentService {
 			}
 		}
 
-		// 未読記事通知
-		for (int i = 0; i < arraylist.size(); i++) {
-			if (arraylist.get(i).getTag() != 0) {
-				RssMessageNotification.noti(getApplicationContext(), arraylist, 0);
-				/*RssMessageNotification.notify(
-						getApplicationContext(),
-						arraylist.get(i).getTitle(),
-						arraylist.get(i).getTitle() + "\n"
-								+ arraylist.get(i).getText(),
-						arraylist.get(i).getUrl(),
-						count++,
-						makeImage(
-								arraylist.get(i).getImage(),
-								Picuture(arraylist.get(i).getTag(),
-										R.drawable.ic_launcher), picChecked),
-						arraylist.get(i).getPage(), false);*/
-				try {// 通知の間を置く
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-				}
-			}
+		//既読削除
+		Iterator<RssItem> it = arraylist.iterator();
+		while (it.hasNext())
+		{
+			RssItem i = (RssItem) it.next();
+		    if(i.getTag() == 0) it.remove();
 		}
-
-		final Editor editor = sharedPreferences.edit();
-		editor.putInt("COUNT", count);
-		editor.commit();
-
+		
+		// 未読記事通知
+		if(!arraylist.isEmpty()){
+		RssMessageNotification.noti(getApplicationContext(), arraylist, 0, 1);
+		}
 	}
 
 	// XMLをパースする

@@ -17,6 +17,7 @@
 package com.tlulybluemonochrome.minimarurss;
 
 import java.util.ArrayList;
+
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -28,6 +29,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Parcelable;
 
 /**
  * 通知
@@ -307,8 +309,8 @@ public class RssMessageNotification {
 	}
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-	public static void noti(Context context, ArrayList<RssItem> arraylist,
-			int i, int id) {
+	public static void noti(final Context context,final ArrayList<RssItem> arraylist,
+			final int i,final int id,final ArrayList<Parcelable> bitmapList) {
 		// TODO 自動生成されたメソッド・スタブ
 		final Resources res = context.getResources();
 
@@ -337,9 +339,7 @@ public class RssMessageNotification {
 
 				// Provide a large icon, shown with the notification in the
 				// notification drawer on devices running Android 3.0 or later.
-				.setLargeIcon(
-						BitmapFactory.decodeResource(res,
-								R.drawable.ic_launcher))
+				.setLargeIcon((Bitmap) bitmapList.get(i))
 
 				// Set ticker text (preview) information for this notification.
 				.setTicker(ticker)
@@ -376,7 +376,8 @@ public class RssMessageNotification {
 										.putExtra("TITLE", false)
 										.putExtra("LIST", arraylist)
 										.putExtra("COUNT", i)
-										.putExtra("ID", id),
+										.putExtra("ID", id)
+										.putExtra("BITMAP", bitmapList),
 								PendingIntent.FLAG_UPDATE_CURRENT))
 
 				// Automatically dismiss the notification when it is touched.

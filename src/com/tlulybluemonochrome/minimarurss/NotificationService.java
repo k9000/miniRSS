@@ -34,10 +34,13 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.preference.PreferenceManager;
+import android.util.LruCache;
 import android.util.Xml;
 
 /**
@@ -50,7 +53,7 @@ public class NotificationService extends IntentService {
 
 	static ArrayList<RssItem> oldlist;
 
-	//int count;
+	// int count;
 
 	static final int maxSize = 10 * 1024 * 1024;
 
@@ -73,6 +76,11 @@ public class NotificationService extends IntentService {
 		RssMessageNotification.cancel(getApplicationContext(), -1);
 		RssMessageNotification.titlenotify(getApplicationContext(),
 				"minimaruRSS", "更新中", "更新中", -1);
+
+		final SharedPreferences sharedPreferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		final boolean picChecked = sharedPreferences.getBoolean("pic_switch",
+				true);
 
 		final ArrayList<RssItem> arraylist = new ArrayList<RssItem>();
 
@@ -128,17 +136,34 @@ public class NotificationService extends IntentService {
 			}
 		}
 
-		//既読削除
+		// 既読削除
 		Iterator<RssItem> it = arraylist.iterator();
-		while (it.hasNext())
-		{
+		while (it.hasNext()) {
 			RssItem i = (RssItem) it.next();
-		    if(i.getTag() == 0) it.remove();
+			if (i.getTag() == 0)
+				it.remove();
+		}
+
+		// 画像取得
+		final ArrayList<Bitmap> bitmaplist = new ArrayList<Bitmap>();
+		final int listsize = arraylist.size();
+		for (int i = 0; i < listsize; i++) {
+			bitmaplist
+					.add(makeImage(
+							arraylist.get(i).getImage(),
+							Picuture(arraylist.get(i).getTag(),
+									R.drawable.ic_launcher), picChecked));
 		}
 		
+		LruCache cache;
+
 		// 未読記事通知
-		if(!arraylist.isEmpty()){
-		RssMessageNotification.noti(getApplicationContext(), arraylist, 0, 1);
+		if (!arraylist.isEmpty()) {
+			this.startService(new Intent(this, NotificationChangeService.class)
+					.putExtra("TITLE", false)
+					.putExtra("BITMAP", bitmaplist)
+					.putExtra("LIST", arraylist).putExtra("COUNT", -1)
+					.putExtra("ID", 0));
 		}
 	}
 
@@ -272,11 +297,11 @@ public class NotificationService extends IntentService {
 	}
 
 	// アイコン生成
-	public Bitmap Picuture(final int color, final int resource) {
+	private Bitmap Picuture(final int color, final int resource) {
 
 		final Bitmap picture = BitmapFactory.decodeResource(getResources(),
 				resource);
-		final Bitmap mBmp = picture.copy(picture.getConfig(), true);
+		final Bitmap mBmp = picture.copy(Bitmap.Config.ARGB_8888, true);
 
 		final int width = mBmp.getWidth();
 		final int height = mBmp.getHeight();

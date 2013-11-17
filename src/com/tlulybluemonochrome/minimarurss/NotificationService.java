@@ -40,9 +40,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.util.LruCache;
 import android.util.Xml;
 
 /**
@@ -92,6 +90,7 @@ public class NotificationService extends IntentService {
 			final FileInputStream fis = openFileInput("SaveData.txt");
 			final ObjectInputStream ois = new ObjectInputStream(fis);
 			urilist = (ArrayList<RssFeed>) ois.readObject();
+			fis.close();
 			ois.close();
 		} catch (Exception e) {
 		}
@@ -100,6 +99,7 @@ public class NotificationService extends IntentService {
 			final FileInputStream fis = openFileInput("SaveData.dat");
 			final ObjectInputStream ois = new ObjectInputStream(fis);
 			oldlist = (ArrayList<RssItem>) ois.readObject();
+			fis.close();
 			ois.close();
 		} catch (Exception e) {
 			oldlist = null;
@@ -133,6 +133,7 @@ public class NotificationService extends IntentService {
 						MODE_PRIVATE);
 				final ObjectOutputStream oos = new ObjectOutputStream(fos);
 				oos.writeObject(arraylist);
+				fos.close();
 				oos.close();
 			} catch (Exception e) {
 			}
@@ -168,13 +169,12 @@ public class NotificationService extends IntentService {
 
 		}
 
-
 		// 未読記事通知
 		if (!arraylist.isEmpty()) {
 			this.startService(new Intent(this, NotificationChangeService.class)
 					.putExtra("BROWSE", false).putExtra("TITLE", false)
-					.putExtra("LIST", arraylist).putExtra("COUNT", 0)
-					.putExtra("ID", 0));
+					.putExtra("REFRESH", true).putExtra("LIST", arraylist)
+					.putExtra("COUNT", 0).putExtra("ID", 0));
 		}
 	}
 

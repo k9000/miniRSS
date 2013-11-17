@@ -332,7 +332,7 @@ public class RssMessageNotification {
 			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
-		bitmap.setHasAlpha(true);
+		// bitmap.setHasAlpha(true);
 
 		final String ticker = arraylist.get(0).getTitle();
 

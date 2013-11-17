@@ -16,8 +16,12 @@
 
 package com.tlulybluemonochrome.minimarurss;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OptionalDataException;
 import java.util.ArrayList;
 
 import android.app.IntentService;
@@ -50,8 +54,11 @@ public class NotificationChangeService extends IntentService {
 			}
 
 		} else {
-			final ArrayList<RssItem> arraylist = (ArrayList<RssItem>) intent
-					.getSerializableExtra("LIST");
+			final ArrayList<RssItem> arraylist = new ArrayList<RssItem>();
+
+			arraylist.addAll((ArrayList<RssItem>) intent
+					.getSerializableExtra("LIST"));
+
 			final int count = intent.getIntExtra("COUNT", 0);
 			if (intent.getBooleanExtra("BROWSE", false)) {
 				startActivity(new Intent(Intent.ACTION_VIEW,
@@ -59,7 +66,28 @@ public class NotificationChangeService extends IntentService {
 						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 			}
 
-			arraylist.remove(0);
+			if (intent.getBooleanExtra("REFRESH", false)) {
+
+				try {
+					final FileInputStream fis = openFileInput("ReadData.dat");
+					final ObjectInputStream ois = new ObjectInputStream(fis);
+					arraylist.addAll((ArrayList<RssItem>) ois.readObject());
+					fis.close();
+					ois.close();
+				} catch (OptionalDataException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				}
+
+			} else {
+				arraylist.remove(0);
+			}
 
 			if (!arraylist.isEmpty()) {
 				RssMessageNotification.noti(
@@ -79,6 +107,7 @@ public class NotificationChangeService extends IntentService {
 						MODE_PRIVATE);
 				final ObjectOutputStream oos = new ObjectOutputStream(fos);
 				oos.writeObject(arraylist);
+				fos.close();
 				oos.close();
 			} catch (Exception e) {
 			}

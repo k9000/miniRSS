@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 
 /**
@@ -50,10 +51,17 @@ public class NotificationChangeService extends IntentService {
 			final ArrayList<RssItem> arraylist = (ArrayList<RssItem>) intent
 					.getSerializableExtra("LIST");
 			final int count = intent.getIntExtra("COUNT", 0) + 1;
+			if (intent.getBooleanExtra("BROWSE", false)) {
+				startActivity(new Intent(Intent.ACTION_VIEW,
+						Uri.parse(arraylist.get(count - 1).getUrl()))
+						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+			}
+
 			if (count < arraylist.size())
 				RssMessageNotification.noti(getApplicationContext(), arraylist,
 						count, intent.getIntExtra("ID", 1),
 						intent.getParcelableArrayListExtra("BITMAP"));
+
 		}
 
 	}

@@ -154,16 +154,13 @@ public class NotificationService extends IntentService {
 							Picuture(arraylist.get(i).getTag(),
 									R.drawable.ic_launcher), picChecked));
 		}
-		
-		LruCache cache;
 
 		// 未読記事通知
 		if (!arraylist.isEmpty()) {
 			this.startService(new Intent(this, NotificationChangeService.class)
-					.putExtra("TITLE", false)
-					.putExtra("BITMAP", bitmaplist)
-					.putExtra("LIST", arraylist).putExtra("COUNT", -1)
-					.putExtra("ID", 0));
+					.putExtra("BROWSE", false).putExtra("TITLE", false)
+					.putExtra("BITMAP", bitmaplist).putExtra("LIST", arraylist)
+					.putExtra("COUNT", -1).putExtra("ID", 0));
 		}
 	}
 

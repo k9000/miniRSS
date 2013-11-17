@@ -309,8 +309,9 @@ public class RssMessageNotification {
 	}
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-	public static void noti(final Context context,final ArrayList<RssItem> arraylist,
-			final int i,final int id,final ArrayList<Parcelable> bitmapList) {
+	public static void noti(final Context context,
+			final ArrayList<RssItem> arraylist, final int i, final int id,
+			final ArrayList<Parcelable> bitmapList) {
 		// TODO 自動生成されたメソッド・スタブ
 		final Resources res = context.getResources();
 
@@ -346,7 +347,7 @@ public class RssMessageNotification {
 
 				// Show a number. This is useful when stacking notifications of
 				// a single type.
-				.setNumber(arraylist.size() - i)
+				.setNumber(arraylist.size() - i - 1)
 
 				// If this notification relates to a past or upcoming event, you
 				// should set the relevant time information using the setWhen
@@ -360,11 +361,17 @@ public class RssMessageNotification {
 				// Set the pending intent to be initiated when the user touches
 				// the notification.
 				.setContentIntent(
-						PendingIntent.getActivity(
+						PendingIntent.getService(
 								context,
-								0,
-								new Intent(Intent.ACTION_VIEW, Uri
-										.parse(arraylist.get(i).getUrl())),
+								i + 100,
+								new Intent(context,
+										NotificationChangeService.class)
+										.putExtra("BROWSE", true)
+										.putExtra("TITLE", false)
+										.putExtra("LIST", arraylist)
+										.putExtra("COUNT", i)
+										.putExtra("ID", id)
+										.putExtra("BITMAP", bitmapList),
 								PendingIntent.FLAG_UPDATE_CURRENT))
 
 				.setDeleteIntent(
@@ -373,6 +380,7 @@ public class RssMessageNotification {
 								i,
 								new Intent(context,
 										NotificationChangeService.class)
+										.putExtra("BROWSE", false)
 										.putExtra("TITLE", false)
 										.putExtra("LIST", arraylist)
 										.putExtra("COUNT", i)

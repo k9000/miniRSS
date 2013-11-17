@@ -16,6 +16,8 @@
 
 package com.tlulybluemonochrome.minimarurss;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import android.annotation.TargetApi;
@@ -30,6 +32,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 
 /**
  * 通知
@@ -310,15 +313,28 @@ public class RssMessageNotification {
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public static void noti(final Context context,
-			final ArrayList<RssItem> arraylist, final int i, final int id,
-			final ArrayList<Parcelable> bitmapList) {
+			final ArrayList<RssItem> arraylist, final int count, final int id,
+			final Uri uri) {
 		// TODO 自動生成されたメソッド・スタブ
 		final Resources res = context.getResources();
 
 		// This image is used as the notification's large icon (thumbnail).
 		// TODO: Remove this if your notification has no relevant thumbnail.
 
-		final String ticker = arraylist.get(i).getTitle();
+		Bitmap bitmap = null;
+		try {
+			bitmap = MediaStore.Images.Media.getBitmap(
+					context.getContentResolver(), uri);
+		} catch (FileNotFoundException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+		bitmap.setHasAlpha(true);
+
+		final String ticker = arraylist.get(0).getTitle();
 
 		final Notification.Builder builder;
 
@@ -333,21 +349,21 @@ public class RssMessageNotification {
 				// Set required fields, including the small icon, the
 				// notification title, and text.
 				.setSmallIcon(R.drawable.ic_stat_rss_message)
-				.setContentTitle(arraylist.get(i).getTitle())
-				.setContentText(arraylist.get(i).getText())
+				.setContentTitle(arraylist.get(0).getTitle())
+				.setContentText(arraylist.get(0).getText())
 
 				// All fields below this line are optional.
 
 				// Provide a large icon, shown with the notification in the
 				// notification drawer on devices running Android 3.0 or later.
-				.setLargeIcon((Bitmap) bitmapList.get(i))
+				.setLargeIcon(bitmap)
 
 				// Set ticker text (preview) information for this notification.
 				.setTicker(ticker)
 
 				// Show a number. This is useful when stacking notifications of
 				// a single type.
-				.setNumber(arraylist.size() - i - 1)
+				.setNumber(arraylist.size() - 1)
 
 				// If this notification relates to a past or upcoming event, you
 				// should set the relevant time information using the setWhen
@@ -363,29 +379,27 @@ public class RssMessageNotification {
 				.setContentIntent(
 						PendingIntent.getService(
 								context,
-								i + 100,
+								count + 1,
 								new Intent(context,
 										NotificationChangeService.class)
 										.putExtra("BROWSE", true)
 										.putExtra("TITLE", false)
 										.putExtra("LIST", arraylist)
-										.putExtra("COUNT", i)
-										.putExtra("ID", id)
-										.putExtra("BITMAP", bitmapList),
+										.putExtra("COUNT", count)
+										.putExtra("ID", id),
 								PendingIntent.FLAG_UPDATE_CURRENT))
 
 				.setDeleteIntent(
 						PendingIntent.getService(
 								context,
-								i,
+								count,
 								new Intent(context,
 										NotificationChangeService.class)
 										.putExtra("BROWSE", false)
 										.putExtra("TITLE", false)
 										.putExtra("LIST", arraylist)
-										.putExtra("COUNT", i)
-										.putExtra("ID", id)
-										.putExtra("BITMAP", bitmapList),
+										.putExtra("COUNT", count)
+										.putExtra("ID", id),
 								PendingIntent.FLAG_UPDATE_CURRENT))
 
 				// Automatically dismiss the notification when it is touched.
@@ -394,9 +408,9 @@ public class RssMessageNotification {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {// Android4.1以降
 			builder.setPriority(Notification.PRIORITY_LOW).setStyle(
 					new Notification.BigTextStyle()
-							.bigText(arraylist.get(i).getText())
-							.setBigContentTitle(arraylist.get(i).getTitle())
-							.setSummaryText(arraylist.get(i).getPage()));
+							.bigText(arraylist.get(0).getText())
+							.setBigContentTitle(arraylist.get(0).getTitle())
+							.setSummaryText(arraylist.get(0).getPage()));
 
 			notification = builder.build();
 

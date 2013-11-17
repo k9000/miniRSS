@@ -17,6 +17,7 @@
 package com.tlulybluemonochrome.minimarurss;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +40,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.LruCache;
 import android.util.Xml;
@@ -87,16 +89,16 @@ public class NotificationService extends IntentService {
 		ArrayList<RssFeed> urilist = new ArrayList<RssFeed>();
 
 		try {// URIセーブデータオープン
-			FileInputStream fis = openFileInput("SaveData.txt");
-			ObjectInputStream ois = new ObjectInputStream(fis);
+			final FileInputStream fis = openFileInput("SaveData.txt");
+			final ObjectInputStream ois = new ObjectInputStream(fis);
 			urilist = (ArrayList<RssFeed>) ois.readObject();
 			ois.close();
 		} catch (Exception e) {
 		}
 
 		try {// 既読セーブデータオープン
-			FileInputStream fis = openFileInput("SaveData.dat");
-			ObjectInputStream ois = new ObjectInputStream(fis);
+			final FileInputStream fis = openFileInput("SaveData.dat");
+			final ObjectInputStream ois = new ObjectInputStream(fis);
 			oldlist = (ArrayList<RssItem>) ois.readObject();
 			ois.close();
 		} catch (Exception e) {
@@ -127,9 +129,9 @@ public class NotificationService extends IntentService {
 
 		if (!arraylist.isEmpty()) {
 			try {// 既読判定書き込み
-				FileOutputStream fos = openFileOutput("SaveData.dat",
+				final FileOutputStream fos = openFileOutput("SaveData.dat",
 						MODE_PRIVATE);
-				ObjectOutputStream oos = new ObjectOutputStream(fos);
+				final ObjectOutputStream oos = new ObjectOutputStream(fos);
 				oos.writeObject(arraylist);
 				oos.close();
 			} catch (Exception e) {
@@ -145,22 +147,34 @@ public class NotificationService extends IntentService {
 		}
 
 		// 画像取得
-		final ArrayList<Bitmap> bitmaplist = new ArrayList<Bitmap>();
 		final int listsize = arraylist.size();
 		for (int i = 0; i < listsize; i++) {
-			bitmaplist
-					.add(makeImage(
-							arraylist.get(i).getImage(),
-							Picuture(arraylist.get(i).getTag(),
-									R.drawable.ic_launcher), picChecked));
+			final FileOutputStream fos;
+			try {
+				fos = openFileOutput(i + ".png", MODE_PRIVATE);
+				makeImage(
+						arraylist.get(i).getImage(),
+						Picuture(arraylist.get(i).getTag(),
+								R.drawable.ic_launcher), picChecked).compress(
+						Bitmap.CompressFormat.PNG, 100, fos);
+				fos.close();
+			} catch (FileNotFoundException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			}
+
 		}
+
 
 		// 未読記事通知
 		if (!arraylist.isEmpty()) {
 			this.startService(new Intent(this, NotificationChangeService.class)
 					.putExtra("BROWSE", false).putExtra("TITLE", false)
-					.putExtra("BITMAP", bitmaplist).putExtra("LIST", arraylist)
-					.putExtra("COUNT", -1).putExtra("ID", 0));
+					.putExtra("LIST", arraylist).putExtra("COUNT", 0)
+					.putExtra("ID", 0));
 		}
 	}
 
@@ -175,7 +189,7 @@ public class NotificationService extends IntentService {
 			int eventType = parser.getEventType();
 			RssItem currentItem = null;
 			int i = 0;
-			while (eventType != XmlPullParser.END_DOCUMENT && i < 5) {// 通知数制限
+			while (eventType != XmlPullParser.END_DOCUMENT && i < 10) {// 通知数制限
 				String tag = null;
 				switch (eventType) {
 				case XmlPullParser.START_TAG:

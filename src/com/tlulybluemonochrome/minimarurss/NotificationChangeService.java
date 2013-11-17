@@ -16,6 +16,8 @@
 
 package com.tlulybluemonochrome.minimarurss;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import android.app.IntentService;
@@ -25,7 +27,7 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 
 /**
- * 通知をピン留めするサービス
+ * 通知を変更するサービス
  * 
  * @author k9000
  * 
@@ -50,17 +52,36 @@ public class NotificationChangeService extends IntentService {
 		} else {
 			final ArrayList<RssItem> arraylist = (ArrayList<RssItem>) intent
 					.getSerializableExtra("LIST");
-			final int count = intent.getIntExtra("COUNT", 0) + 1;
+			final int count = intent.getIntExtra("COUNT", 0);
 			if (intent.getBooleanExtra("BROWSE", false)) {
 				startActivity(new Intent(Intent.ACTION_VIEW,
-						Uri.parse(arraylist.get(count - 1).getUrl()))
+						Uri.parse(arraylist.get(0).getUrl()))
 						.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 			}
 
-			if (count < arraylist.size())
-				RssMessageNotification.noti(getApplicationContext(), arraylist,
-						count, intent.getIntExtra("ID", 1),
-						intent.getParcelableArrayListExtra("BITMAP"));
+			arraylist.remove(0);
+
+			if (!arraylist.isEmpty()) {
+				RssMessageNotification.noti(
+						getApplicationContext(),
+						arraylist,
+						count + 1,
+						intent.getIntExtra("ID", 1),
+						Uri.fromFile(getApplicationContext().getFileStreamPath(
+								count + ".png")));
+			} else {
+				RssMessageNotification.cancel(getApplicationContext(),
+						intent.getIntExtra("ID", 1));
+			}
+
+			try {// 既読判定書き込み
+				final FileOutputStream fos = openFileOutput("ReadData.dat",
+						MODE_PRIVATE);
+				final ObjectOutputStream oos = new ObjectOutputStream(fos);
+				oos.writeObject(arraylist);
+				oos.close();
+			} catch (Exception e) {
+			}
 
 		}
 

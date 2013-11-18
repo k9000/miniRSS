@@ -417,7 +417,7 @@ public class RssMessageNotification {
 				.setAutoCancel(false);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {// Android4.1以降
-			builder.setPriority(Notification.PRIORITY_LOW).setStyle(
+			builder.setPriority(Notification.PRIORITY_DEFAULT).setStyle(
 					new Notification.BigTextStyle()
 							.bigText(arraylist.get(0).getText())
 							.setBigContentTitle(arraylist.get(0).getTitle())

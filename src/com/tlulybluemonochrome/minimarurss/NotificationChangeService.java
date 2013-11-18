@@ -52,7 +52,7 @@ public class NotificationChangeService extends IntentService {
 				RssMessageNotification.titlenotify(getApplicationContext(),
 						"minimaruRSS", "タップして更新", "", -1, false);
 			}
-		}else if(intent.getBooleanExtra("CLEAR", false)){
+		} else if (intent.getBooleanExtra("CLEAR", false)) {
 			RssMessageNotification.cancel(getApplicationContext(), 0);
 			deleteFile("ReadData.dat");
 

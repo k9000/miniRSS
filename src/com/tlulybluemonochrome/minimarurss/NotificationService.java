@@ -271,9 +271,9 @@ public class NotificationService extends IntentService {
 				matchstr = mp.group();
 			} else if (mq.find()) {
 				matchstr = "http:" + mq.group();
-				// } else if (mr.find()) {
-				// matchstr = "http:" + mr.group();
-				// matchstr = matchstr.substring(0, matchstr.length() - 1);
+			} else if (mr.find()) {
+				matchstr = "http:" + mr.group();
+				matchstr = matchstr.substring(0, matchstr.length() - 1);
 			} else {
 				matchstr = null;
 			}
@@ -397,7 +397,7 @@ public class NotificationService extends IntentService {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		//RssMessageNotification.cancel(getApplicationContext(), -1);
+		// RssMessageNotification.cancel(getApplicationContext(), -1);
 		RssMessageNotification.titlenotify(getApplicationContext(),
 				"minimaruRSS", "タップして更新", "更新完了", -1, false);
 	}

@@ -203,10 +203,11 @@ public class RssMessageNotification {
 	 *            上に表示されるやつ
 	 * @param id
 	 *            識別用
+	 * @param progress 
 	 */
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public static void titlenotify(final Context context, final String title,
-			final String text, final String ticker, final int id) {
+			final String text, final String ticker, final int id, boolean progress) {
 		final Resources res = context.getResources();
 
 		// This image is used as the notification's large icon (thumbnail).
@@ -216,7 +217,7 @@ public class RssMessageNotification {
 
 		final Notification.Builder builder;
 
-		Notification notification;
+		final Notification notification;
 
 		builder = new Notification.Builder(context)
 
@@ -266,6 +267,10 @@ public class RssMessageNotification {
 
 		// Automatically dismiss the notification when it is touched.
 		// .setAutoCancel(true);
+		
+		if(progress){
+			builder.setProgress(100, 10, progress);
+		}
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			builder.setPriority(Notification.PRIORITY_MIN).setStyle(
@@ -316,7 +321,6 @@ public class RssMessageNotification {
 			final ArrayList<RssItem> arraylist, final int count, final int id,
 			final Uri uri) {
 		// TODO 自動生成されたメソッド・スタブ
-		final Resources res = context.getResources();
 
 		// This image is used as the notification's large icon (thumbnail).
 		// TODO: Remove this if your notification has no relevant thumbnail.

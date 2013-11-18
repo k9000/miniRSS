@@ -75,7 +75,7 @@ public class NotificationService extends IntentService {
 
 		RssMessageNotification.cancel(getApplicationContext(), -1);
 		RssMessageNotification.titlenotify(getApplicationContext(),
-				"minimaruRSS", "更新中", "更新中", -1);
+				"minimaruRSS", "更新中", "更新中", -1, true);
 
 		final SharedPreferences sharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
@@ -399,7 +399,7 @@ public class NotificationService extends IntentService {
 		super.onDestroy();
 		RssMessageNotification.cancel(getApplicationContext(), -1);
 		RssMessageNotification.titlenotify(getApplicationContext(),
-				"minimaruRSS", "タップして更新", "更新完了", -1);
+				"minimaruRSS", "タップして更新", "更新完了", -1, false);
 	}
 
 }

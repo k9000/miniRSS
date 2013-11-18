@@ -50,7 +50,7 @@ public class NotificationChangeService extends IntentService {
 					.getDefaultSharedPreferences(getBaseContext());
 			if (sharedPreferences.getBoolean("notification_switch", false)) {
 				RssMessageNotification.titlenotify(getApplicationContext(),
-						"minimaruRSS", "タップして更新", "", -1);
+						"minimaruRSS", "タップして更新", "", -1, false);
 			}
 
 		} else {

@@ -45,13 +45,16 @@ public class NotificationChangeService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 
-		if (intent.getBooleanExtra("TITLE", true)) {
+		if (intent.getBooleanExtra("TITLE", false)) {
 			final SharedPreferences sharedPreferences = PreferenceManager
 					.getDefaultSharedPreferences(getBaseContext());
 			if (sharedPreferences.getBoolean("notification_switch", false)) {
 				RssMessageNotification.titlenotify(getApplicationContext(),
 						"minimaruRSS", "タップして更新", "", -1, false);
 			}
+		}else if(intent.getBooleanExtra("CLEAR", false)){
+			RssMessageNotification.cancel(getApplicationContext(), 0);
+			deleteFile("ReadData.dat");
 
 		} else {
 			final ArrayList<RssItem> arraylist = new ArrayList<RssItem>();

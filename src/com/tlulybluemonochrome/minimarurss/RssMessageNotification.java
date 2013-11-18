@@ -31,7 +31,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 
 /**
@@ -70,7 +69,6 @@ public class RssMessageNotification {
 	public static void notify(final Context context, final String title,
 			final String text, final String url, final int id, Bitmap bitmap,
 			String page, boolean pin) {
-		final Resources res = context.getResources();
 
 		// This image is used as the notification's large icon (thumbnail).
 		// TODO: Remove this if your notification has no relevant thumbnail.
@@ -203,11 +201,12 @@ public class RssMessageNotification {
 	 *            上に表示されるやつ
 	 * @param id
 	 *            識別用
-	 * @param progress 
+	 * @param progress
 	 */
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public static void titlenotify(final Context context, final String title,
-			final String text, final String ticker, final int id, boolean progress) {
+			final String text, final String ticker, final int id,
+			boolean progress) {
 		final Resources res = context.getResources();
 
 		// This image is used as the notification's large icon (thumbnail).
@@ -263,12 +262,20 @@ public class RssMessageNotification {
 						PendingIntent.getService(context, -1, new Intent(
 								context, NotificationChangeService.class)
 								.putExtra("TITLE", true),
+								PendingIntent.FLAG_UPDATE_CURRENT))
+
+				.addAction(
+						android.R.drawable.checkbox_on_background,
+						"全て既読にする",
+						PendingIntent.getService(context, -3, new Intent(
+								context, NotificationChangeService.class)
+								.putExtra("CLEAR", true),
 								PendingIntent.FLAG_UPDATE_CURRENT));
 
 		// Automatically dismiss the notification when it is touched.
 		// .setAutoCancel(true);
-		
-		if(progress){
+
+		if (progress) {
 			builder.setProgress(100, 10, progress);
 		}
 
@@ -367,7 +374,7 @@ public class RssMessageNotification {
 
 				// Show a number. This is useful when stacking notifications of
 				// a single type.
-				.setNumber(arraylist.size() - 1)
+				.setNumber(arraylist.size())
 
 				// If this notification relates to a past or upcoming event, you
 				// should set the relevant time information using the setWhen

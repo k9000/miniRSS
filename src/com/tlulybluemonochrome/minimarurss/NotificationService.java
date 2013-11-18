@@ -397,7 +397,7 @@ public class NotificationService extends IntentService {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		RssMessageNotification.cancel(getApplicationContext(), -1);
+		//RssMessageNotification.cancel(getApplicationContext(), -1);
 		RssMessageNotification.titlenotify(getApplicationContext(),
 				"minimaruRSS", "タップして更新", "更新完了", -1, false);
 	}

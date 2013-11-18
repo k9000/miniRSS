@@ -351,11 +351,11 @@ public class SettingsFragment extends Fragment {
 			break;
 		}
 
-		final Intent intent = new Intent(getActivity(),
+		final Intent intent = new Intent(getActivity().getApplicationContext(),
 				NotificationService.class);
 		final PendingIntent pendingIntent = PendingIntent.getService(
-				getActivity(), -1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		final AlarmManager alarmManager = (AlarmManager) getActivity()
+				getActivity().getApplicationContext(), -2, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		final AlarmManager alarmManager = (AlarmManager)getActivity().getApplicationContext()
 				.getSystemService(Context.ALARM_SERVICE);
 		alarmManager.setInexactRepeating(AlarmManager.RTC,
 				System.currentTimeMillis(), time, pendingIntent);
@@ -364,16 +364,16 @@ public class SettingsFragment extends Fragment {
 	// NotificationServiceのAlarmManager登録解除
 	protected void NotificationServiceStop() {
 		getActivity().stopService(
-				new Intent(getActivity(), NotificationService.class));
-		final Intent intent = new Intent(getActivity(),
+				new Intent(getActivity().getApplicationContext(), NotificationService.class));
+		final Intent intent = new Intent(getActivity().getApplicationContext(),
 				NotificationService.class);
 		final PendingIntent pendingIntent = PendingIntent.getService(
-				getActivity(), -1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		final AlarmManager alarmManager = (AlarmManager) getActivity()
+				getActivity().getApplicationContext(), -2, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		final AlarmManager alarmManager = (AlarmManager) getActivity().getApplicationContext()
 				.getSystemService(Context.ALARM_SERVICE);
 		alarmManager.cancel(pendingIntent);
 
-		RssMessageNotification.cancel(getActivity(), 100);
+		RssMessageNotification.cancel(getActivity().getApplicationContext(), -1);
 	}
 
 }

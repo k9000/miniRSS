@@ -35,11 +35,11 @@ public class StartupReceiver extends BroadcastReceiver {
 	}
 
 	@Override
-	public void onReceive(Context context, Intent intent) {
+	public void onReceive(final Context context,final Intent intent) {
 		// TODO: This method is called when the BroadcastReceiver is receiving
 		// an Intent broadcast.
 		// throw new UnsupportedOperationException("Not yet implemented");
-		SharedPreferences sharedPreferences = PreferenceManager
+		final SharedPreferences sharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		if (sharedPreferences.getBoolean("notification_switch", false)) {
 			long time = AlarmManager.INTERVAL_HOUR;
@@ -61,12 +61,13 @@ public class StartupReceiver extends BroadcastReceiver {
 				break;
 			}
 
-			Intent serviceIntent = new Intent(context,
+			final Intent serviceIntent = new Intent(context,
 					NotificationService.class);
-			PendingIntent pendingIntent = PendingIntent.getService(context, -1,
+			final PendingIntent pendingIntent = PendingIntent.getService(context, -2,
 					serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-			AlarmManager alarmManager = (AlarmManager) context
+			final AlarmManager alarmManager = (AlarmManager) context
 					.getSystemService(Context.ALARM_SERVICE);
+			alarmManager.cancel(pendingIntent);
 			alarmManager.setInexactRepeating(AlarmManager.RTC,
 					System.currentTimeMillis(), time, pendingIntent);
 			context.startService(new Intent(context, NotificationService.class));

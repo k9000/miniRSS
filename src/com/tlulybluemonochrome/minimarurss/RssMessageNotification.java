@@ -255,7 +255,7 @@ public class RssMessageNotification {
 				// Set the pending intent to be initiated when the user touches
 				// the notification.
 				.setContentIntent(
-						PendingIntent.getService(context, 0, new Intent(
+						PendingIntent.getService(context, -2, new Intent(
 								context, NotificationService.class), 0))
 
 				.setDeleteIntent(
